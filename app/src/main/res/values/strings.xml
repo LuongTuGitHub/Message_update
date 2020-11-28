@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Message</string>
+    <string name="avatar">Avatar</string>
+    <string name="background">Background</string>
+    <string name="enter_content">Enter Content</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="log_in">Log In</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forget_password">Forget Password ?</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="day">Day</string>
+    <string name="confirm">Confirm</string>
+    <string name="address">Address</string>
+    <string name="check">Check</string>
+    <string name="check_and_add">Check And Add</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="to">to</string>
+    <string name="method_select_image">Method Select Image</string>
+    <string name="choose_a_method">Choose a method</string>
+</resources>
