@@ -58,7 +58,7 @@ public class SendMessageFragment extends Fragment {
                 if (s.length() == 0) {
                     send.setBackgroundResource(R.drawable.like);
                 } else {
-                    send.setBackgroundResource(R.drawable.send);
+                    send.setBackgroundResource(R.drawable.send_icon);
                 }
             }
 
