@@ -46,7 +46,6 @@ public class SendMessageFragment extends Fragment {
         messageForConversationArrayList = new ArrayList<>();
         inputMessage = view.findViewById(R.id.enterMessage);
         send = view.findViewById(R.id.sendMessage);
-        send.setBackgroundResource(R.drawable.like);
         key = getActivity().getIntent().getStringExtra("key");
         inputMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -59,7 +58,7 @@ public class SendMessageFragment extends Fragment {
                 if (s.length() == 0) {
                     send.setBackgroundResource(R.drawable.like);
                 } else {
-                    send.setBackgroundResource(R.drawable.ic_baseline_send_24);
+                    send.setBackgroundResource(R.drawable.send);
                 }
             }
 

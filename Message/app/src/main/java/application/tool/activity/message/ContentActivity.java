@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +71,6 @@ public class ContentActivity extends AppCompatActivity {
     StorageReference storageReference;
     AlertDialog alertDialog;
     ConversationAdapter adapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +133,22 @@ public class ContentActivity extends AppCompatActivity {
             startActivity(intent);
         });
         loadConversation();
+
+        new Handler().postDelayed(() -> {
+            if(keyArrayList.size()==0){
+                AlertDialog.Builder addConversation = new AlertDialog.Builder(ContentActivity.this);
+                View viewAddConversation = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_start_conversation,null);
+                Button startAdd = viewAddConversation.findViewById(R.id.addConversation);
+                addConversation.setView(viewAddConversation);
+                final AlertDialog dialog = addConversation.create();
+                startAdd.setOnClickListener(v -> {
+                    Intent intent = new Intent(ContentActivity.this, CreateConversationActivity.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                });
+                dialog.show();
+            }
+        },2000);
     }
 
     private void loadConversation() {

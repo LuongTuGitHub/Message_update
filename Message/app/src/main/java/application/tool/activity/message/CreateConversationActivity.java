@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,7 +71,7 @@ public class CreateConversationActivity extends AppCompatActivity {
                     if (new CheckConversation().conversationExist(person, lists)) {
                         ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
                         ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
-                        reference.child("conversation").push().setValue(new Conversation(person, messageForConversationArrayList, deniedSeenMessageArrayList));
+                        reference.child("conversation").push().setValue(new Conversation("",person, messageForConversationArrayList, deniedSeenMessageArrayList));
                         finish();
                     }
                 }
