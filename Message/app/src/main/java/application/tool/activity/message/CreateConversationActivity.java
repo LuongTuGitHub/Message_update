@@ -1,5 +1,6 @@
 package application.tool.activity.message;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
@@ -35,9 +36,7 @@ public class CreateConversationActivity extends AppCompatActivity {
     DatabaseReference reference;
     Button back, clear, confirm;
     ListView listFriend;
-    TextView showList;
     FriendAdapter adapter;
-    String list = "";
     ArrayList<ArrayList<PersonInConversation>> lists;
     ArrayList<PersonInConversation> person;
     ArrayList<String> friend;
@@ -52,7 +51,6 @@ public class CreateConversationActivity extends AppCompatActivity {
         back.setOnClickListener(v -> finish());
         person = new ArrayList<>();
         lists = new ArrayList<>();
-        showList = findViewById(R.id.showListSelect);
         friend = new ArrayList<>();
         listFriend = findViewById(R.id.listFriend);
         clear = findViewById(R.id.clearList);
@@ -60,9 +58,8 @@ public class CreateConversationActivity extends AppCompatActivity {
         adapter = new FriendAdapter(CreateConversationActivity.this, friend);
         listFriend.setAdapter(adapter);
         clear.setOnClickListener(v -> {
-            list = "";
+            adapter.notifyDataSetChanged();
             person = new ArrayList<>();
-            showList.setText(list);
         });
         confirm.setOnClickListener(v -> {
             if (person.size() > 0) {
@@ -78,10 +75,9 @@ public class CreateConversationActivity extends AppCompatActivity {
             }
         });
         listFriend.setOnItemClickListener((parent, view, position, id) -> {
+            view.setBackgroundColor(Color.GRAY);
             if (new CheckSelected().Check(friend.get(position), person)) {
-                list += (" + " + friend.get(position) + "\n");
                 person.add(new PersonInConversation(friend.get(position)));
-                showList.setText(list);
             }
         });
         loadFriend();

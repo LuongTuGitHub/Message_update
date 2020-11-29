@@ -148,7 +148,7 @@ public class ContentActivity extends AppCompatActivity {
                 });
                 dialog.show();
             }
-        },5000);
+        },3000);
     }
 
     private void loadConversation() {

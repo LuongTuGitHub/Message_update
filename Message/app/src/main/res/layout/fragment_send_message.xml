@@ -34,7 +34,6 @@
             android:id="@+id/sendMessage"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/like"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
