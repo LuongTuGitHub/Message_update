@@ -28,11 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/content1"
         android:layout_centerHorizontal="true" />
+
     <Button
+        android:id="@+id/save1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SAVE"
-        android:id="@+id/save1"
+        android:layout_below="@id/generate1"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/generate1"/>
+        android:text="SAVE" />
 </RelativeLayout>

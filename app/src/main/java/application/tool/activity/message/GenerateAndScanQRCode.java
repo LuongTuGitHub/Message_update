@@ -19,6 +19,7 @@ public class GenerateAndScanQRCode extends AppCompatActivity {
 
     Button cameraButton;
     Button generateButton;
+    Button scanButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class GenerateAndScanQRCode extends AppCompatActivity {
 
         cameraButton = findViewById(R.id.camera);
         generateButton = findViewById(R.id.generate);
+        scanButton = findViewById(R.id.scan);
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +41,14 @@ public class GenerateAndScanQRCode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GenerateAndScanQRCode.this, GenerateCode.class);
+                startActivity(intent);
+            }
+        });
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GenerateAndScanQRCode.this, ScanCode.class);
                 startActivity(intent);
             }
         });

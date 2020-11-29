@@ -11,7 +11,6 @@
         tools:ignore="ManifestOrder" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".GenerateCode"></activity>
+        <activity android:name=".ScanCode" />
+        <activity android:name=".GenerateCode" />
         <activity android:name=".GenerateAndScanQRCode" />
         <activity android:name=".MessageActivity" />
         <activity android:name=".EditActivity" />
@@ -40,6 +40,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
     </application>
 
 </manifest>

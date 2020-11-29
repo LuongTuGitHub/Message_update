@@ -18,7 +18,7 @@ import com.google.zxing.common.BitMatrix;
 
 public class GenerateCode extends AppCompatActivity {
 
-    public static final int QR_CODE_LENGTH = 500;
+    public static final int QR_CODE_LENGTH = 700;
     Bitmap bitmap;
 
     EditText editText;
@@ -78,7 +78,7 @@ public class GenerateCode extends AppCompatActivity {
         }
 
         Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
-        bitmap.setPixels(pixel, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
+        bitmap.setPixels(pixel, 0, 700, 0, 0, bitMatrixWidth, bitMatrixHeight);
 
         return bitmap;
     }
