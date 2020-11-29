@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import application.tool.activity.message.adapter.FriendAdapter;
 import application.tool.activity.message.check.CheckConversation;
-import application.tool.activity.message.check.CheckKeyConversation;
 import application.tool.activity.message.check.CheckSelected;
 import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.object.Conversation;
@@ -68,24 +67,22 @@ public class CreateConversationActivity extends AppCompatActivity {
         });
         confirm.setOnClickListener(v -> {
             if (person.size() > 0) {
-               if(!new CheckUserInConversation().returnResult(user.getEmail(),person)){
-                   person.add(new PersonInConversation(user.getEmail()));
-                   if (new CheckConversation().conversationExist(person, lists)) {
-                       ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
-                       ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
-                       reference.child("conversation").push().setValue(new Conversation(person, messageForConversationArrayList, deniedSeenMessageArrayList));
-                       finish();
-                   }
-               }
+                if (!new CheckUserInConversation().returnResult(user.getEmail(), person)) {
+                    person.add(new PersonInConversation(user.getEmail()));
+                    if (new CheckConversation().conversationExist(person, lists)) {
+                        ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
+                        ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
+                        reference.child("conversation").push().setValue(new Conversation(person, messageForConversationArrayList, deniedSeenMessageArrayList));
+                        finish();
+                    }
+                }
             }
         });
         listFriend.setOnItemClickListener((parent, view, position, id) -> {
             if (new CheckSelected().Check(friend.get(position), person)) {
-                list += (friend.get(position) + "\n");
+                list += (" + " + friend.get(position) + "\n");
                 person.add(new PersonInConversation(friend.get(position)));
                 showList.setText(list);
-            } else {
-                Toast.makeText(this, "Selected !", Toast.LENGTH_SHORT).show();
             }
         });
         loadFriend();

@@ -2,6 +2,8 @@ package application.tool.activity.message.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,14 +46,37 @@ public class SendMessageFragment extends Fragment {
         messageForConversationArrayList = new ArrayList<>();
         inputMessage = view.findViewById(R.id.enterMessage);
         send = view.findViewById(R.id.sendMessage);
+        send.setBackgroundResource(R.drawable.like);
         key = getActivity().getIntent().getStringExtra("key");
+        inputMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    send.setBackgroundResource(R.drawable.like);
+                } else {
+                    send.setBackgroundResource(R.drawable.ic_baseline_send_24);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         send.setOnClickListener(v -> {
             if (inputMessage.getText().toString().trim().length() > 0) {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()));
-                reference.child("conversation/" + key + "/messageForConversationArrayList").setValue(messageForConversationArrayList);
-                messageForConversationArrayList.remove(messageForConversationArrayList.size()-1);
-                inputMessage.setText("");
+            } else {
+                messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", Calendar.getInstance().getTimeInMillis()));
             }
+            reference.child("conversation/" + key + "/messageForConversationArrayList").setValue(messageForConversationArrayList);
+            messageForConversationArrayList.remove(messageForConversationArrayList.size() - 1);
+            inputMessage.setText("");
         });
         loadMessage();
         return view;

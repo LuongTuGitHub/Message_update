@@ -145,7 +145,7 @@ public class ContentActivity extends AppCompatActivity {
                     if (new CheckKeyConversation().getResult(snapshot.getKey(), keyArrayList)) {
                         assert conversation != null;
                         if (new CheckUserInConversation().returnResult(user.getEmail(), conversation.getPersonInConversationArrayList())) {
-                            if(new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(),lists)){
+                            if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
                                 nameConversation.add(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()));
                                 keyArrayList.add(snapshot.getKey());
                                 lists.add(conversation.getPersonInConversationArrayList());

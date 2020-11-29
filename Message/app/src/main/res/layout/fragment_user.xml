@@ -70,10 +70,11 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <FrameLayout
-                android:background="@color/white"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/white">
+
                 <Button
                     android:id="@+id/editAvatar"
                     android:layout_width="20dp"
