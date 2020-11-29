@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,11 +40,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import application.tool.activity.message.adapter.ConversationAdapter;
+import application.tool.activity.message.check.CheckConversation;
 import application.tool.activity.message.check.CheckKeyConversation;
 import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
 import application.tool.activity.message.object.Conversation;
+import application.tool.activity.message.object.PersonInConversation;
 
 public class ContentActivity extends AppCompatActivity {
     private final static int SELECT_IMAGE_AVATAR_CODE = 88;
@@ -59,6 +62,7 @@ public class ContentActivity extends AppCompatActivity {
     ArrayList<String> keyArrayList;/////////////// key conversation
     ArrayList<String> nameConversation;//////////////////////////// name conversation
     ArrayList<Integer> amountPerson;
+    ArrayList<ArrayList<PersonInConversation>> lists;
     FirebaseDatabase database;
     DatabaseReference reference;
     FirebaseAuth auth;
@@ -68,7 +72,6 @@ public class ContentActivity extends AppCompatActivity {
     StorageReference storageReference;
     AlertDialog alertDialog;
     ConversationAdapter adapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +84,7 @@ public class ContentActivity extends AppCompatActivity {
         reference = database.getReference();
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        lists = new ArrayList<>();
         createConversation = findViewById(R.id.sendMessage);
         scanQrCode = findViewById(R.id.scanQrCode);
         layout = findViewById(R.id.drawer_layout);
@@ -138,10 +142,25 @@ public class ContentActivity extends AppCompatActivity {
             startActivity(intent);
         });
         loadConversation();
+
+        new Handler().postDelayed(() -> {
+            if(keyArrayList.size()==0){
+                AlertDialog.Builder addConversation = new AlertDialog.Builder(ContentActivity.this);
+                View viewAddConversation = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_start_conversation,null);
+                Button startAdd = viewAddConversation.findViewById(R.id.addConversation);
+                addConversation.setView(viewAddConversation);
+                final AlertDialog dialog = addConversation.create();
+                startAdd.setOnClickListener(v -> {
+                    Intent intent = new Intent(ContentActivity.this, CreateConversationActivity.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                });
+                dialog.show();
+            }
+        },3000);
     }
 
     private void loadConversation() {
-
         ///////////////////////////////////
         reference.child("conversation").addChildEventListener(new ChildEventListener() {
             @Override
@@ -149,10 +168,14 @@ public class ContentActivity extends AppCompatActivity {
                 if (snapshot.getValue() != null) {
                     Conversation conversation = snapshot.getValue(Conversation.class);
                     if (new CheckKeyConversation().getResult(snapshot.getKey(), keyArrayList)) {
+                        assert conversation != null;
                         if (new CheckUserInConversation().returnResult(user.getEmail(), conversation.getPersonInConversationArrayList())) {
-                            nameConversation.add(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()));
-                            keyArrayList.add(snapshot.getKey());
-                            adapter.notifyDataSetChanged();
+                            if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
+                                nameConversation.add(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()));
+                                keyArrayList.add(snapshot.getKey());
+                                lists.add(conversation.getPersonInConversationArrayList());
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     }
                 }

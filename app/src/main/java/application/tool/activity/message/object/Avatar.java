@@ -26,9 +26,8 @@ public class Avatar {
     }
 
     public void setAvatar(ImageView avatar) {
-        final long MAX = 1200 * 1200;
         if (type != null) {
-            reference.child(type + "/" + email.hashCode() + ".png").getBytes(MAX).addOnCompleteListener(task -> {
+            reference.child(type + "/" + email.hashCode() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     byte[] bytes = task.getResult();
                     if (bytes != null) {
@@ -38,7 +37,7 @@ public class Avatar {
                 }
             });
         } else {
-            reference.child("avatar/" + email.hashCode() + ".png").getBytes(MAX).addOnCompleteListener(task -> {
+            reference.child("avatar/" + email.hashCode() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     byte[] bytes = task.getResult();
                     if (bytes != null) {

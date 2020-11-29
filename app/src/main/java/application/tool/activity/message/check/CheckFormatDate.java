@@ -1,14 +1,10 @@
 package application.tool.activity.message.check;
 
-import java.util.Calendar;
-
 public class CheckFormatDate {
-    private char[] arrayDigit = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private final char[] arrayDigit = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     private boolean checkLength(String day) {
-        if (day.length() <= 10)
-            return true;
-        return false;
+        return day.length() <= 10;
     }
 
     private boolean checkSlash(String day) {
@@ -26,28 +22,20 @@ public class CheckFormatDate {
             return false;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < array[i].length(); j++) {
-                if (check(array[i].charAt(j)) == false) {
+                if (!check(array[i].charAt(j))) {
                     return false;
                 }
             }
         }
-        if (!checkValue(array[0], array[1], array[2]))
-            return false;
-
-
-        return true;
+        return checkValue(array[0], array[1], array[2]);
     }
 
     public boolean checkValue(String day, String mouth, String year) {
-        if ((Integer.parseInt(day) > getDayOfMouth(mouth, year) && Integer.parseInt(day) <= 0) || (getDayOfMouth(mouth, year) == -1))
-            return false;
-        return true;
+        return (Integer.parseInt(day) <= getDayOfMouth(mouth, year) || Integer.parseInt(day) > 0) && (getDayOfMouth(mouth, year) != -1);
     }
 
     public boolean checkYear(String year) {
-        if (Integer.parseInt(year) / 4 == 0)
-            return true;
-        return false;
+        return Integer.parseInt(year) / 4 == 0;
     }
 
     public int getDayOfMouth(String mouth, String year) {
@@ -79,11 +67,7 @@ public class CheckFormatDate {
     public boolean checkFormat(String day) {
         if (checkDigit(day)) {
             if (checkLength(day)) {
-                if (checkSlash(day)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return checkSlash(day);
             } else {
                 return false;
             }
@@ -92,8 +76,8 @@ public class CheckFormatDate {
     }
 
     private boolean check(char i) {
-        for (int j = 0; j < arrayDigit.length; j++) {
-            if (i == arrayDigit[j])
+        for (char c : arrayDigit) {
+            if (i == c)
                 return true;
         }
         return false;

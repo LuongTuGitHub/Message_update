@@ -23,4 +23,5 @@
     <string name="to">to</string>
     <string name="method_select_image">Method Select Image</string>
     <string name="choose_a_method">Choose a method</string>
+    <string name="conversation_is_empty">Conversation Is Empty</string>
 </resources>
