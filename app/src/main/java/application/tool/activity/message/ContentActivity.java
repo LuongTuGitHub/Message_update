@@ -69,6 +69,7 @@ public class ContentActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     Button createConversation;
+    Button scanQrCode;
     StorageReference storageReference;
     AlertDialog alertDialog;
     ConversationAdapter adapter;
@@ -86,6 +87,7 @@ public class ContentActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
         lists = new ArrayList<>();
         createConversation = findViewById(R.id.sendMessage);
+        scanQrCode = findViewById(R.id.scanQrCode);
         layout = findViewById(R.id.drawer_layout);
         listView = findViewById(R.id.listFriend);
         userFragment = (UserFragment) getFragmentManager().findFragmentById(R.id.fragment3);
@@ -96,6 +98,13 @@ public class ContentActivity extends AppCompatActivity {
         createConversation.setOnClickListener(v -> {
             Intent intent = new Intent(ContentActivity.this, CreateConversationActivity.class);
             startActivity(intent);
+        });
+        scanQrCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContentActivity.this, GenerateAndScanQRCode.class);
+                startActivity(intent);
+            }
         });
         userFragment.editAvatar.setOnClickListener(v -> {
             @SuppressLint("InflateParams") View view = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_select_image, null);

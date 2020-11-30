@@ -55,13 +55,13 @@ public class ConversationAdapter extends ArrayAdapter<KeyConversation> {
         convertView = layoutInflater.inflate(R.layout.person, null);
         name = convertView.findViewById(R.id.viewEmail);
         image = convertView.findViewById(R.id.imagePerson);
-        if(!keyConversations.get(position).getNameGroup().equals("")){
+        if (!keyConversations.get(position).getNameGroup().equals("")) {
             name.setText(keyConversations.get(position).getNameGroup());
         }
         if (!keyConversations.get(position).getName().equals("Group Chat")) {
             name.setText(keyConversations.get(position).getName());
             new Avatar(keyConversations.get(position).getName(), "avatar").setAvatar(image);
-        }else if (keyConversations.get(position).getNameGroup().equals("")){
+        } else if (keyConversations.get(position).getNameGroup().equals("")) {
             name.setText(keyConversations.get(position).getName());
         }
         return convertView;

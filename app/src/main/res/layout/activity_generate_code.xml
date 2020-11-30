@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GenerateCode">
+
+    <EditText
+        android:id="@+id/content1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Edit here"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/generate1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image1"
+        android:layout_centerHorizontal="true"
+        android:text="GENERATE" />
+
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/content1"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/save1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/generate1"
+        android:layout_centerHorizontal="true"
+        android:text="SAVE" />
+
+    <Button
+        android:id="@+id/generateAddCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/save1"
+        android:layout_centerHorizontal="true"
+        android:text="Generate login code" />
+
+    <Button
+        android:id="@+id/generateLoginCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/generateAddCode"
+        android:layout_centerHorizontal="true"
+        android:text="Generate Add code" />
+</RelativeLayout>
