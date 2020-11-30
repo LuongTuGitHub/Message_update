@@ -102,8 +102,7 @@ public class ButtonFragment extends Fragment {
         });
         signUp.setOnClickListener(v -> {
             CheckEmailVerify verify = new CheckEmailVerify();
-            verify.execute(formFragment.inputEmail.getText().toString());
-            Toast.makeText(getActivity(), verify.getVerify() + "", Toast.LENGTH_SHORT).show();
+            verify.execute(Objects.requireNonNull(formFragment.inputEmail.getText()).toString());
             formFragment.inputPassword.setVisibility(View.VISIBLE);
             formFragment.inputLayout.setVisibility(View.VISIBLE);
             toggleReset = false;

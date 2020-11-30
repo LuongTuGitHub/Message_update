@@ -1,5 +1,6 @@
 package application.tool.activity.message;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
@@ -18,10 +19,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
 import application.tool.activity.message.adapter.FriendAdapter;
+import application.tool.activity.message.check.CheckConversation;
+import application.tool.activity.message.check.CheckSelected;
+import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.DeniedSeenMessage;
 import application.tool.activity.message.object.MessageForConversation;
@@ -33,9 +36,8 @@ public class CreateConversationActivity extends AppCompatActivity {
     DatabaseReference reference;
     Button back, clear, confirm;
     ListView listFriend;
-    TextView showList;
     FriendAdapter adapter;
-    String list = "";
+    ArrayList<ArrayList<PersonInConversation>> lists;
     ArrayList<PersonInConversation> person;
     ArrayList<String> friend;
 
@@ -48,7 +50,7 @@ public class CreateConversationActivity extends AppCompatActivity {
         back = findViewById(R.id.returnCreateConversation);
         back.setOnClickListener(v -> finish());
         person = new ArrayList<>();
-        showList = findViewById(R.id.showListSelect);
+        lists = new ArrayList<>();
         friend = new ArrayList<>();
         listFriend = findViewById(R.id.listFriend);
         clear = findViewById(R.id.clearList);
@@ -56,25 +58,66 @@ public class CreateConversationActivity extends AppCompatActivity {
         adapter = new FriendAdapter(CreateConversationActivity.this, friend);
         listFriend.setAdapter(adapter);
         clear.setOnClickListener(v -> {
-            list = "";
+            adapter.notifyDataSetChanged();
             person = new ArrayList<>();
-            showList.setText(list);
         });
         confirm.setOnClickListener(v -> {
             if (person.size() > 0) {
-                person.add(new PersonInConversation(user.getEmail()));
-                ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
-                ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
-                reference.child("conversation").push().setValue(new Conversation(person, messageForConversationArrayList, deniedSeenMessageArrayList));
-                finish();
+                if (!new CheckUserInConversation().returnResult(user.getEmail(), person)) {
+                    person.add(new PersonInConversation(user.getEmail()));
+                    if (new CheckConversation().conversationExist(person, lists)) {
+                        ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
+                        ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
+                        reference.child("conversation").push().setValue(new Conversation("",person, messageForConversationArrayList, deniedSeenMessageArrayList));
+                        finish();
+                    }
+                }
             }
         });
         listFriend.setOnItemClickListener((parent, view, position, id) -> {
-            list += (friend.get(position) + "\n");
-            person.add(new PersonInConversation(friend.get(position)));
-            showList.setText(list);
+            view.setBackgroundColor(Color.GRAY);
+            if (new CheckSelected().Check(friend.get(position), person)) {
+                person.add(new PersonInConversation(friend.get(position)));
+            }
         });
         loadFriend();
+        loadConversation();
+    }
+
+    private void loadConversation() {
+        ///////////////////////////////////
+        reference.child("conversation").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if (snapshot.getValue() != null) {
+                    Conversation conversation = snapshot.getValue(Conversation.class);
+                    assert conversation != null;
+                    if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
+                        lists.add(conversation.getPersonInConversationArrayList());
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void loadFriend() {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,10 +33,10 @@ public class ToolbarMessageFragment extends Fragment {
     public ImageView image;
     TextView name;
     String person;
+    String key;
     FirebaseDatabase database;
     DatabaseReference reference;
     private Profile profile;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class ToolbarMessageFragment extends Fragment {
         name = view.findViewById(R.id.namePersonMessage);
         showProfile = view.findViewById(R.id.selectDialog);
         person = getActivity().getIntent().getStringExtra("person");
+        key = getActivity().getIntent().getStringExtra("key");
         if (person != null) {
             if (!person.equals("Group Chat")) {
                 reference.child("profile" + person.hashCode()).addValueEventListener(new ValueEventListener() {
@@ -87,8 +89,41 @@ public class ToolbarMessageFragment extends Fragment {
                 alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 profileDialog.findViewById(R.id.closeDialog).setOnClickListener(v1 -> alertDialog.dismiss());
                 alertDialog.show();
+            }else {
+                AlertDialog.Builder alertChangeNameGroup = new AlertDialog.Builder(getActivity());
+                View alert = LayoutInflater.from(getActivity()).inflate(R.layout.alert_change_name_group,null);
+                alertChangeNameGroup.setView(alert);
+                final AlertDialog  dialog = alertChangeNameGroup.create();
+                EditText inputName = alert.findViewById(R.id.enterName);
+                Button confirmChange = alert.findViewById(R.id.confirmChange);
+                confirmChange.setOnClickListener(v12 -> {
+                    if((inputName.getText().toString().length()>6)&&(inputName.getText().toString().length()<30)){
+                        reference.child("conversation/"+key+"/name").setValue(inputName.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
+        loadNameGroupIfExist();
         return view;
+    }
+    public void loadNameGroupIfExist(){
+        reference.child("conversation/"+key+"/name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    if(!snapshot.getValue().toString().equals("")){
+                        name.setText(snapshot.getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }

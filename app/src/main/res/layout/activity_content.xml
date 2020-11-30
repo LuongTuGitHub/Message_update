@@ -46,26 +46,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                app:cardCornerRadius="40dp">
+                android:background="@color/white">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <Button
+                    android:id="@+id/sendMessage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@color/white">
-
-                    <Button
-                        android:id="@+id/sendMessage"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_baseline_chat_24" />
-                </FrameLayout>
-            </androidx.cardview.widget.CardView>
+                    android:background="@drawable/ic_baseline_chat_24" />
+            </FrameLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -29,7 +29,6 @@ public class MessageActivity extends AppCompatActivity {
     ToolbarMessageFragment toolbarMessageFragment;
     SendMessageFragment sendMessageFragment;
     ListView listView;
-    ArrayList<String> key;
     ArrayList<MessageForConversation> arrayList;
     MessageAdapter adapter;
     DatabaseReference reference;
@@ -43,7 +42,6 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
         reference = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        key = new ArrayList<>();
         Intent intent = getIntent();
         listView = findViewById(R.id.showMessage);
         arrayList = new ArrayList<>();
@@ -81,7 +79,6 @@ public class MessageActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
                     arrayList.add(snapshot.getValue(MessageForConversation.class));
-                    key.add(snapshot.getKey());
                     adapter.notifyDataSetChanged();
                 }
             }
