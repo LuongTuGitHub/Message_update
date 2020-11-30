@@ -140,7 +140,7 @@ public class GenerateCode extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        reference.child("Account" + user.getEmail()).addValueEventListener(new ValueEventListener() {
+        reference.child("account" + user.getEmail().hashCode()).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -167,7 +167,7 @@ public class GenerateCode extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        reference.child("account" + user.getEmail()).addValueEventListener(new ValueEventListener() {
+        reference.child("account" + user.getEmail().hashCode()).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
