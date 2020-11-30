@@ -6,6 +6,8 @@
     android:layout_height="match_parent">
 
     <Button
+        android:textColor="@color/white"
+        android:background="@drawable/send"
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +34,8 @@
         app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <Button
+        android:textColor="@color/white"
+        android:background="@drawable/send"
         android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,6 +64,9 @@
         app:layout_constraintTop_toBottomOf="@+id/signUp" />
 
     <Button
+        android:padding="5dp"
+        android:background="@drawable/send"
+        android:textColor="@color/white"
         android:id="@+id/resetPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

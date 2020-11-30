@@ -7,18 +7,18 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="46dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:hint="@string/name"
         app:hintEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/returnEdit"
-        app:startIconDrawable="@drawable/ic_baseline_person_24">
+        app:layout_constraintStart_toEndOf="@+id/button3"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputName"
@@ -29,19 +29,31 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="46dp"
+        android:background="@drawable/id_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout5"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:hint="@string/day"
         app:hintEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/dialogDay"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24">
+        app:layout_constraintStart_toEndOf="@+id/button4"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputDay"
@@ -55,10 +67,10 @@
         android:id="@+id/dialogDay"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/ic_baseline_add_24"
+        android:background="@drawable/ic_baseline_calendar_today_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout4" />
 
@@ -75,18 +87,17 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout6"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:hint="@string/address"
         app:hintEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"
-        app:startIconDrawable="@drawable/ic_baseline_add_location_alt_24">
+        app:layout_constraintStart_toEndOf="@+id/button5"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputAddress"
@@ -97,7 +108,8 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:background="@android:color/transparent"
+        android:textColor="@color/white"
+        android:background="@drawable/send"
         android:id="@+id/confirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -129,4 +141,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/ic_baseline_calendar_today_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/ic_baseline_location_on_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

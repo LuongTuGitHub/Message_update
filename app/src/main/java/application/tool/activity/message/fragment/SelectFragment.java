@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +51,7 @@ public class SelectFragment extends Fragment {
     ArrayList<String> listAccount;
     ArrayList<String> listFriend;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     @Nullable
     @Override
@@ -69,15 +72,27 @@ public class SelectFragment extends Fragment {
             switch (arrayList.get(position).getId()) {
                 case R.drawable.ic_baseline_exit_to_app_24:
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("Log Out").setPositiveButton("Confirm", (dialog, which) -> {
-                        auth.signOut();
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        new AccountShare(getActivity()).dropAccount();
-                        startActivity(intent);
-                        getActivity().finish();
-                    }).setNegativeButton("Cancel", (dialog, which) -> {
+                    View alertLogOut = LayoutInflater.from(getActivity()).inflate(R.layout.alert_log_out,null);
+                    builder.setView(alertLogOut);
+                    final AlertDialog dialogLogOut = builder.create();
+                    Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
+                    Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
+                    cancelLogOut.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogLogOut.dismiss();
+                        }
                     });
-                    builder.create().show();
+                    confirmLogOut.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new AccountShare(getActivity()).dropAccount();
+                            Intent intent = new Intent(getActivity(),MainActivity.class);
+                            getActivity().startActivity(intent);
+                            getActivity().finish();
+                        }
+                    });
+                    dialogLogOut.show();
                     break;
                 case R.drawable.ic_baseline_person_24:
                     Intent toViewProfile = new Intent(getActivity(), ViewProfileActivity.class);
@@ -94,6 +109,7 @@ public class SelectFragment extends Fragment {
                     TextInputEditText person = viewAddFriend.findViewById(R.id.namePerson);
                     Button check = viewAddFriend.findViewById(R.id.check);
                     TextView status = viewAddFriend.findViewById(R.id.showStatus);
+                    Button cancel = viewAddFriend.findViewById(R.id.cancelAddFriend);
                     check.setOnClickListener(v -> {
                         if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
                             if (checkAccount(person.getText().toString())) {
@@ -109,8 +125,9 @@ public class SelectFragment extends Fragment {
                             status.setText("Field Is Empty");
                         }
                     });
-                    alertAddFriend.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
-                    alertAddFriend.create().show();
+                    final AlertDialog dialog = alertAddFriend.create();
+                    cancel.setOnClickListener(v -> dialog.dismiss());
+                   dialog.show();
                     break;
             }
         });
@@ -204,6 +221,7 @@ public class SelectFragment extends Fragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private boolean checkAccount(String email) {
         ArrayList<String> arrayList = listAccount;
         ArrayList<String> list = listFriend;

@@ -1,12 +1,12 @@
 package application.tool.activity.message.object;
 
 public class KeyConversation {
-    private String name,key,nameGroup;
+    private String name, key, nameGroup;
 
     public KeyConversation() {
     }
 
-    public KeyConversation(String name, String key,String nameGroup) {
+    public KeyConversation(String name, String key, String nameGroup) {
         this.name = name;
         this.key = key;
         this.nameGroup = nameGroup;

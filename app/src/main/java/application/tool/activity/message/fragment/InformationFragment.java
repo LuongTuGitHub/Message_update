@@ -66,9 +66,9 @@ public class InformationFragment extends Fragment {
                 if (profile != null) {
                     arrayList.add(new Select(R.drawable.ic_baseline_person_24, profile.getName()));
                     String year = profile.getDay().substring(profile.getDay().length() - 4);
-                    arrayList.add(new Select(R.drawable.ic_baseline_local_library_24, Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(year) + " Year Old"));
+                    arrayList.add(new Select(R.drawable.age, Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(year) + " Year Old"));
                     arrayList.add(new Select(R.drawable.ic_baseline_location_on_24, profile.getAddress()));
-                    arrayList.add(new Select(R.drawable.ic_baseline_email_24, user.getEmail()));
+                    arrayList.add(new Select(R.drawable.email_view_profile, user.getEmail()));
                     arrayList.add(new Select(R.drawable.ic_baseline_calendar_today_24, profile.getDay()));
                     adapter.notifyDataSetChanged();
                 }

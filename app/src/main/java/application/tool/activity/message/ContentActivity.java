@@ -162,10 +162,10 @@ public class ContentActivity extends AppCompatActivity {
                     assert conversation != null;
                     if (new CheckUserInConversation().returnResult(user.getEmail(), conversation.getPersonInConversationArrayList())) {
                         if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
-                            if(conversation.getName()!=null){
-                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(),conversation.getName()));
-                            }else {
-                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(),""));
+                            if (conversation.getName() != null) {
+                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), conversation.getName()));
+                            } else {
+                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), ""));
                             }
                             lists.add(conversation.getPersonInConversationArrayList());
                             adapter.notifyDataSetChanged();
