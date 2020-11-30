@@ -21,6 +21,10 @@ public class QRCode {
 
     public QRCode(Account acc) {
         this.account = acc;
+
+    }
+
+    public String getStringLogin() {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -38,9 +42,6 @@ public class QRCode {
 
             }
         });
-    }
-
-    public String getStringLogin() {
         String email = "";
         String password = "";
         if (account != null) {
@@ -51,6 +52,23 @@ public class QRCode {
     }
 
     public String getStringAddFriend() {
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference.child("account" + user.getEmail()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    account = snapshot.getValue(Account.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         String email = "";
         if (account != null) {
             email = account.getEmail();

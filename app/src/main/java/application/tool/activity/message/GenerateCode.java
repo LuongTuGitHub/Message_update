@@ -1,5 +1,6 @@
 package application.tool.activity.message;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
@@ -11,10 +12,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+
+import application.tool.activity.message.object.Account;
 
 public class GenerateCode extends AppCompatActivity {
 
@@ -25,6 +35,8 @@ public class GenerateCode extends AppCompatActivity {
     ImageView image;
     Button saveButton;
     Button generateButton;
+    Button generateAddCodeButton;
+    Button generateLoginCodeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +48,8 @@ public class GenerateCode extends AppCompatActivity {
         generateButton = findViewById(R.id.generate1);
         saveButton = findViewById(R.id.save1);
         saveButton.setVisibility(View.INVISIBLE);
+        generateAddCodeButton = findViewById(R.id.generateAddCode);
+        generateLoginCodeButton = findViewById(R.id.generateLoginCode);
 
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +68,40 @@ public class GenerateCode extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        generateAddCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bitmap = textToBitmap(getStringAdd());
+                editText.setText("");
+                image.setImageBitmap(bitmap);
+                saveButton.setVisibility(View.VISIBLE);
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "add-code", null);
+                        Toast.makeText(GenerateCode.this, "Saved", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        generateLoginCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bitmap = textToBitmap(getStringLogin());
+                editText.setText("");
+                image.setImageBitmap(bitmap);
+                saveButton.setVisibility(View.VISIBLE);
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "login-code", null);
+                        Toast.makeText(GenerateCode.this, "Saved", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -81,5 +129,62 @@ public class GenerateCode extends AppCompatActivity {
         bitmap.setPixels(pixel, 0, 700, 0, 0, bitMatrixWidth, bitMatrixHeight);
 
         return bitmap;
+    }
+
+    Account account;
+    FirebaseDatabase database;
+    DatabaseReference reference;
+    FirebaseUser user;
+
+    public String getStringLogin() {
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference.child("Account" + user.getEmail()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    account = snapshot.getValue(Account.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        String email = "";
+        String password = "";
+        if (account != null) {
+            email = account.getEmail();
+            password = account.getPassword();
+        }
+        return "log:" + email + ":" + password;
+    }
+
+    public String getStringAdd() {
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference.child("account" + user.getEmail()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    account = snapshot.getValue(Account.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        String email = "";
+        if (account != null) {
+            email = account.getEmail();
+        }
+        return "add:" + email;
     }
 }
