@@ -18,20 +18,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".ScanCode" />
-        <activity android:name=".GenerateCode" />
+        <activity android:name=".MessageActivity"/>
+        <activity android:name=".EditActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".CreateConversationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ViewProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ContentActivity" android:screenOrientation="portrait"/>
         <activity android:name=".GenerateAndScanQRCode" />
-        <activity android:name=".MessageActivity" />
-        <activity android:name=".EditActivity" />
-        <activity
-            android:name=".CreateConversationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ViewProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ContentActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".GenerateCode" />
+        <activity android:name=".ScanCode" />
         <activity android:name=".StartAppActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

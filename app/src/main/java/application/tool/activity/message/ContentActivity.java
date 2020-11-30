@@ -46,9 +46,11 @@ import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
 import application.tool.activity.message.object.Conversation;
+import application.tool.activity.message.object.KeyConversation;
 import application.tool.activity.message.object.PersonInConversation;
 
 public class ContentActivity extends AppCompatActivity {
+    private final static int TIME_LOAD_CONVERSATION = 3000;
     private final static int SELECT_IMAGE_AVATAR_CODE = 88;
     private final static int SELECT_IMAGE_BACKGROUND_CODE = 89;
     private final static int CAMERA_CAPTURE_AVATAR = 90;
@@ -59,8 +61,7 @@ public class ContentActivity extends AppCompatActivity {
     UserFragment userFragment;
     DrawerLayout layout;
     ListView listView;
-    ArrayList<String> keyArrayList;/////////////// key conversation
-    ArrayList<String> nameConversation;//////////////////////////// name conversation
+    ArrayList<KeyConversation> keyConversations;
     ArrayList<Integer> amountPerson;
     ArrayList<ArrayList<PersonInConversation>> lists;
     FirebaseDatabase database;
@@ -72,13 +73,13 @@ public class ContentActivity extends AppCompatActivity {
     StorageReference storageReference;
     AlertDialog alertDialog;
     ConversationAdapter adapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         amountPerson = new ArrayList<>();
-        keyArrayList = new ArrayList<>();
-        nameConversation = new ArrayList<>();
+        keyConversations = new ArrayList<>();
         storageReference = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
@@ -133,20 +134,20 @@ public class ContentActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             alertDialog.show();
         });
-        adapter = new ConversationAdapter(ContentActivity.this, nameConversation);
+        adapter = new ConversationAdapter(ContentActivity.this, keyConversations);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(ContentActivity.this, MessageActivity.class);
-            intent.putExtra("key", keyArrayList.get(position));
-            intent.putExtra("person", nameConversation.get(position));
+            intent.putExtra("key", keyConversations.get(position).getKey());
+            intent.putExtra("person", keyConversations.get(position).getName());
             startActivity(intent);
         });
         loadConversation();
 
         new Handler().postDelayed(() -> {
-            if(keyArrayList.size()==0){
+            if (keyConversations.size() == 0) {
                 AlertDialog.Builder addConversation = new AlertDialog.Builder(ContentActivity.this);
-                View viewAddConversation = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_start_conversation,null);
+                View viewAddConversation = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_start_conversation, null);
                 Button startAdd = viewAddConversation.findViewById(R.id.addConversation);
                 addConversation.setView(viewAddConversation);
                 final AlertDialog dialog = addConversation.create();
@@ -157,7 +158,7 @@ public class ContentActivity extends AppCompatActivity {
                 });
                 dialog.show();
             }
-        },3000);
+        }, TIME_LOAD_CONVERSATION);
     }
 
     private void loadConversation() {
@@ -167,15 +168,16 @@ public class ContentActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
                     Conversation conversation = snapshot.getValue(Conversation.class);
-                    if (new CheckKeyConversation().getResult(snapshot.getKey(), keyArrayList)) {
-                        assert conversation != null;
-                        if (new CheckUserInConversation().returnResult(user.getEmail(), conversation.getPersonInConversationArrayList())) {
-                            if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
-                                nameConversation.add(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()));
-                                keyArrayList.add(snapshot.getKey());
-                                lists.add(conversation.getPersonInConversationArrayList());
-                                adapter.notifyDataSetChanged();
+                    assert conversation != null;
+                    if (new CheckUserInConversation().returnResult(user.getEmail(), conversation.getPersonInConversationArrayList())) {
+                        if (new CheckConversation().conversationExist(conversation.getPersonInConversationArrayList(), lists)) {
+                            if (conversation.getName() != null) {
+                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), conversation.getName()));
+                            } else {
+                                keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), ""));
                             }
+                            lists.add(conversation.getPersonInConversationArrayList());
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -183,7 +185,6 @@ public class ContentActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
             }
 
             @Override

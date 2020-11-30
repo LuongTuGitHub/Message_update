@@ -85,7 +85,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_close_24" />
+                android:background="@drawable/cancel" />
         </FrameLayout>
 
     </androidx.cardview.widget.CardView>

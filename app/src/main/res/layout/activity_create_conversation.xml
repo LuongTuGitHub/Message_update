@@ -20,7 +20,8 @@
         android:id="@+id/listFriend"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginBottom="8dp"
         android:divider="@null"
         app:layout_constraintBottom_toTopOf="@+id/confirmAddConversation"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +30,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:textColor="@color/white"
+        android:background="@drawable/send"
         android:id="@+id/confirmAddConversation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,7 +54,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:background="@drawable/ic_baseline_refresh_24"
+        android:background="@drawable/refresh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
