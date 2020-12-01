@@ -42,6 +42,7 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
     ArrayList<Select> arrayList;
     ImageView avatar, background;
     String to = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,8 +88,12 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         }
         loadFriend();
         exit.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
-            startActivity(intent);
+            if (to.equals("")) {
+                Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
+                startActivity(intent);
+            } else {
+                finish();
+            }
         });
         addFriend.setOnClickListener(v -> {
             reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, email));
@@ -150,10 +155,11 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(to.equals("")){
+        if (to.equals("")) {
             Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
             startActivity(intent);
             finish();
