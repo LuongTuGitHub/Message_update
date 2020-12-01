@@ -35,7 +35,7 @@ public class SendMessageFragment extends Fragment {
     Button send;
     public EditText inputMessage;
     ArrayList<MessageForConversation> messageForConversationArrayList;
-
+    public Button sendImage;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public class SendMessageFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
+        sendImage = view.findViewById(R.id.sendImage);
         messageForConversationArrayList = new ArrayList<>();
         inputMessage = view.findViewById(R.id.enterMessage);
         send = view.findViewById(R.id.sendMessage);
@@ -69,9 +70,9 @@ public class SendMessageFragment extends Fragment {
         });
         send.setOnClickListener(v -> {
             if (inputMessage.getText().toString().trim().length() > 0) {
-                messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()));
+                messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), 0,Calendar.getInstance().getTimeInMillis()));
             } else {
-                messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", Calendar.getInstance().getTimeInMillis()));
+                messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", 0,Calendar.getInstance().getTimeInMillis()));
             }
             reference.child("conversation/" + key + "/messageForConversationArrayList").setValue(messageForConversationArrayList);
             messageForConversationArrayList.remove(messageForConversationArrayList.size() - 1);

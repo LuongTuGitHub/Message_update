@@ -3,15 +3,25 @@ package application.tool.activity.message.object;
 public class MessageForConversation {
     private String from;
     private String body;
+    private int type;
     private long time;
 
     public MessageForConversation() {
     }
 
-    public MessageForConversation(String from, String body, long time) {
+    public MessageForConversation(String from, String body, int type, long time) {
         this.from = from;
         this.body = body;
+        this.type = type;
         this.time = time;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getFrom() {
