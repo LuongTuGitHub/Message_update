@@ -53,22 +53,22 @@ public class ConversationAdapter extends ArrayAdapter<KeyConversation> {
         convertView = layoutInflater.inflate(R.layout.person, null);
         TextView name = convertView.findViewById(R.id.viewEmail);
         ImageView image = convertView.findViewById(R.id.imagePerson);
-        if(!keyConversations.get(position).getNameGroup().equals("")){
+        if (!keyConversations.get(position).getNameGroup().equals("")) {
             name.setText(keyConversations.get(position).getNameGroup());
         }
         if (!keyConversations.get(position).getName().equals("Group Chat")) {
             name.setText(keyConversations.get(position).getName());
             new Avatar(keyConversations.get(position).getName(), "avatar").setAvatar(image);
-        }else {
-            reference.child("conversation/"+keyConversations.get(position).getKey()+"/name").addValueEventListener(new ValueEventListener() {
+        } else {
+            reference.child("conversation/" + keyConversations.get(position).getKey() + "/name").addValueEventListener(new ValueEventListener() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.getValue()!=null){
-                        if(!snapshot.getValue().toString().equals("")){
+                    if (snapshot.getValue() != null) {
+                        if (!snapshot.getValue().toString().equals("")) {
                             name.setText(snapshot.getValue().toString());
                             image.setBackgroundResource(R.drawable.teamwork);
-                        }else {
+                        } else {
                             name.setText("Group Chat");
                             image.setBackgroundResource(R.drawable.teamwork);
                         }

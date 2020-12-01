@@ -22,7 +22,8 @@ public class ResultFindAdapter extends ArrayAdapter<FindResult> {
     ArrayList<FindResult> results;
     Context context;
     LayoutInflater layoutInflater;
-     public ResultFindAdapter(Context context, ArrayList<FindResult> result){
+
+    public ResultFindAdapter(Context context, ArrayList<FindResult> result) {
         super(context, 0, result);
         this.context = context;
         this.results = result;
@@ -32,7 +33,7 @@ public class ResultFindAdapter extends ArrayAdapter<FindResult> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        @SuppressLint({"InflateParams", "ViewHolder"}) View view = layoutInflater.inflate(R.layout.person,null);
+        @SuppressLint({"InflateParams", "ViewHolder"}) View view = layoutInflater.inflate(R.layout.person, null);
         ImageView imageView = view.findViewById(R.id.imagePerson);
         TextView name = view.findViewById(R.id.viewEmail);
         name.setText(results.get(position).getName());

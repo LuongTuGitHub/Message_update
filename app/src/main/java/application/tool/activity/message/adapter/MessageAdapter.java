@@ -99,9 +99,9 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
             likeTo.setVisibility(View.GONE);
             if (list.get(position).getFrom().equals(user.getEmail())) {
                 layoutTo.setVisibility(View.GONE);
-                new Avatar().getMessageImage(list.get(position).getBody(),imageSend);
+                new Avatar().getMessageImage(list.get(position).getBody(), imageSend);
             } else {
-                new Avatar().getMessageImage(list.get(position).getBody(),imageTo);
+                new Avatar().getMessageImage(list.get(position).getBody(), imageTo);
                 layoutSend.setVisibility(View.GONE);
             }
         }

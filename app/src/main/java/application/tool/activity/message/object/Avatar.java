@@ -16,9 +16,11 @@ public class Avatar {
     private String email, type;
     FirebaseStorage storage;
     StorageReference reference;
-    public Avatar(){
+
+    public Avatar() {
         reference = FirebaseStorage.getInstance().getReference();
     }
+
     public Avatar(String email) {
         storage = FirebaseStorage.getInstance();
         reference = storage.getReference();
@@ -55,8 +57,9 @@ public class Avatar {
             });
         }
     }
-    public  void getMessageImage(String key,ImageView view){
-        reference.child("image/" + key+ ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
+
+    public void getMessageImage(String key, ImageView view) {
+        reference.child("image/" + key + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 byte[] bytes = task.getResult();
                 if (bytes != null) {

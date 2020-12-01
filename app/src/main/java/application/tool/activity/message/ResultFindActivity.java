@@ -60,13 +60,13 @@ public class ResultFindActivity extends AppCompatActivity {
         exit.setOnClickListener(v -> finish());
         if (content != null) {
             new Handler().postDelayed(() -> {
-                for (int i = 0; i <listPerson.size() ; i++) {
-                    if(listPerson.get(i).getName().toLowerCase().contains(input.getText().toString().toLowerCase())){
+                for (int i = 0; i < listPerson.size(); i++) {
+                    if (listPerson.get(i).getName().toLowerCase().contains(input.getText().toString().toLowerCase())) {
                         findResults.add(listPerson.get(i));
                         adapter.notifyDataSetChanged();
                     }
                 }
-            },2000);
+            }, 2000);
         }
         find.setOnClickListener(v -> {
             if (input.getVisibility() == View.VISIBLE) {
@@ -74,8 +74,8 @@ public class ResultFindActivity extends AppCompatActivity {
                     input.setVisibility(View.INVISIBLE);
                 } else {
                     findResults.clear();
-                    for (int i = 0; i <listPerson.size() ; i++) {
-                        if(listPerson.get(i).getName().toLowerCase().contains(input.getText().toString().toLowerCase())){
+                    for (int i = 0; i < listPerson.size(); i++) {
+                        if (listPerson.get(i).getName().toLowerCase().contains(input.getText().toString().toLowerCase())) {
                             findResults.add(listPerson.get(i));
                             adapter.notifyDataSetChanged();
                         }

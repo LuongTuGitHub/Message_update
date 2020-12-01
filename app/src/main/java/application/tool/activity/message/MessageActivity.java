@@ -54,7 +54,7 @@ public class MessageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        storageReference  = FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         reference = FirebaseDatabase.getInstance().getReference();
         sendMessageFragment = (SendMessageFragment) getFragmentManager().findFragmentById(R.id.fragment9);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -68,17 +68,17 @@ public class MessageActivity extends AppCompatActivity {
         sendMessageFragment.sendImage.setOnClickListener(v -> {
             Intent selectImage = new Intent(Intent.ACTION_PICK);
             selectImage.setType("image/");
-            startActivityForResult(selectImage,SELECT_IMAGE_SEND);
+            startActivityForResult(selectImage, SELECT_IMAGE_SEND);
         });
         toolbarMessageFragment = (ToolbarMessageFragment) getFragmentManager().findFragmentById(R.id.fragment8);
         sendMessageFragment = (SendMessageFragment) getFragmentManager().findFragmentById(R.id.fragment9);
         toolbarMessageFragment.back.setOnClickListener(v -> {
             if (sendMessageFragment.inputMessage.getText().toString().trim().length() > 0) {
                 AlertDialog.Builder aBuilder = new AlertDialog.Builder(MessageActivity.this);
-                View view = LayoutInflater.from(MessageActivity.this).inflate(R.layout.alert_warning,null);
+                View view = LayoutInflater.from(MessageActivity.this).inflate(R.layout.alert_warning, null);
                 aBuilder.setView(view);
-                final  AlertDialog alertDialog = aBuilder.create();
-                Button confirm  = view.findViewById(R.id.confirmExit);
+                final AlertDialog alertDialog = aBuilder.create();
+                Button confirm = view.findViewById(R.id.confirmExit);
                 Button cancel = view.findViewById(R.id.cancel);
                 cancel.setOnClickListener(v12 -> alertDialog.dismiss());
                 confirm.setOnClickListener(v1 -> finish());
@@ -98,21 +98,21 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==SELECT_IMAGE_SEND){
-            if(resultCode == RESULT_OK){
+        if (requestCode == SELECT_IMAGE_SEND) {
+            if (resultCode == RESULT_OK) {
                 Uri uri = data.getData();
                 uploadFile(uri);
             }
         }
     }
 
-    private void uploadFile(Uri uri){
-        String key   = UUID.randomUUID().toString();
-        storageReference.child("image/"+ key +".png").putFile(uri).addOnFailureListener(e -> uploadFile(uri)).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                arrayList.add(new MessageForConversation(user.getEmail(),key,1, Calendar.getInstance().getTimeInMillis()));
+    private void uploadFile(Uri uri) {
+        String key = UUID.randomUUID().toString();
+        storageReference.child("image/" + key + ".png").putFile(uri).addOnFailureListener(e -> uploadFile(uri)).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis()));
                 reference.child("conversation/" + keyConversation + "/messageForConversationArrayList").setValue(arrayList);
-                arrayList.remove(arrayList.size()-1);
+                arrayList.remove(arrayList.size() - 1);
             }
         });
     }
