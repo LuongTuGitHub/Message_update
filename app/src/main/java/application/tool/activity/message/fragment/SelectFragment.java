@@ -34,6 +34,7 @@ import application.tool.activity.message.CreateQrCodeActivity;
 import application.tool.activity.message.EditActivity;
 import application.tool.activity.message.MainActivity;
 import application.tool.activity.message.R;
+import application.tool.activity.message.ScanQrCodeActivity;
 import application.tool.activity.message.ViewProfileActivity;
 import application.tool.activity.message.adapter.SelectAdapter;
 import application.tool.activity.message.list.SelectList;
@@ -42,15 +43,15 @@ import application.tool.activity.message.object.Select;
 import application.tool.activity.message.sqlite.AccountShare;
 
 public class SelectFragment extends Fragment {
-    private final static int UPDATE_PROFILE = 20;
-    ListView list;
+    public ListView list;
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference reference;
     UserFragment userFragment;
-    ArrayList<String> listAccount;
-    ArrayList<String> listFriend;
+    public ArrayList<String> listAccount;
+    public ArrayList<String> listFriend;
+    public ArrayList<Select> arrayList;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
@@ -66,85 +67,17 @@ public class SelectFragment extends Fragment {
         user = auth.getCurrentUser();
         listFriend = getListFriend();
         listAccount = getListAccount();
-        ArrayList<Select> arrayList = new SelectList().getList();
+        arrayList = new SelectList().getList();
         SelectAdapter adapter = new SelectAdapter(arrayList);
         list.setAdapter(adapter);
-        list.setOnItemClickListener((parent, view1, position, id) -> {
-            switch (arrayList.get(position).getId()) {
-                case R.drawable.ic_baseline_exit_to_app_24:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    View alertLogOut = LayoutInflater.from(getActivity()).inflate(R.layout.alert_log_out,null);
-                    builder.setView(alertLogOut);
-                    final AlertDialog dialogLogOut = builder.create();
-                    Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
-                    Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
-                    cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
-                    confirmLogOut.setOnClickListener(v -> {
-                        new AccountShare(getActivity()).dropAccount();
-                        Intent intent = new Intent(getActivity(),MainActivity.class);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                    });
-                    dialogLogOut.show();
-                    break;
-                case R.drawable.ic_baseline_person_24:
-                    Intent toViewProfile = new Intent(getActivity(), ViewProfileActivity.class);
-                    startActivity(toViewProfile);
-                    break;
-                case R.drawable.ic_baseline_edit_24:
-                    Intent toEditProfile = new Intent(getActivity(), EditActivity.class);
-                    startActivityForResult(toEditProfile, UPDATE_PROFILE);
-                    break;
-                case R.drawable.ic_baseline_person_add_24:
-                    View viewAddFriend = LayoutInflater.from(getActivity()).inflate(R.layout.alert_add_friend, null);
-                    AlertDialog.Builder alertAddFriend = new AlertDialog.Builder(getActivity());
-                    alertAddFriend.setView(viewAddFriend);
-                    TextInputEditText person = viewAddFriend.findViewById(R.id.namePerson);
-                    Button check = viewAddFriend.findViewById(R.id.check);
-                    TextView status = viewAddFriend.findViewById(R.id.showStatus);
-                    Button cancel = viewAddFriend.findViewById(R.id.cancelAddFriend);
-                    check.setOnClickListener(v -> {
-                        if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
-                            if (checkAccount(person.getText().toString())) {
-                                reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, person.getText().toString()));
-                                reference.child("friend" + person.getText().toString().hashCode()).push().setValue(new Person(1, user.getEmail()));
-                                Toast.makeText(getActivity(), "Success !", Toast.LENGTH_SHORT).show();
-                            } else {
-                                status.setVisibility(View.VISIBLE);
-                                status.setText("Account Not Exist Or Is Friend Or Your Self");
-                            }
-                        } else {
-                            status.setVisibility(View.VISIBLE);
-                            status.setText("Field Is Empty");
-                        }
-                    });
-                    final AlertDialog dialog = alertAddFriend.create();
-                    cancel.setOnClickListener(v -> dialog.dismiss());
-                   dialog.show();
-                    break;
-                case R.drawable.create:
-                    Intent intent = new Intent(getActivity(), CreateQrCodeActivity.class);
-                    startActivity(intent);
-                    break;
-            }
-        });
         return view;
     }
 
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == UPDATE_PROFILE) {
-            if (data != null) {
-                if (user != null) {
-                    if (user.getDisplayName() != null && (!user.getDisplayName().equals(""))) {
-                        userFragment.nameUser.setText(user.getDisplayName());
-                    } else {
-                        userFragment.nameUser.setText(user.getEmail());
-                    }
-                }
-            }
-        }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
     public ArrayList<String> getListAccount() {
@@ -217,29 +150,5 @@ public class SelectFragment extends Fragment {
         return list;
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private boolean checkAccount(String email) {
-        ArrayList<String> arrayList = listAccount;
-        ArrayList<String> list = listFriend;
-        if (Objects.equals(user.getEmail(), email)) {
-            return false;
-        } else {
-            int count = 0;
-            for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).equals(email)) {
-                    for (int j = 0; j < list.size(); j++) {
-                        if (list.get(j).equals(email)) {
-                            return false;
-                        } else {
-                            count++;
-                        }
-                    }
-                    return count == list.size();
-                }
-            }
-        }
-        return false;
-    }
 
 }

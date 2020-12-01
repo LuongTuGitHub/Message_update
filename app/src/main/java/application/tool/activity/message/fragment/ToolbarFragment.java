@@ -1,33 +1,21 @@
 package application.tool.activity.message.fragment;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.common.BitMatrix;
 
-import application.tool.activity.message.ContentActivity;
 import application.tool.activity.message.R;
 import application.tool.activity.message.ResultFindActivity;
-import application.tool.activity.message.qr_code.QrCode;
-
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.WHITE;
 
 public class ToolbarFragment extends Fragment {
     public Button openMenu, search, scanQrCode;

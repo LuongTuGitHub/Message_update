@@ -40,21 +40,30 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".ResultFindActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ScanQrCodeActivity" />
+        <activity
+            android:name=".ResultFindActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".ViewProfilePersonActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".CreateQrCodeActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ViewProfilePersonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CreateQrCodeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
     <uses-permission
         android:name="android.permission.INTERNET"
         tools:ignore="ManifestOrder" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:ignore="ManifestOrder" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 </manifest>

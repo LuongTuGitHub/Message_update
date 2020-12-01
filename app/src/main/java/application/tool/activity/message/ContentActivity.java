@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -52,12 +54,15 @@ import java.util.Objects;
 import application.tool.activity.message.adapter.ConversationAdapter;
 import application.tool.activity.message.check.CheckConversation;
 import application.tool.activity.message.check.CheckUserInConversation;
+import application.tool.activity.message.fragment.SelectFragment;
 import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.KeyConversation;
+import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
 import application.tool.activity.message.qr_code.QrCode;
+import application.tool.activity.message.sqlite.AccountShare;
 
 public class ContentActivity extends AppCompatActivity {
     private final static int TIME_LOAD_CONVERSATION = 5000;
@@ -68,6 +73,8 @@ public class ContentActivity extends AppCompatActivity {
     private final static int CAMERA_CAPTURE_BACKGROUND = 91;
     private final static int APPLY_PERMISSION_AVATAR = 92;
     private final static int APPLY_PERMISSION_BACKGROUND = 93;
+    private final static int UPDATE_PROFILE = 20;
+    private final static int APPLY_CAMERA = 55;
     ToolbarFragment toolbarFragment;
     UserFragment userFragment;
     DrawerLayout layout;
@@ -85,11 +92,15 @@ public class ContentActivity extends AppCompatActivity {
     ConversationAdapter adapter;
     ImageView qrCode;
     AlertDialog alertDialogQr;
+    SelectFragment selectFragment;
+
+    @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
+        selectFragment = (SelectFragment) getFragmentManager().findFragmentById(R.id.fragment4);
         amountPerson = new ArrayList<>();
         keyConversations = new ArrayList<>();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -104,8 +115,6 @@ public class ContentActivity extends AppCompatActivity {
         userFragment = (UserFragment) getFragmentManager().findFragmentById(R.id.fragment3);
         toolbarFragment = (ToolbarFragment) getFragmentManager().findFragmentById(R.id.fragment5);
         toolbarFragment.openMenu.setOnClickListener(v -> layout.openDrawer(GravityCompat.START));
-        toolbarFragment.scanQrCode.setOnClickListener(v -> {
-        });
         createConversation.setOnClickListener(v -> {
             Intent intent = new Intent(ContentActivity.this, CreateConversationActivity.class);
             startActivity(intent);
@@ -140,7 +149,7 @@ public class ContentActivity extends AppCompatActivity {
         });
         toolbarFragment.scanQrCode.setOnClickListener(v -> {
             AlertDialog.Builder qrCodeAlert = new AlertDialog.Builder(ContentActivity.this);
-            @SuppressLint("InflateParams") View alertQr = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_qr_code,null);
+            @SuppressLint("InflateParams") View alertQr = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_qr_code, null);
             qrCode = alertQr.findViewById(R.id.imageView3);
             qrCodeAlert.setView(alertQr);
             Button down = alertQr.findViewById(R.id.downQr);
@@ -148,12 +157,12 @@ public class ContentActivity extends AppCompatActivity {
             qrCode.setImageBitmap(new QrCode().getQrUser(user.getEmail()));
             alertDialogQr = qrCodeAlert.create();
             down.setOnClickListener(v14 -> {
-                if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
-                    MediaStore.Images.Media.insertImage(getContentResolver(),((BitmapDrawable)qrCode.getDrawable()).getBitmap(),"qr"+user.getEmail().hashCode(),null);
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    MediaStore.Images.Media.insertImage(getContentResolver(), ((BitmapDrawable) qrCode.getDrawable()).getBitmap(), "qr" + Objects.requireNonNull(user.getEmail()).hashCode(), null);
                     alertDialogQr.dismiss();
                     Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
-                }else {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},APPLY_PERMISSION_STORAGE);
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, APPLY_PERMISSION_STORAGE);
                 }
             });
             closer.setOnClickListener(v1 -> alertDialogQr.dismiss());
@@ -168,7 +177,73 @@ public class ContentActivity extends AppCompatActivity {
             startActivity(intent);
         });
         loadConversation();
-
+        selectFragment.list.setOnItemClickListener((parent, view1, position, id) -> {
+            switch (selectFragment.arrayList.get(position).getId()) {
+                case R.drawable.ic_baseline_exit_to_app_24:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ContentActivity.this);
+                    View alertLogOut = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_log_out, null);
+                    builder.setView(alertLogOut);
+                    final AlertDialog dialogLogOut = builder.create();
+                    Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
+                    Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
+                    cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
+                    confirmLogOut.setOnClickListener(v -> {
+                        new AccountShare(ContentActivity.this).dropAccount();
+                        Intent intent = new Intent(ContentActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
+                    dialogLogOut.show();
+                    break;
+                case R.drawable.ic_baseline_person_24:
+                    Intent toViewProfile = new Intent(ContentActivity.this, ViewProfileActivity.class);
+                    startActivity(toViewProfile);
+                    break;
+                case R.drawable.ic_baseline_edit_24:
+                    Intent toEditProfile = new Intent(ContentActivity.this, EditActivity.class);
+                    startActivityForResult(toEditProfile, UPDATE_PROFILE);
+                    break;
+                case R.drawable.ic_baseline_person_add_24:
+                    View viewAddFriend = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_add_friend, null);
+                    AlertDialog.Builder alertAddFriend = new AlertDialog.Builder(ContentActivity.this);
+                    alertAddFriend.setView(viewAddFriend);
+                    TextInputEditText person = viewAddFriend.findViewById(R.id.namePerson);
+                    Button check = viewAddFriend.findViewById(R.id.check);
+                    TextView status = viewAddFriend.findViewById(R.id.showStatus);
+                    Button cancel = viewAddFriend.findViewById(R.id.cancelAddFriend);
+                    check.setOnClickListener(v -> {
+                        if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
+                            if (checkAccount(person.getText().toString())) {
+                                reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, person.getText().toString()));
+                                reference.child("friend" + person.getText().toString().hashCode()).push().setValue(new Person(1, user.getEmail()));
+                                Toast.makeText(ContentActivity.this, "Success !", Toast.LENGTH_SHORT).show();
+                            } else {
+                                status.setVisibility(View.VISIBLE);
+                                status.setText("Account Not Exist Or Is Friend Or Your Self");
+                            }
+                        } else {
+                            status.setVisibility(View.VISIBLE);
+                            status.setText("Field Is Empty");
+                        }
+                    });
+                    final AlertDialog dialog = alertAddFriend.create();
+                    cancel.setOnClickListener(v -> dialog.dismiss());
+                    dialog.show();
+                    break;
+                case R.drawable.create:
+                    Intent intent = new Intent(ContentActivity.this, CreateQrCodeActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.drawable.ic_baseline_qr_code_scanner_24:
+                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        Intent intentScan = new Intent(ContentActivity.this, ScanQrCodeActivity.class);
+                        startActivity(intentScan);
+                    } else {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, APPLY_CAMERA);
+                    }
+                    break;
+            }
+        });
         new Handler().postDelayed(() -> {
             if (keyConversations.size() == 0) {
                 AlertDialog.Builder addConversation = new AlertDialog.Builder(ContentActivity.this);
@@ -184,6 +259,30 @@ public class ContentActivity extends AppCompatActivity {
                 dialog.show();
             }
         }, TIME_LOAD_CONVERSATION);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private boolean checkAccount(String email) {
+        ArrayList<String> arrayList = selectFragment.listAccount;
+        ArrayList<String> list = selectFragment.listFriend;
+        if (Objects.equals(user.getEmail(), email)) {
+            return false;
+        } else {
+            int count = 0;
+            for (int i = 0; i < arrayList.size(); i++) {
+                if (arrayList.get(i).equals(email)) {
+                    for (int j = 0; j < list.size(); j++) {
+                        if (list.get(j).equals(email)) {
+                            return false;
+                        } else {
+                            count++;
+                        }
+                    }
+                    return count == list.size();
+                }
+            }
+        }
+        return false;
     }
 
     private void loadConversation() {
@@ -273,9 +372,15 @@ public class ContentActivity extends AppCompatActivity {
                 captureBackground();
             }
         }
-        if(requestCode== APPLY_PERMISSION_STORAGE){
-            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
-                MediaStore.Images.Media.insertImage(getContentResolver(),((BitmapDrawable)qrCode.getDrawable()).getBitmap(),"qr"+user.getEmail().hashCode(),null);
+        if (requestCode == APPLY_CAMERA) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                Intent intentScan = new Intent(ContentActivity.this, ScanQrCodeActivity.class);
+                startActivity(intentScan);
+            }
+        }
+        if (requestCode == APPLY_PERMISSION_STORAGE) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                MediaStore.Images.Media.insertImage(getContentResolver(), ((BitmapDrawable) qrCode.getDrawable()).getBitmap(), "qr" + Objects.requireNonNull(user.getEmail()).hashCode(), null);
                 alertDialogQr.dismiss();
                 Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
             }
@@ -307,6 +412,17 @@ public class ContentActivity extends AppCompatActivity {
                     userFragment.avatar.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        }
+        if (requestCode == UPDATE_PROFILE) {
+            if (data != null) {
+                if (user != null) {
+                    if (user.getDisplayName() != null && (!user.getDisplayName().equals(""))) {
+                        userFragment.nameUser.setText(user.getDisplayName());
+                    } else {
+                        userFragment.nameUser.setText(user.getEmail());
+                    }
                 }
             }
         }
