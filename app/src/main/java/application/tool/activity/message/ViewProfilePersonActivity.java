@@ -62,7 +62,7 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         Reference();
         new Avatar(email, "avatar").setAvatar(avatar);
         new Avatar(email, "background").setAvatar(background);
-        reference.child("profile" + email.hashCode()).addValueEventListener(new ValueEventListener() {
+        reference.child("profile" + email.hashCode()).addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

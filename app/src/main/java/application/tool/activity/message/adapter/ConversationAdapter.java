@@ -34,9 +34,7 @@ public class ConversationAdapter extends ArrayAdapter<KeyConversation> {
     Context context;
     LayoutInflater layoutInflater;
     DatabaseReference reference;
-    TextView name;
     FirebaseUser user;
-    ImageView image;
     ArrayList<KeyConversation> keyConversations;
 
     public ConversationAdapter(Context context, ArrayList<KeyConversation> keyConversations) {
@@ -53,18 +51,35 @@ public class ConversationAdapter extends ArrayAdapter<KeyConversation> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         convertView = layoutInflater.inflate(R.layout.person, null);
-        name = convertView.findViewById(R.id.viewEmail);
-        image = convertView.findViewById(R.id.imagePerson);
+        TextView name = convertView.findViewById(R.id.viewEmail);
+        ImageView image = convertView.findViewById(R.id.imagePerson);
         if(!keyConversations.get(position).getNameGroup().equals("")){
             name.setText(keyConversations.get(position).getNameGroup());
         }
         if (!keyConversations.get(position).getName().equals("Group Chat")) {
             name.setText(keyConversations.get(position).getName());
             new Avatar(keyConversations.get(position).getName(), "avatar").setAvatar(image);
-        }else if (keyConversations.get(position).getNameGroup().equals("")){
-            name.setText(keyConversations.get(position).getName());
-        }else if (keyConversations.get(position).getName().equals("Group Chat")){
-            image.setBackgroundResource(R.drawable.teamwork);
+        }else {
+            reference.child("conversation/"+keyConversations.get(position).getKey()+"/name").addValueEventListener(new ValueEventListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getValue()!=null){
+                        if(!snapshot.getValue().toString().equals("")){
+                            name.setText(snapshot.getValue().toString());
+                            image.setBackgroundResource(R.drawable.teamwork);
+                        }else {
+                            name.setText("Group Chat");
+                            image.setBackgroundResource(R.drawable.teamwork);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
         return convertView;
     }
