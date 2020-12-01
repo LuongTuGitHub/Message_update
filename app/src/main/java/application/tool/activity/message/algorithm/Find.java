@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 
+import application.tool.activity.message.object.FindResult;
+
 public class Find {
 
     /**
@@ -47,10 +49,10 @@ public class Find {
      * @return {@code ArrayList} chứa những tên mà @author nghĩ là đúng
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ArrayList<String> findByName(String name, ArrayList<String> nameList) {
+    public ArrayList<FindResult> findByName(String name, ArrayList<FindResult> nameList) {
         ArrayList<ArrayList<Integer>> priority = new ArrayList<>();
         for (int i = 0; i < nameList.size(); i++) {
-            priority.add(getLengthSub(name, nameList.get(i), i));
+            priority.add(getLengthSub(name, nameList.get(i).getName(), i));
         }
         priority.sort((o1, o2) -> {
             int i = 0;
@@ -59,7 +61,7 @@ public class Find {
 
             return o2.get(i).compareTo(o1.get(i));
         });
-        ArrayList<String> res = new ArrayList<>();
+        ArrayList<FindResult> res = new ArrayList<>();
         for (int i = 0; i < nameList.size(); i++) {
             if (priority.get(i).get(0) > 2)
                 res.add(nameList.get(priority.get(i).get(priority.get(i).size() - 1)));

@@ -18,6 +18,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:visibility="invisible"
+        android:background="@drawable/tran"
         android:id="@+id/inputContentFind"
         android:layout_width="0dp"
         android:layout_height="44dp"
