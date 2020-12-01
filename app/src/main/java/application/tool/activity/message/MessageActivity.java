@@ -3,6 +3,9 @@ package application.tool.activity.message;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -54,13 +57,14 @@ public class MessageActivity extends AppCompatActivity {
         toolbarMessageFragment.back.setOnClickListener(v -> {
             if (sendMessageFragment.inputMessage.getText().toString().trim().length() > 0) {
                 AlertDialog.Builder aBuilder = new AlertDialog.Builder(MessageActivity.this);
-                aBuilder.setTitle("Warning !");
-                aBuilder.setIcon(R.drawable.ic_baseline_warning);
-                aBuilder.setMessage("Have not sent the message you are sure you want to exit !");
-                aBuilder.setPositiveButton("Confirm", (dialog, which) -> finish());
-                aBuilder.setNegativeButton("Cancel", (dialog, which) -> {
-                });
-                aBuilder.create().show();
+                View view = LayoutInflater.from(MessageActivity.this).inflate(R.layout.alert_warning,null);
+                aBuilder.setView(view);
+                final  AlertDialog alertDialog = aBuilder.create();
+                Button confirm  = view.findViewById(R.id.confirmExit);
+                Button cancel = view.findViewById(R.id.cancel);
+                cancel.setOnClickListener(v12 -> alertDialog.dismiss());
+                confirm.setOnClickListener(v1 -> finish());
+                alertDialog.show();
             } else {
                 finish();
             }

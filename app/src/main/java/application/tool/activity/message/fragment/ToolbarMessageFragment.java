@@ -73,12 +73,11 @@ public class ToolbarMessageFragment extends Fragment {
                 image.setBackgroundResource(R.drawable.teamwork);
             }
         }
-        showProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!person.equals("Group Chat")){
-                    new ConversationAlert(getActivity()).getAlertForCouple(person).show();
-                }
+        showProfile.setOnClickListener(v -> {
+            if(!person.equals("Group Chat")){
+                new ConversationAlert(getActivity()).getAlertForCouple(person).show();
+            }else {
+                new ConversationAlert(getActivity()).getAlertGroup(key).show();
             }
         });
 

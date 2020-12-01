@@ -60,7 +60,7 @@ import application.tool.activity.message.object.PersonInConversation;
 import application.tool.activity.message.qr_code.QrCode;
 
 public class ContentActivity extends AppCompatActivity {
-    private final static int TIME_LOAD_CONVERSATION = 4000;
+    private final static int TIME_LOAD_CONVERSATION = 5000;
     private final static int APPLY_PERMISSION_STORAGE = 100;
     private final static int SELECT_IMAGE_AVATAR_CODE = 88;
     private final static int SELECT_IMAGE_BACKGROUND_CODE = 89;

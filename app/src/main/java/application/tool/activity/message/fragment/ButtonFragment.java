@@ -24,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Objects;
-import java.util.UUID;
 
 import application.tool.activity.message.ContentActivity;
 import application.tool.activity.message.R;

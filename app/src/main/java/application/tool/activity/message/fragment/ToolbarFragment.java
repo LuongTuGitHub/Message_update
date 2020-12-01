@@ -3,6 +3,7 @@ package application.tool.activity.message.fragment;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import com.google.zxing.common.BitMatrix;
 
 import application.tool.activity.message.ContentActivity;
 import application.tool.activity.message.R;
+import application.tool.activity.message.ResultFindActivity;
 import application.tool.activity.message.qr_code.QrCode;
 
 import static android.graphics.Color.BLACK;
@@ -47,8 +49,10 @@ public class ToolbarFragment extends Fragment {
                 if (inputContent.getText().toString().equals("")) {
                     inputContent.setVisibility(View.INVISIBLE);
                 } else {
-
-
+                    Intent intent = new Intent(getActivity(), ResultFindActivity.class);
+                    intent.putExtra("content",inputContent.getText().toString());
+                    inputContent.setText("");
+                    startActivity(intent);
                 }
             }
         });

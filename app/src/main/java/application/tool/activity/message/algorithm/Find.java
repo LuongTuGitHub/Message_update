@@ -19,7 +19,7 @@ public class Find {
      * liên tiếp đã được sắp xếp giảm dần và kết thúc bằng {@code index}
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    ArrayList<Integer> getLengthSub(String a, String b, int index) {
+    public ArrayList<Integer> getLengthSub(String a, String b, int index) {
         int A = a.length();
         int B = b.length();
         ArrayList<Integer> res = new ArrayList<>();
@@ -47,7 +47,7 @@ public class Find {
      * @return {@code ArrayList} chứa những tên mà @author nghĩ là đúng
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    ArrayList<String> findByName(String name, ArrayList<String> nameList) {
+    public ArrayList<String> findByName(String name, ArrayList<String> nameList) {
         ArrayList<ArrayList<Integer>> priority = new ArrayList<>();
         for (int i = 0; i < nameList.size(); i++) {
             priority.add(getLengthSub(name, nameList.get(i), i));

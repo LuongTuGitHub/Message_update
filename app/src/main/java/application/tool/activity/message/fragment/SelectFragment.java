@@ -79,14 +79,11 @@ public class SelectFragment extends Fragment {
                     Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
                     Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
                     cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
-                    confirmLogOut.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            new AccountShare(getActivity()).dropAccount();
-                            Intent intent = new Intent(getActivity(),MainActivity.class);
-                            getActivity().startActivity(intent);
-                            getActivity().finish();
-                        }
+                    confirmLogOut.setOnClickListener(v -> {
+                        new AccountShare(getActivity()).dropAccount();
+                        Intent intent = new Intent(getActivity(),MainActivity.class);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
                     });
                     dialogLogOut.show();
                     break;
