@@ -24,7 +24,7 @@ import application.tool.activity.message.object.Avatar;
 public class UserFragment extends Fragment {
     public Button editAvatar, editBackground;
     public ImageView avatar, background;
-    TextView nameUser;
+    public TextView nameUser;
     FirebaseUser user;
     FirebaseStorage storage;
     StorageReference reference;

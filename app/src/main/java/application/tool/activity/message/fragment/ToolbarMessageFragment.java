@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.alert.ConversationAlert;
 import application.tool.activity.message.object.Avatar;
 import application.tool.activity.message.object.Profile;
 
@@ -68,8 +69,18 @@ public class ToolbarMessageFragment extends Fragment {
 
                     }
                 });
+            }else {
+                image.setBackgroundResource(R.drawable.teamwork);
             }
         }
+        showProfile.setOnClickListener(v -> {
+            if(!person.equals("Group Chat")){
+                new ConversationAlert(getActivity()).getAlertForCouple(person).show();
+            }else {
+                new ConversationAlert(getActivity()).getAlertGroup(key).show();
+            }
+        });
+
         image.setOnClickListener(v -> {
             if (!person.equals("Group Chat")) {
                 View profileDialog = LayoutInflater.from(getActivity()).inflate(R.layout.alert_profile, null);
