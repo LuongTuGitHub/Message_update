@@ -3,22 +3,28 @@ package application.tool.activity.message;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -35,22 +41,27 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import application.tool.activity.message.adapter.ConversationAdapter;
 import application.tool.activity.message.check.CheckConversation;
-import application.tool.activity.message.check.CheckKeyConversation;
 import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.KeyConversation;
 import application.tool.activity.message.object.PersonInConversation;
+import application.tool.activity.message.qr_code.QrCode;
 
 public class ContentActivity extends AppCompatActivity {
-    private final static int TIME_LOAD_CONVERSATION = 3000;
+    private final static int TIME_LOAD_CONVERSATION = 4000;
+    private final static int APPLY_PERMISSION_STORAGE = 100;
     private final static int SELECT_IMAGE_AVATAR_CODE = 88;
     private final static int SELECT_IMAGE_BACKGROUND_CODE = 89;
     private final static int CAMERA_CAPTURE_AVATAR = 90;
@@ -72,7 +83,9 @@ public class ContentActivity extends AppCompatActivity {
     StorageReference storageReference;
     AlertDialog alertDialog;
     ConversationAdapter adapter;
-
+    ImageView qrCode;
+    AlertDialog alertDialogQr;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +137,27 @@ public class ContentActivity extends AppCompatActivity {
             captureCamera.setOnClickListener(v1 -> captureBackground());
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             alertDialog.show();
+        });
+        toolbarFragment.scanQrCode.setOnClickListener(v -> {
+            AlertDialog.Builder qrCodeAlert = new AlertDialog.Builder(ContentActivity.this);
+            @SuppressLint("InflateParams") View alertQr = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_qr_code,null);
+            qrCode = alertQr.findViewById(R.id.imageView3);
+            qrCodeAlert.setView(alertQr);
+            Button down = alertQr.findViewById(R.id.downQr);
+            Button closer = alertQr.findViewById(R.id.closeQrCode);
+            qrCode.setImageBitmap(new QrCode().getQrUser(user.getEmail()));
+            alertDialogQr = qrCodeAlert.create();
+            down.setOnClickListener(v14 -> {
+                if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+                    MediaStore.Images.Media.insertImage(getContentResolver(),((BitmapDrawable)qrCode.getDrawable()).getBitmap(),"qr"+user.getEmail().hashCode(),null);
+                    alertDialogQr.dismiss();
+                    Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
+                }else {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},APPLY_PERMISSION_STORAGE);
+                }
+            });
+            closer.setOnClickListener(v1 -> alertDialogQr.dismiss());
+            alertDialogQr.show();
         });
         adapter = new ConversationAdapter(ContentActivity.this, keyConversations);
         listView.setAdapter(adapter);
@@ -225,6 +259,7 @@ public class ContentActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -236,6 +271,13 @@ public class ContentActivity extends AppCompatActivity {
         if (requestCode == APPLY_PERMISSION_BACKGROUND) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 captureBackground();
+            }
+        }
+        if(requestCode== APPLY_PERMISSION_STORAGE){
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+                MediaStore.Images.Media.insertImage(getContentResolver(),((BitmapDrawable)qrCode.getDrawable()).getBitmap(),"qr"+user.getEmail().hashCode(),null);
+                alertDialogQr.dismiss();
+                Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
             }
         }
     }

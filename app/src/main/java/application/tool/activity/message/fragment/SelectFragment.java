@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import application.tool.activity.message.CreateQrCodeActivity;
 import application.tool.activity.message.EditActivity;
 import application.tool.activity.message.MainActivity;
 import application.tool.activity.message.R;
@@ -77,12 +78,7 @@ public class SelectFragment extends Fragment {
                     final AlertDialog dialogLogOut = builder.create();
                     Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
                     Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
-                    cancelLogOut.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialogLogOut.dismiss();
-                        }
-                    });
+                    cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
                     confirmLogOut.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -128,6 +124,10 @@ public class SelectFragment extends Fragment {
                     final AlertDialog dialog = alertAddFriend.create();
                     cancel.setOnClickListener(v -> dialog.dismiss());
                    dialog.show();
+                    break;
+                case R.drawable.create:
+                    Intent intent = new Intent(getActivity(), CreateQrCodeActivity.class);
+                    startActivity(intent);
                     break;
             }
         });

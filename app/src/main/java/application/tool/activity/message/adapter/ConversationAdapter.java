@@ -63,6 +63,8 @@ public class ConversationAdapter extends ArrayAdapter<KeyConversation> {
             new Avatar(keyConversations.get(position).getName(), "avatar").setAvatar(image);
         }else if (keyConversations.get(position).getNameGroup().equals("")){
             name.setText(keyConversations.get(position).getName());
+        }else if (keyConversations.get(position).getName().equals("Group Chat")){
+            image.setBackgroundResource(R.drawable.teamwork);
         }
         return convertView;
     }

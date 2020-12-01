@@ -27,4 +27,6 @@
     <string name="enter_name_group">Enter Name Group</string>
     <string name="confirm_change_name_group">Confirm Change Name Group</string>
     <string name="please_stay">Please! Stay</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="view_profile">View Profile</string>
 </resources>

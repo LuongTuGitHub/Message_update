@@ -1,25 +1,41 @@
 package application.tool.activity.message.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+
+import application.tool.activity.message.ContentActivity;
 import application.tool.activity.message.R;
+import application.tool.activity.message.qr_code.QrCode;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 public class ToolbarFragment extends Fragment {
     public Button openMenu, search, scanQrCode;
     EditText inputContent;
-
+    FirebaseUser user;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_toolbar, container, false);
+        user = FirebaseAuth.getInstance().getCurrentUser();
         openMenu = view.findViewById(R.id.openMenu);
         search = view.findViewById(R.id.search);
         scanQrCode = view.findViewById(R.id.scanQrCode);
