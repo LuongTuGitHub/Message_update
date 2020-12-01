@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +30,9 @@ public class StartAppActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_app);
         auth = FirebaseAuth.getInstance();
+        ImageView imageView = findViewById(R.id.imageView4);
+        Animation animation = AnimationUtils.loadAnimation(StartAppActivity.this,R.anim.anim_start_app);
+        imageView.startAnimation(animation);
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> list = uri.getPathSegments();
