@@ -3,7 +3,6 @@ package application.tool.activity.message;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -43,11 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -93,7 +87,7 @@ public class ContentActivity extends AppCompatActivity {
     ImageView qrCode;
     AlertDialog alertDialogQr;
     SelectFragment selectFragment;
-
+    AlertDialog dialogLoadConversation;
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -242,6 +236,10 @@ public class ContentActivity extends AppCompatActivity {
                         requestPermissions(new String[]{Manifest.permission.CAMERA}, APPLY_CAMERA);
                     }
                     break;
+                case R.drawable.padlock:
+                    Intent activityChangePassword = new Intent(ContentActivity.this,ChangePasswordPassword.class);
+                    startActivity(activityChangePassword);
+                    break;
             }
         });
         new Handler().postDelayed(() -> {
@@ -250,13 +248,13 @@ public class ContentActivity extends AppCompatActivity {
                 View viewAddConversation = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_start_conversation, null);
                 Button startAdd = viewAddConversation.findViewById(R.id.addConversation);
                 addConversation.setView(viewAddConversation);
-                final AlertDialog dialog = addConversation.create();
+                dialogLoadConversation = addConversation.create();
                 startAdd.setOnClickListener(v -> {
                     Intent intent = new Intent(ContentActivity.this, CreateConversationActivity.class);
                     startActivity(intent);
-                    dialog.dismiss();
+                    dialogLoadConversation.dismiss();
                 });
-                dialog.show();
+                dialogLoadConversation.show();
             }
         }, TIME_LOAD_CONVERSATION);
     }
@@ -299,6 +297,11 @@ public class ContentActivity extends AppCompatActivity {
                                 keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), conversation.getName()));
                             } else {
                                 keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), ""));
+                            }
+                            if (keyConversations.size()>0){
+                                if(dialogLoadConversation!=null){
+                                    dialogLoadConversation.dismiss();
+                                }
                             }
                             lists.add(conversation.getPersonInConversationArrayList());
                             adapter.notifyDataSetChanged();

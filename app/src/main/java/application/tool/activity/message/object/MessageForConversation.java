@@ -1,19 +1,31 @@
 package application.tool.activity.message.object;
 
+import java.util.ArrayList;
+
 public class MessageForConversation {
     private String from;
     private String body;
     private int type;
     private long time;
+    private ArrayList<String> denied;
 
     public MessageForConversation() {
     }
 
-    public MessageForConversation(String from, String body, int type, long time) {
+    public MessageForConversation(String from, String body, int type, long time, ArrayList<String> denied) {
         this.from = from;
         this.body = body;
         this.type = type;
         this.time = time;
+        this.denied = denied;
+    }
+
+    public ArrayList<String> getDenied() {
+        return denied;
+    }
+
+    public void setDenied(ArrayList<String> denied) {
+        this.denied = denied;
     }
 
     public int getType() {

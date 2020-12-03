@@ -31,4 +31,12 @@
     <string name="view_profile">View Profile</string>
     <string name="have_not_sent_the_message_you_are_sure_you_want_to_exit">Have Not Sent The Message You Are Sure You Want To Exit !</string>
     <string name="scan_qr_code">Scan Qr Code</string>
+    <string name="delete">Delete</string>
+    <string name="delete_message">Delete Message</string>
+    <string name="hide_on_your_side">Hide On Your Side</string>
+    <string name="password_current">Password Current</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="input_new_password">Input New Password</string>
+    <string name="repeat_new_password">Repeat New Password</string>
+    <string name="keep_login">Keep Login</string>
 </resources>

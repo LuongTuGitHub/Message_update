@@ -125,7 +125,7 @@ public class ButtonFragment extends Fragment {
                                                                 auth.createUserWithEmailAndPassword(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()).addOnCompleteListener(task -> {
                                                                     if (task.isSuccessful()) {
                                                                         toggle = true;
-                                                                        formFragment.inputRepeatPassword.setVisibility(View.INVISIBLE);
+                                                                        formFragment.inputLayout.setVisibility(View.INVISIBLE);
                                                                         reference.child("account" + formFragment.inputEmail.getText().toString().hashCode()).setValue(new Account(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()));
                                                                         reference.child("list_account").push().setValue(new Person(1, formFragment.inputEmail.getText().toString()));
                                                                         Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
@@ -218,7 +218,7 @@ public class ButtonFragment extends Fragment {
 
     public static class CheckEmailVerify extends AsyncTask<String, Void, String> {
         private String verify = "";
-        final String api = "031ac1cff643b7fc87cd85605cca722f";
+        final String api = "cd604d08b1d57786379640594f806983";
         StringBuilder stringBuilder = new StringBuilder();
 
         @Override

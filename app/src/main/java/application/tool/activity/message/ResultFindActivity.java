@@ -1,9 +1,11 @@
 package application.tool.activity.message;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -61,13 +63,19 @@ public class ResultFindActivity extends AppCompatActivity {
         if (content != null) {
             new Handler().postDelayed(() -> {
                 for (int i = 0; i <listPerson.size() ; i++) {
-                    if(listPerson.get(i).getName().toLowerCase().contains(input.getText().toString().toLowerCase())){
+                    if(listPerson.get(i).getName().toLowerCase().contains(content.toLowerCase())){
                         findResults.add(listPerson.get(i));
                         adapter.notifyDataSetChanged();
                     }
                 }
-            },2000);
+            },3000);
         }
+        showResult.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(ResultFindActivity.this,ViewProfilePersonActivity.class);
+            intent.putExtra("email",findResults.get(position).getEmail());
+            intent.putExtra("to","conversation");
+            startActivity(intent);
+        });
         find.setOnClickListener(v -> {
             if (input.getVisibility() == View.VISIBLE) {
                 if (input.getText().toString().length() == 0) {
