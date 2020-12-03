@@ -52,6 +52,27 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         ImageView imageSend = convertView.findViewById(R.id.pictureSend);
         ImageView avatar = convertView.findViewById(R.id.avatarTo);/////////////////////////  avatar to
         CardView layout = convertView.findViewById(R.id.layout);
+        //////////////
+        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
+            layout.setVisibility(View.VISIBLE);
+            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
+        }else {
+            layout.setVisibility(View.INVISIBLE);
+        }
+        if (list.get(position).getType() == 2) {
+            /// to likeTo likeSend imageTo imageSend layoutTo layoutSend avatar layout send convertView
+            layoutSend.setVisibility(View.GONE);
+            layoutTo.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+            likeSend.setVisibility(View.GONE);
+            likeTo.setVisibility(View.GONE);
+            to.setVisibility(View.GONE);
+            send.setVisibility(View.GONE);
+            convertView.setVisibility(View.GONE);
+            avatar.setVisibility(View.GONE);
+            imageSend.setVisibility(View.GONE);
+            imageTo.setVisibility(View.GONE);
+        }
         if (list.get(position).getType() == 0) {
             if (!list.get(position).getBody().equals("---like")) {
                 if (list.get(position).getFrom().equals(user.getEmail())) {
@@ -87,16 +108,6 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
                 new Avatar().getMessageImage(list.get(position).getBody(), imageTo);
                 layoutSend.setVisibility(View.GONE);
             }
-        }
-        if (list.get(position).getType() == 2) {////////////////////////////////////////////////// type = 2 messageVisibility
-            layoutSend.setVisibility(View.GONE);
-            layoutTo.setVisibility(View.GONE);
-            layout.setVisibility(View.GONE);
-            likeSend.setVisibility(View.GONE);
-            likeTo.setVisibility(View.GONE);
-            to.setVisibility(View.GONE);
-            send.setVisibility(View.GONE);
-            convertView.setVisibility(View.GONE);
         }
         if (list.get(position).getType() == 3) {
             ArrayList<String> denied = list.get(position).getDenied();
@@ -159,13 +170,6 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
                 new Avatar().getMessageImage(list.get(position).getBody(), imageTo);
                 layoutSend.setVisibility(View.GONE);
             }
-        }
-        //////////////
-        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
-            layout.setVisibility(View.VISIBLE);
-            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
-        }else {
-            layout.setVisibility(View.INVISIBLE);
         }
         return convertView;
     }

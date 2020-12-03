@@ -12,14 +12,14 @@ public class PositionTo {
                 if (position == length - 1) {
                     return type(messages.get(length - 1).getType());
                 } else {
-                    if(position>0){
-                        if(type(messages.get(position).getType())){
-                            if(!messages.get(position).getFrom().equals(messages.get(position+1).getFrom())){
-                                return true;
+                    if (position > 0) {
+                        if (type(messages.get(position).getType())) {
+                            if(type(messages.get(position+1).getType())){
+                                return !messages.get(position).getFrom().equals(messages.get(position + 1).getFrom());
                             }else {
-                                return false;
+                                return messages.get(position).getFrom().equals(messages.get(position + 1).getFrom());
                             }
-                        }else {
+                        } else {
                             return false;
                         }
                     }
@@ -28,6 +28,7 @@ public class PositionTo {
         }
         return false;
     }
+
     public boolean type(int type) {
         switch (type) {
             case 3:
