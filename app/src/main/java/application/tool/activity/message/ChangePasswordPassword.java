@@ -72,7 +72,7 @@ public class ChangePasswordPassword extends AppCompatActivity {
                                             Button notKeep = keepLoginAlert.findViewById(R.id.notSave);
                                             keepLogin.setOnClickListener(v1 -> {
                                                 alert.dismiss();
-                                                new AccountShare(ChangePasswordPassword.this).addAccount(user.getEmail(),newPassword.getText().toString());
+                                                new AccountShare(ChangePasswordPassword.this).addAccount(user.getEmail(), newPassword.getText().toString());
                                             });
                                             notKeep.setOnClickListener(v12 -> {
                                                 new AccountShare(ChangePasswordPassword.this).dropAccount();

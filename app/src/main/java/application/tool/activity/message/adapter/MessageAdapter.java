@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.algorithm.PositionTo;
 import application.tool.activity.message.object.Avatar;
 import application.tool.activity.message.object.MessageForConversation;
 
@@ -159,11 +160,13 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
                 layoutSend.setVisibility(View.GONE);
             }
         }
-
-
         //////////////
-
-
+        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
+            layout.setVisibility(View.VISIBLE);
+            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
+        }else {
+            layout.setVisibility(View.INVISIBLE);
+        }
         return convertView;
     }
 }
