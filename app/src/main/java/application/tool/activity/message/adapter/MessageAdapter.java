@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.algorithm.PositionTo;
 import application.tool.activity.message.object.Avatar;
 import application.tool.activity.message.object.MessageForConversation;
 
@@ -51,23 +52,11 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         ImageView imageSend = convertView.findViewById(R.id.pictureSend);
         ImageView avatar = convertView.findViewById(R.id.avatarTo);
         CardView layout = convertView.findViewById(R.id.layout);
-        if (position == 0) {
-            if (list.get(position).getFrom().equals(user.getEmail())) {
-                layout.setVisibility(View.INVISIBLE);
-            } else {
-                new Avatar(list.get(position).getFrom()).setAvatar(avatar);
-            }
-        }
-        if (position > 0) {
-            if (!list.get(position).getFrom().equals(user.getEmail())) {
-                if (list.get(position).getFrom().equals(list.get(position - 1).getFrom())) {
-                    layout.setVisibility(View.INVISIBLE);
-                } else {
-                    new Avatar(list.get(position).getFrom()).setAvatar(avatar);
-                }
-            } else {
-                layout.setVisibility(View.INVISIBLE);
-            }
+        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
+            layout.setVisibility(View.VISIBLE);
+            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
+        }else {
+            layout.setVisibility(View.INVISIBLE);
         }
         if (list.get(position).getType() == 0) {
             if (!list.get(position).getBody().equals("---like")) {
