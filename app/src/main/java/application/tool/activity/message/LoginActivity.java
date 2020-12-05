@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -19,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login, signUp, resetPassword;
     EditText email, password;
     FirebaseAuth auth;
+    FirebaseUser user;
     DatabaseReference reference;
 
     @Override
@@ -33,9 +35,16 @@ public class LoginActivity extends AppCompatActivity {
                 if ((!email.getText().toString().isEmpty()) && (!password.getText().toString().isEmpty())) {
                     auth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,ContentActivity.class);
-                            startActivity(intent);
+                            user = auth.getCurrentUser();
+                            assert user != null;
+                            if(user.isEmailVerified()){
+                                Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, ContentActivity.class);
+                                startActivity(intent);
+                            }else {
+                                user.sendEmailVerification();
+                                Toast.makeText(this, "Please! Verify Email", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }
@@ -51,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
                             //reference.child("user").push().setValue(email.getText().toString());
                             reference.child("list_account").push().setValue(email.getText().toString());
-                            reference.child("account"+email.getText().toString().hashCode()).setValue(new Account(email.getText().toString(),password.getText().toString()));
+                            reference.child("account" + email.getText().toString().hashCode()).setValue(new Account(email.getText().toString(), password.getText().toString()));
                         }
                     });
                 }
@@ -71,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     private void Init() {
         login = findViewById(R.id.login);
         signUp = findViewById(R.id.signUp);

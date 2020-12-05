@@ -19,12 +19,13 @@ import java.util.List;
 public class StartAppActivity extends AppCompatActivity {
     private final static long TIME_DELAY = 2000;
     private FirebaseUser user;
-
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_app);
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
         ImageView imageView = findViewById(R.id.imageView4);
         Animation animation = AnimationUtils.loadAnimation(StartAppActivity.this,R.anim.anim_start_app);
         imageView.startAnimation(animation);
@@ -32,19 +33,29 @@ public class StartAppActivity extends AppCompatActivity {
         if (uri != null) {
             List<String> list = uri.getPathSegments();
             if(user!=null){
-                Intent intent = new Intent(StartAppActivity.this,ViewProfilePersonActivity.class);
-                intent.putExtra("email",list.get(list.size()-1));
-                startActivity(intent);
+                if(user.isEmailVerified()){
+                    Intent intent = new Intent(StartAppActivity.this,ViewProfilePersonActivity.class);
+                    intent.putExtra("email",list.get(list.size()-1));
+                    startActivity(intent);
+                }else {
+                    user.sendEmailVerification();
+                }
             }
         }else {
             new Handler().postDelayed(() -> {
-                Intent intent;
                 if(user!=null){
-                    intent = new Intent(StartAppActivity.this, ContentActivity.class);
+                    if(user.isEmailVerified()){
+                       Intent intent = new Intent(StartAppActivity.this, ContentActivity.class);
+                       startActivity(intent);
+                    }else {
+                        user.sendEmailVerification();
+                        Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
                 }else{
-                    intent = new Intent(StartAppActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
+                    startActivity(intent);
                 }
-                startActivity(intent);
             },TIME_DELAY);
         }
     }
