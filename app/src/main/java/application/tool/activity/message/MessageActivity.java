@@ -24,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -204,6 +206,7 @@ public class MessageActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis(), new ArrayList<>()));
                 reference.child("conversation/" + keyConversation + "/messageForConversationArrayList").setValue(arrayList);
+                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body","image").build());
                 arrayList.remove(arrayList.size() - 1);
             }
         });

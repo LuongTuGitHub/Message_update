@@ -20,6 +20,8 @@
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
@@ -27,7 +29,17 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".LoginActivity" android:screenOrientation="portrait"/>
+        <service
+            android:name=".MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".MessageActivity" />
         <activity
             android:name=".EditActivity"
@@ -73,6 +85,9 @@
         <service
             android:name=".ReceivedService"
             android:enabled="true" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/icon" />
     </application>
 
 </manifest>

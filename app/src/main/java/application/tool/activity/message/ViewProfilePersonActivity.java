@@ -93,7 +93,7 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         });
         addFriend.setOnClickListener(v -> {
             reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(email);
-            reference.child("friend" + email).push().setValue(user.getEmail());
+            reference.child("friend" + email.hashCode()).push().setValue(user.getEmail());
             Intent intent = new Intent(ViewProfilePersonActivity.this, StartAppActivity.class);
             startActivity(intent);
             finish();

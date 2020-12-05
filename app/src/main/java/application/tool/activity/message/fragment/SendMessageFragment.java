@@ -20,6 +20,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,22 +71,21 @@ public class SendMessageFragment extends Fragment {
 
             }
         });
-        inputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    sendImage.setVisibility(View.GONE);
-                }else {
-                    sendImage.setVisibility(View.INVISIBLE);
-                }
+        inputMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                sendImage.setVisibility(View.GONE);
+            }else {
+                sendImage.setVisibility(View.VISIBLE);
             }
         });
         send.setOnClickListener(v -> {
             if (inputMessage.getText().toString().trim().length() > 0) {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
-                inputMessage.setFocusableInTouchMode(false);
+                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body",inputMessage.getText().toString()).build());
+                inputMessage.setFocusable(false);
             } else {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
+                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body","like").build());
             }
             reference.child("conversation/" + key + "/messageForConversationArrayList").setValue(messageForConversationArrayList);
             messageForConversationArrayList.remove(messageForConversationArrayList.size() - 1);
