@@ -53,10 +53,10 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         ImageView avatar = convertView.findViewById(R.id.avatarTo);/////////////////////////  avatar to
         CardView layout = convertView.findViewById(R.id.layout);
         //////////////
-        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
+        if (new PositionTo().checkPosition(position, user.getEmail(), list)) {
             layout.setVisibility(View.VISIBLE);
-            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
-        }else {
+            new Avatar().getIconImage(list.get(position).getFrom(), avatar);
+        } else {
             layout.setVisibility(View.INVISIBLE);
         }
         if (list.get(position).getType() == 2) {

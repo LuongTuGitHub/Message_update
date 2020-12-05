@@ -69,7 +69,7 @@
     <Button
         android:id="@+id/call"
         android:layout_width="40dp"
-        android:text="C"
+        android:background="@drawable/telephone"
         android:layout_height="40dp"
         android:layout_marginRight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
