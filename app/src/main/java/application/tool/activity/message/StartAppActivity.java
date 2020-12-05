@@ -19,12 +19,12 @@ import java.util.List;
 public class StartAppActivity extends AppCompatActivity {
     private final static long TIME_DELAY = 2000;
     private FirebaseUser user;
-    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_app);
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         ImageView imageView = findViewById(R.id.imageView4);
         Animation animation = AnimationUtils.loadAnimation(StartAppActivity.this,R.anim.anim_start_app);
@@ -42,6 +42,7 @@ public class StartAppActivity extends AppCompatActivity {
                     Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
                     startActivity(intent);
                 }
+                finish();
             }
         }else {
             new Handler().postDelayed(() -> {
@@ -54,9 +55,11 @@ public class StartAppActivity extends AppCompatActivity {
                         Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                         startActivity(intent);
                     }
+                    finish();
                 }else{
                     Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             },TIME_DELAY);
         }
