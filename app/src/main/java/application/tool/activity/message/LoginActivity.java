@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import application.tool.activity.message.object.Account;
+
 public class LoginActivity extends AppCompatActivity {
     Button login, signUp, resetPassword;
     EditText email, password;
@@ -47,7 +49,9 @@ public class LoginActivity extends AppCompatActivity {
                     auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
-                            reference.child("user").push().setValue(email.getText().toString());
+                            //reference.child("user").push().setValue(email.getText().toString());
+                            reference.child("list_account").push().setValue(email.getText().toString());
+                            reference.child("account"+email.getText().toString().hashCode()).setValue(new Account(email.getText().toString(),password.getText().toString()));
                         }
                     });
                 }
