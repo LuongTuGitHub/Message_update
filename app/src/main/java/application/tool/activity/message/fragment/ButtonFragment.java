@@ -120,25 +120,18 @@ public class ButtonFragment extends Fragment {
                                             if (new CheckPassword().constrainDigit(formFragment.inputPassword.getText().toString())) {
                                                 if (new CheckPassword().constrainCharacterSpecial(formFragment.inputPassword.getText().toString())) {
                                                     if (formFragment.inputPassword.getText().toString().length() > 6) {
-                                                        new Handler().postDelayed(() -> {
-                                                            if (verify.getVerify().equals("true")) {
-                                                                auth.createUserWithEmailAndPassword(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()).addOnCompleteListener(task -> {
-                                                                    if (task.isSuccessful()) {
-                                                                        toggle = true;
-                                                                        formFragment.inputRepeatPassword.setVisibility(View.INVISIBLE);
-                                                                        reference.child("account" + formFragment.inputEmail.getText().toString().hashCode()).setValue(new Account(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()));
-                                                                        reference.child("list_account").push().setValue(new Person(1, formFragment.inputEmail.getText().toString()));
-                                                                        Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
-                                                                    } else {
-                                                                        formFragment.message.setText("Account Exist");
-                                                                        formFragment.message.setVisibility(View.VISIBLE);
-                                                                    }
-                                                                });
+                                                        auth.createUserWithEmailAndPassword(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()).addOnCompleteListener(task -> {
+                                                            if (task.isSuccessful()) {
+                                                                toggle = true;
+                                                                formFragment.inputLayout.setVisibility(View.INVISIBLE);
+                                                                reference.child("account" + formFragment.inputEmail.getText().toString().hashCode()).setValue(new Account(formFragment.inputEmail.getText().toString(), formFragment.inputPassword.getText().toString()));
+                                                                reference.child("list_account").push().setValue(new Person(1, formFragment.inputEmail.getText().toString()));
+                                                                Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
                                                             } else {
-                                                                formFragment.message.setText("Email Not Exist");
+                                                                formFragment.message.setText("Account Exist");
                                                                 formFragment.message.setVisibility(View.VISIBLE);
                                                             }
-                                                        }, 3000);
+                                                        });
                                                     } else {
                                                         formFragment.message.setText("Length Password Less Than 6 Character");
                                                         formFragment.message.setVisibility(View.VISIBLE);
@@ -218,7 +211,7 @@ public class ButtonFragment extends Fragment {
 
     public static class CheckEmailVerify extends AsyncTask<String, Void, String> {
         private String verify = "";
-        final String api = "031ac1cff643b7fc87cd85605cca722f";
+        final String api = "cd604d08b1d57786379640594f806983";
         StringBuilder stringBuilder = new StringBuilder();
 
         @Override

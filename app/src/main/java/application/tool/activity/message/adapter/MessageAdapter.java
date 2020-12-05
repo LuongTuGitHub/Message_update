@@ -50,13 +50,28 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         CardView layoutTo = convertView.findViewById(R.id.layoutTo);
         CardView layoutSend = convertView.findViewById(R.id.layoutSend);
         ImageView imageSend = convertView.findViewById(R.id.pictureSend);
-        ImageView avatar = convertView.findViewById(R.id.avatarTo);
+        ImageView avatar = convertView.findViewById(R.id.avatarTo);/////////////////////////  avatar to
         CardView layout = convertView.findViewById(R.id.layout);
+        //////////////
         if(new PositionTo().checkPosition(position,user.getEmail(),list)){
             layout.setVisibility(View.VISIBLE);
             new Avatar(list.get(position).getFrom()).setAvatar(avatar);
         }else {
             layout.setVisibility(View.INVISIBLE);
+        }
+        if (list.get(position).getType() == 2) {
+            /// to likeTo likeSend imageTo imageSend layoutTo layoutSend avatar layout send convertView
+            layoutSend.setVisibility(View.GONE);
+            layoutTo.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+            likeSend.setVisibility(View.GONE);
+            likeTo.setVisibility(View.GONE);
+            to.setVisibility(View.GONE);
+            send.setVisibility(View.GONE);
+            convertView.setVisibility(View.GONE);
+            avatar.setVisibility(View.GONE);
+            imageSend.setVisibility(View.GONE);
+            imageTo.setVisibility(View.GONE);
         }
         if (list.get(position).getType() == 0) {
             if (!list.get(position).getBody().equals("---like")) {
@@ -82,6 +97,68 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
             layoutSend.setVisibility(View.GONE);
         }
         if (list.get(position).getType() == 1) {
+            send.setVisibility(View.GONE);
+            to.setVisibility(View.GONE);
+            likeSend.setVisibility(View.GONE);
+            likeTo.setVisibility(View.GONE);
+            if (list.get(position).getFrom().equals(user.getEmail())) {
+                layoutTo.setVisibility(View.GONE);
+                new Avatar().getMessageImage(list.get(position).getBody(), imageSend);
+            } else {
+                new Avatar().getMessageImage(list.get(position).getBody(), imageTo);
+                layoutSend.setVisibility(View.GONE);
+            }
+        }
+        if (list.get(position).getType() == 3) {
+            ArrayList<String> denied = list.get(position).getDenied();
+            for (int i = 0; i < denied.size(); i++) {
+                if (denied.get(i).equals(user.getEmail())) {
+                    layoutSend.setVisibility(View.GONE);
+                    layoutTo.setVisibility(View.GONE);
+                    layout.setVisibility(View.GONE);
+                    likeSend.setVisibility(View.GONE);
+                    likeTo.setVisibility(View.GONE);
+                    to.setVisibility(View.GONE);
+                    send.setVisibility(View.GONE);
+                    convertView.setVisibility(View.GONE);
+                }
+            }
+            if (!list.get(position).getBody().equals("---like")) {
+                if (list.get(position).getFrom().equals(user.getEmail())) {
+                    send.setText(list.get(position).getBody());
+                    to.setVisibility(View.GONE);
+                } else {
+                    send.setVisibility(View.GONE);
+                    to.setText(list.get(position).getBody());
+                }
+                likeSend.setVisibility(View.GONE);
+                likeTo.setVisibility(View.GONE);
+            } else {
+                if (list.get(position).getFrom().equals(user.getEmail())) {
+                    likeTo.setVisibility(View.GONE);
+                } else {
+                    likeSend.setVisibility(View.GONE);
+                }
+                send.setVisibility(View.GONE);
+                to.setVisibility(View.GONE);
+            }
+            layoutTo.setVisibility(View.GONE);
+            layoutSend.setVisibility(View.GONE);
+        }
+        if (list.get(position).getType() == 4) {
+            ArrayList<String> denied = list.get(position).getDenied();
+            for (int i = 0; i < denied.size(); i++) {
+                if (denied.get(i).equals(user.getEmail())) {
+                    layoutSend.setVisibility(View.GONE);
+                    layoutTo.setVisibility(View.GONE);
+                    layout.setVisibility(View.GONE);
+                    likeSend.setVisibility(View.GONE);
+                    likeTo.setVisibility(View.GONE);
+                    to.setVisibility(View.GONE);
+                    send.setVisibility(View.GONE);
+                    convertView.setVisibility(View.GONE);
+                }
+            }
             send.setVisibility(View.GONE);
             to.setVisibility(View.GONE);
             likeSend.setVisibility(View.GONE);

@@ -1,8 +1,11 @@
 package application.tool.activity.message;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +14,9 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +38,11 @@ import application.tool.activity.message.object.Avatar;
 import application.tool.activity.message.object.MessageForConversation;
 
 public class MessageActivity extends AppCompatActivity {
+    private final int TYPE_TEXT = 0;
+    private final int TYPE_IMAGE = 1;
+    private final int TYPE_DELETE = 2;
+    private final int TYPE_HIDE_TEXT = 3;
+    private final int TYPE_HIDE_IMAGE = 4;
     ToolbarMessageFragment toolbarMessageFragment;
     SendMessageFragment sendMessageFragment;
     ListView listView;
@@ -93,8 +98,94 @@ public class MessageActivity extends AppCompatActivity {
         }
         listView.setAdapter(adapter);
         loadMessage();
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            AlertDialog.Builder aBuilder = new AlertDialog.Builder(MessageActivity.this);
+            View selectDelete = LayoutInflater.from(MessageActivity.this).inflate(R.layout.alert_delete_message, null);
+            aBuilder.setView(selectDelete);
+            final AlertDialog dialog = aBuilder.create();
+            Button delete = selectDelete.findViewById(R.id.deleteMessage);
+            Button hide = selectDelete.findViewById(R.id.hideMessage);
+            if (arrayList.get(position).getFrom().equals(user.getEmail())) {
+                delete.setOnClickListener(v -> {
+                    MessageForConversation message = arrayList.get(position);
+                    message.setType(TYPE_DELETE);
+                    reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
+                    adapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                });//////////////////////////////////////// Complete!
+                hide.setOnClickListener(v -> {
+                    if (arrayList.get(position).getType() == TYPE_TEXT) {
+                        MessageForConversation message = arrayList.get(position);
+                        ArrayList<String> denied;
+                        if (message.getDenied() != null) {
+                            denied = message.getDenied();
+                        } else {
+                            denied = new ArrayList<>();
+                        }
+                        dialog.dismiss();
+                        denied.add(user.getEmail());
+                        message.setDenied(denied);
+                        message.setType(TYPE_HIDE_TEXT);
+                        reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
+                        adapter.notifyDataSetChanged();
+                    }
+                    if (arrayList.get(position).getType() == TYPE_IMAGE) {
+                        MessageForConversation message = arrayList.get(position);
+                        ArrayList<String> denied;
+                        if (message.getDenied() != null) {
+                            denied = message.getDenied();
+                        } else {
+                            denied = new ArrayList<>();
+                        }
+                        dialog.dismiss();
+                        denied.add(user.getEmail());
+                        message.setDenied(denied);
+                        message.setType(TYPE_HIDE_IMAGE);
+                        reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            } else {
+                delete.setVisibility(View.GONE);
+                hide.setOnClickListener(v -> {
+                    if (arrayList.get(position).getType() == TYPE_TEXT) {
+                        MessageForConversation message = arrayList.get(position);
+                        ArrayList<String> denied;
+                        if (message.getDenied() != null) {
+                            denied = message.getDenied();
+                        } else {
+                            denied = new ArrayList<>();
+                        }
+                        dialog.dismiss();
+                        denied.add(user.getEmail());
+                        message.setDenied(denied);
+                        message.setType(TYPE_HIDE_TEXT);
+                        reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
+                        adapter.notifyDataSetChanged();
+                    }
+                    if (arrayList.get(position).getType() == TYPE_IMAGE) {
+                        MessageForConversation message = arrayList.get(position);
+                        ArrayList<String> denied;
+                        if (message.getDenied() != null) {
+                            denied = message.getDenied();
+                        } else {
+                            denied = new ArrayList<>();
+                        }
+                        dialog.dismiss();
+                        denied.add(user.getEmail());
+                        message.setDenied(denied);
+                        message.setType(TYPE_HIDE_IMAGE);
+                        reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+            dialog.show();
+            return true;
+        });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -106,11 +197,12 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void uploadFile(Uri uri) {
         String key = UUID.randomUUID().toString();
         storageReference.child("image/" + key + ".png").putFile(uri).addOnFailureListener(e -> uploadFile(uri)).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis()));
+                arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis(), new ArrayList<>()));
                 reference.child("conversation/" + keyConversation + "/messageForConversationArrayList").setValue(arrayList);
                 arrayList.remove(arrayList.size() - 1);
             }
@@ -129,7 +221,11 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                if (snapshot.getValue() != null) {
+                    int index = Integer.parseInt(snapshot.getKey());
+                    arrayList.set(index, snapshot.getValue(MessageForConversation.class));
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override
