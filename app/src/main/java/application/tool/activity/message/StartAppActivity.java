@@ -39,6 +39,8 @@ public class StartAppActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else {
                     user.sendEmailVerification();
+                    Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
+                    startActivity(intent);
                 }
             }
         }else {
