@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }else {
                                 user.sendEmailVerification();
-                                Toast.makeText(this, "Please! Verify Email", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Please! Check Verify Email. Open Box Inbox Your", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
