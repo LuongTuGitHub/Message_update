@@ -66,4 +66,15 @@ public class Avatar {
             }
         });
     }
+    public void getIconImage(String email,ImageView icon){
+        reference.child("avatar/" + email.hashCode() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                byte[] bytes = task.getResult();
+                if (bytes != null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    icon.setImageBitmap(bitmap);
+                }
+            }
+        });
+    }
 }
