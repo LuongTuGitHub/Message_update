@@ -27,8 +27,6 @@
     <string name="enter_name_group">Enter Name Group</string>
     <string name="confirm_change_name_group">Confirm Change Name Group</string>
     <string name="please_stay">Please! Stay</string>
-    <string name="add_friend">Add Friend</string>
-    <string name="view_profile">View Profile</string>
     <string name="have_not_sent_the_message_you_are_sure_you_want_to_exit">Have Not Sent The Message You Are Sure You Want To Exit !</string>
     <string name="scan_qr_code">Scan Qr Code</string>
     <string name="delete">Delete</string>
@@ -41,4 +39,14 @@
     <string name="keep_login">Keep Login</string>
     <string name="welcome_to">Welcome To</string>
     <string name="success">Success</string>
+    <string name="view_profile">View Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_password">Change Password</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="qr_code">Qr Code</string>
+    <string name="create_qr_code">Create Qr Code</string>
+    <string name="extensions">Extensions</string>
+    <string name="sms">SMS</string>
+    <string name="library_music">Library Music</string>
+    <string name="log_out">Log Out</string>
 </resources>

@@ -69,9 +69,20 @@ public class SendMessageFragment extends Fragment {
 
             }
         });
+        inputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    sendImage.setVisibility(View.GONE);
+                }else {
+                    sendImage.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
         send.setOnClickListener(v -> {
             if (inputMessage.getText().toString().trim().length() > 0) {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
+                inputMessage.setFocusableInTouchMode(false);
             } else {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
             }

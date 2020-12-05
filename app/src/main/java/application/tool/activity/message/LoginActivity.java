@@ -9,16 +9,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 import application.tool.activity.message.object.Account;
 
 public class LoginActivity extends AppCompatActivity {
     Button login, signUp, resetPassword;
-    EditText email, password;
+    EditText email;
+    TextInputEditText password;
     FirebaseAuth auth;
     FirebaseUser user;
     DatabaseReference reference;
@@ -32,16 +36,16 @@ public class LoginActivity extends AppCompatActivity {
             if (password.getVisibility() == View.INVISIBLE) {
                 password.setVisibility(View.VISIBLE);
             } else {
-                if ((!email.getText().toString().isEmpty()) && (!password.getText().toString().isEmpty())) {
+                if ((!email.getText().toString().isEmpty()) && (!Objects.requireNonNull(password.getText()).toString().isEmpty())) {
                     auth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             user = auth.getCurrentUser();
                             assert user != null;
-                            if(user.isEmailVerified()){
+                            if (user.isEmailVerified()) {
                                 Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, ContentActivity.class);
                                 startActivity(intent);
-                            }else {
+                            } else {
                                 user.sendEmailVerification();
                                 Toast.makeText(this, "Please! Check Verify Email. Open Box Inbox Your", Toast.LENGTH_SHORT).show();
                             }
@@ -54,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             if (password.getVisibility() == View.INVISIBLE) {
                 password.setVisibility(View.VISIBLE);
             } else {
-                if ((!email.getText().toString().isEmpty()) && (!password.getText().toString().isEmpty())) {
+                if ((!email.getText().toString().isEmpty()) && (!Objects.requireNonNull(password.getText()).toString().isEmpty())) {
                     auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
@@ -86,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         signUp = findViewById(R.id.signUp);
         resetPassword = findViewById(R.id.resetPassword);
         email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
+        password = findViewById(R.id.layoutPassword);
         auth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
     }

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -169,77 +171,82 @@ public class ContentActivity extends AppCompatActivity {
             startActivity(intent);
         });
         loadConversation();
-        selectFragment.list.setOnItemClickListener((parent, view1, position, id) -> {
-            switch (selectFragment.arrayList.get(position).getId()) {
-                case R.drawable.ic_baseline_exit_to_app_24:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ContentActivity.this);
-                    View alertLogOut = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_log_out, null);
-                    builder.setView(alertLogOut);
-                    final AlertDialog dialogLogOut = builder.create();
-                    Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
-                    Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
-                    cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
-                    confirmLogOut.setOnClickListener(v -> {
-                        auth.signOut();
-                        Intent intent = new Intent(ContentActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                    dialogLogOut.show();
-                    break;
-                case R.drawable.ic_baseline_person_24:
-                    Intent toViewProfile = new Intent(ContentActivity.this, ViewProfileActivity.class);
-                    startActivity(toViewProfile);
-                    break;
-                case R.drawable.ic_baseline_edit_24:
-                    Intent toEditProfile = new Intent(ContentActivity.this, EditActivity.class);
-                    startActivityForResult(toEditProfile, UPDATE_PROFILE);
-                    break;
-                case R.drawable.ic_baseline_person_add_24:
-                    View viewAddFriend = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_add_friend, null);
-                    AlertDialog.Builder alertAddFriend = new AlertDialog.Builder(ContentActivity.this);
-                    alertAddFriend.setView(viewAddFriend);
-                    TextInputEditText person = viewAddFriend.findViewById(R.id.namePerson);
-                    Button check = viewAddFriend.findViewById(R.id.check);
-                    TextView status = viewAddFriend.findViewById(R.id.showStatus);
-                    Button cancel = viewAddFriend.findViewById(R.id.cancelAddFriend);
-                    check.setOnClickListener(v -> {
-                        if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
-                            if (checkAccount(person.getText().toString())) {
-                                reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(person.getText().toString());
-                                reference.child("friend" + person.getText().toString().hashCode()).push().setValue(user.getEmail());
-                                Toast.makeText(ContentActivity.this, "Success !", Toast.LENGTH_SHORT).show();
+        selectFragment.navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.logOut:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ContentActivity.this);
+                        View alertLogOut = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_log_out, null);
+                        builder.setView(alertLogOut);
+                        final AlertDialog dialogLogOut = builder.create();
+                        Button cancelLogOut = alertLogOut.findViewById(R.id.cancelLogOut);
+                        Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
+                        cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
+                        confirmLogOut.setOnClickListener(v -> {
+                            auth.signOut();
+                            Intent intent = new Intent(ContentActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        });
+                        dialogLogOut.show();
+                        break;
+                    case R.id.viewProfile:
+                        Intent toViewProfile = new Intent(ContentActivity.this, ViewProfileActivity.class);
+                        startActivity(toViewProfile);
+                        break;
+                    case R.id.editProfile:
+                        Intent toEditProfile = new Intent(ContentActivity.this, EditActivity.class);
+                        startActivityForResult(toEditProfile, UPDATE_PROFILE);
+                        break;
+                    case R.id.addFriend:
+                        View viewAddFriend = LayoutInflater.from(ContentActivity.this).inflate(R.layout.alert_add_friend, null);
+                        AlertDialog.Builder alertAddFriend = new AlertDialog.Builder(ContentActivity.this);
+                        alertAddFriend.setView(viewAddFriend);
+                        TextInputEditText person = viewAddFriend.findViewById(R.id.namePerson);
+                        Button check = viewAddFriend.findViewById(R.id.check);
+                        TextView status = viewAddFriend.findViewById(R.id.showStatus);
+                        Button cancel = viewAddFriend.findViewById(R.id.cancelAddFriend);
+                        check.setOnClickListener(v -> {
+                            if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
+                                if (checkAccount(person.getText().toString())) {
+                                    reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(person.getText().toString());
+                                    reference.child("friend" + person.getText().toString().hashCode()).push().setValue(user.getEmail());
+                                    Toast.makeText(ContentActivity.this, "Success !", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    status.setVisibility(View.VISIBLE);
+                                    status.setText("Account Not Exist Or Is Friend Or Your Self");
+                                }
                             } else {
                                 status.setVisibility(View.VISIBLE);
-                                status.setText("Account Not Exist Or Is Friend Or Your Self");
+                                status.setText("Field Is Empty");
                             }
+                        });
+                        final AlertDialog dialog = alertAddFriend.create();
+                        cancel.setOnClickListener(v -> dialog.dismiss());
+                        dialog.show();
+                        break;
+                    case R.id.create_qr_code:
+                        Intent intent = new Intent(ContentActivity.this, CreateQrCodeActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.scan_qr_code:
+                        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                            Intent intentScan = new Intent(ContentActivity.this, ScanQrCodeActivity.class);
+                            startActivity(intentScan);
                         } else {
-                            status.setVisibility(View.VISIBLE);
-                            status.setText("Field Is Empty");
+                            requestPermissions(new String[]{Manifest.permission.CAMERA}, APPLY_CAMERA);
                         }
-                    });
-                    final AlertDialog dialog = alertAddFriend.create();
-                    cancel.setOnClickListener(v -> dialog.dismiss());
-                    dialog.show();
-                    break;
-                case R.drawable.create:
-                    Intent intent = new Intent(ContentActivity.this, CreateQrCodeActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.drawable.ic_baseline_qr_code_scanner_24:
-                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        Intent intentScan = new Intent(ContentActivity.this, ScanQrCodeActivity.class);
-                        startActivity(intentScan);
-                    } else {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, APPLY_CAMERA);
-                    }
-                    break;
-                case R.drawable.padlock:
-                    Intent activityChangePassword = new Intent(ContentActivity.this,ChangePasswordPassword.class);
-                    startActivity(activityChangePassword);
-                    break;
+                        break;
+                    case R.id.changePassword:
+                        Intent activityChangePassword = new Intent(ContentActivity.this,ChangePasswordPassword.class);
+                        startActivity(activityChangePassword);
+                        break;
+                }
+                return true;
             }
-        });
+        } );
+
         new Handler().postDelayed(() -> {
             if (keyConversations.size() == 0) {
                 AlertDialog.Builder addConversation = new AlertDialog.Builder(ContentActivity.this);
@@ -467,5 +474,4 @@ public class ContentActivity extends AppCompatActivity {
         }).addOnSuccessListener(taskSnapshot -> {
         });
     }
-
 }

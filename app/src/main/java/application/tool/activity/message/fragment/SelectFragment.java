@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,12 +26,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import application.tool.activity.message.R;
-import application.tool.activity.message.adapter.SelectAdapter;
-import application.tool.activity.message.list.SelectList;
-import application.tool.activity.message.object.Select;
 
 public class SelectFragment extends Fragment {
-    public ListView list;
+    public NavigationView navigation;
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseDatabase database;
@@ -38,7 +36,6 @@ public class SelectFragment extends Fragment {
     UserFragment userFragment;
     public ArrayList<String> listAccount;
     public ArrayList<String> listFriend;
-    public ArrayList<Select> arrayList;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
@@ -46,7 +43,7 @@ public class SelectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_select, container, false);
-        list = view.findViewById(R.id.show_select);
+        navigation = view.findViewById(R.id.show_select);
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
@@ -54,9 +51,6 @@ public class SelectFragment extends Fragment {
         user = auth.getCurrentUser();
         listFriend = getListFriend();
         listAccount = getListAccount();
-        arrayList = new SelectList().getList();
-        SelectAdapter adapter = new SelectAdapter(arrayList);
-        list.setAdapter(adapter);
         return view;
     }
 
@@ -72,7 +66,7 @@ public class SelectFragment extends Fragment {
         reference.child("list_account").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.getValue()!=null) {
+                if (snapshot.getValue() != null) {
                     String person = Objects.requireNonNull(snapshot.getValue()).toString();
                     arrayList.add(person);
                 }
@@ -106,7 +100,7 @@ public class SelectFragment extends Fragment {
         reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.getValue()!=null) {
+                if (snapshot.getValue() != null) {
                     String person = Objects.requireNonNull(snapshot.getValue()).toString();
                     list.add(person);
                 }
