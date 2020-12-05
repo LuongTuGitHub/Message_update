@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login, signUp, resetPassword;
     EditText email;
     TextInputEditText password;
+    TextInputLayout layout;
     FirebaseAuth auth;
     FirebaseUser user;
     DatabaseReference reference;
@@ -33,8 +35,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Init();
         login.setOnClickListener(v -> {
-            if (password.getVisibility() == View.INVISIBLE) {
-                password.setVisibility(View.VISIBLE);
+            if (layout.getVisibility() == View.INVISIBLE) {
+                layout.setVisibility(View.VISIBLE);
             } else {
                 if ((!email.getText().toString().isEmpty()) && (!Objects.requireNonNull(password.getText()).toString().isEmpty())) {
                     auth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
@@ -55,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         signUp.setOnClickListener(v -> {
-            if (password.getVisibility() == View.INVISIBLE) {
-                password.setVisibility(View.VISIBLE);
+            if (layout.getVisibility() == View.INVISIBLE) {
+                layout.setVisibility(View.VISIBLE);
             } else {
                 if ((!email.getText().toString().isEmpty()) && (!Objects.requireNonNull(password.getText()).toString().isEmpty())) {
                     auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
@@ -71,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         resetPassword.setOnClickListener(v -> {
-            if (password.getVisibility() == View.VISIBLE) {
-                password.setVisibility(View.INVISIBLE);
+            if (layout.getVisibility() == View.VISIBLE) {
+                layout.setVisibility(View.INVISIBLE);
             } else {
                 if (!email.getText().toString().isEmpty()) {
                     auth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(task -> {
@@ -91,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         resetPassword = findViewById(R.id.resetPassword);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
+        layout = findViewById(R.id.layoutPassword);
         auth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
     }
