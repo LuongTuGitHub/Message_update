@@ -56,7 +56,6 @@ import application.tool.activity.message.object.KeyConversation;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
 import application.tool.activity.message.qr_code.QrCode;
-import application.tool.activity.message.sqlite.AccountShare;
 
 public class ContentActivity extends AppCompatActivity {
     private final static int TIME_LOAD_CONVERSATION = 5000;
@@ -182,8 +181,8 @@ public class ContentActivity extends AppCompatActivity {
                     Button confirmLogOut = alertLogOut.findViewById(R.id.confirmLogOut);
                     cancelLogOut.setOnClickListener(v -> dialogLogOut.dismiss());
                     confirmLogOut.setOnClickListener(v -> {
-                        new AccountShare(ContentActivity.this).dropAccount();
-                        Intent intent = new Intent(ContentActivity.this, MainActivity.class);
+                        auth.signOut();
+                        Intent intent = new Intent(ContentActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     });

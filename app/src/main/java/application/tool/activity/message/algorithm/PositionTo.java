@@ -9,17 +9,27 @@ public class PositionTo {
         int length = messages.size();
         if (!messages.get(position).getFrom().equals(user)) {
             if (position <= length - 1) {
-                if (position == length - 1) {
-                    return type(messages.get(length - 1).getType());
-                } else {
-                    if (position > 0) {
-                        if (type(messages.get(position).getType())) {
-                            if (type(messages.get(position + 1).getType())) {
-                                return !messages.get(position).getFrom().equals(messages.get(position + 1).getFrom());
-                            } else {
-                                return messages.get(position).getFrom().equals(messages.get(position + 1).getFrom());
+                if (position >= 0) {
+                    if(position>0){
+                        int index;
+                        for (index = position; index < length - 2; index++) {
+                            if (!messages.get(index).getFrom().equals(messages.get(index + 1).getFrom())) {
+                                break;
                             }
-                        } else {
+                        }
+                        for (; index >= position; index--) {
+                            if (type(messages.get(index).getType())) {
+                                break;
+                            }
+                        }
+                        return index == position;
+                    }
+                    if(length==1){
+                        return type(messages.get(position).getType());
+                    }else {
+                        if(messages.get(position+1).getFrom().equals(user)){
+                            return type(messages.get(position).getType());
+                        }else {
                             return false;
                         }
                     }

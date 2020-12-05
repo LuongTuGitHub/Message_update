@@ -24,7 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import application.tool.activity.message.object.Account;
-import application.tool.activity.message.sqlite.AccountShare;
 
 public class ChangePasswordPassword extends AppCompatActivity {
     TextInputEditText passwordCurrent, newPassword, repeatPassword;
@@ -63,23 +62,7 @@ public class ChangePasswordPassword extends AppCompatActivity {
                                         message.setText("");
                                         reference.child("account" + user.getEmail().hashCode()).setValue(new Account(user.getEmail(), newPassword.getText().toString()));
                                         Toast.makeText(this, "Change Success !", Toast.LENGTH_SHORT).show();
-                                        if (new AccountShare(ChangePasswordPassword.this).getAccount() != null) {
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(ChangePasswordPassword.this);
-                                            View keepLoginAlert = LayoutInflater.from(ChangePasswordPassword.this).inflate(R.layout.alert_keep_login, null);
-                                            builder.setView(keepLoginAlert);
-                                            final AlertDialog alert = builder.create();
-                                            Button keepLogin = keepLoginAlert.findViewById(R.id.keepLogin);
-                                            Button notKeep = keepLoginAlert.findViewById(R.id.notSave);
-                                            keepLogin.setOnClickListener(v1 -> {
-                                                alert.dismiss();
-                                                new AccountShare(ChangePasswordPassword.this).addAccount(user.getEmail(), newPassword.getText().toString());
-                                            });
-                                            notKeep.setOnClickListener(v12 -> {
-                                                new AccountShare(ChangePasswordPassword.this).dropAccount();
-                                                alert.dismiss();
-                                            });
-                                            alert.show();
-                                        }
+                                        ///////// quay lại sau
                                     }
                                 }), 1500);
                             } else {

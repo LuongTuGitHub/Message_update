@@ -41,8 +41,8 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
     SelectAdapter adapter;
     ArrayList<Select> arrayList;
     ImageView avatar, background;
-    String to = "";
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,6 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         arrayList = new ArrayList<>();
         adapter = new SelectAdapter(arrayList);
         String email = getIntent().getStringExtra("email");
-        to = getIntent().getStringExtra("to");
         if (email == null) {
             Intent intent = new Intent(ViewProfilePersonActivity.this, StartAppActivity.class);
             startActivity(intent);
@@ -68,6 +67,7 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     Profile profile = snapshot.getValue(Profile.class);
+                    assert profile != null;
                     arrayList.add(new Select(R.drawable.ic_baseline_person_24, profile.getName()));
                     String year = profile.getDay().substring(profile.getDay().length() - 4);
                     arrayList.add(new Select(R.drawable.age, Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(year) + " Year Old"));
@@ -83,17 +83,14 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
 
             }
         });
-        if (user.getEmail().equals(email)) {
+        if (Objects.equals(user.getEmail(), email)) {
             addFriend.setVisibility(View.GONE);
         }
         loadFriend();
         exit.setOnClickListener(v -> {
-            if (to.equals("")) {
                 Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
                 startActivity(intent);
-            } else {
                 finish();
-            }
         });
         addFriend.setOnClickListener(v -> {
             reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, email));
@@ -118,12 +115,13 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
 
     public void loadFriend() {
         reference.child("friend" + email.hashCode()).addChildEventListener(new ChildEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
                     Person person = snapshot.getValue(Person.class);
                     if (person != null) {
-                        if (!user.getEmail().equals(email)) {
+                        if (!Objects.equals(user.getEmail(), email)) {
                             if (person.getEmail().equals(user.getEmail())) {
                                 addFriend.setVisibility(View.GONE);
                             }
@@ -157,12 +155,9 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (to.equals("")) {
-            Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    public void onBackPressed() {
+        Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

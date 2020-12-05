@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,7 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import application.tool.activity.message.adapter.ResultFindAdapter;
-import application.tool.activity.message.algorithm.Find;
 import application.tool.activity.message.object.FindResult;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Profile;

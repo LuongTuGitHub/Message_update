@@ -10,7 +10,7 @@
         android:id="@+id/personBackground"
         android:layout_width="0dp"
         android:layout_height="180dp"
-        android:background="@drawable/horizontal"
+        android:background="@color/main_color"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:background="@drawable/horizontal"
+                    android:background="@color/main_color"
                     android:scaleType="centerCrop" />
             </androidx.cardview.widget.CardView>
 

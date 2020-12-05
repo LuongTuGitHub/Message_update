@@ -1,24 +1,18 @@
 package application.tool.activity.message.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -30,17 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import application.tool.activity.message.CreateQrCodeActivity;
-import application.tool.activity.message.EditActivity;
-import application.tool.activity.message.MainActivity;
 import application.tool.activity.message.R;
-import application.tool.activity.message.ScanQrCodeActivity;
-import application.tool.activity.message.ViewProfileActivity;
 import application.tool.activity.message.adapter.SelectAdapter;
 import application.tool.activity.message.list.SelectList;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Select;
-import application.tool.activity.message.sqlite.AccountShare;
 
 public class SelectFragment extends Fragment {
     public ListView list;

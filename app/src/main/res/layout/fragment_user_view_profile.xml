@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +15,7 @@
             android:id="@+id/viewBackgroundProfile"
             android:layout_width="match_parent"
             android:layout_height="210dp"
-            android:background="@drawable/horizontal"
+            android:background="@android:color/transparent"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +46,7 @@
                         android:id="@+id/viewAvatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/horizontal"
+                        android:background="@color/main_color"
                         android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>

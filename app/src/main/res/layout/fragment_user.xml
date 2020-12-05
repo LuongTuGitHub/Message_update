@@ -9,7 +9,7 @@
         android:id="@+id/show_label"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@drawable/horizontal"
+        android:background="@android:color/transparent"
         android:contentDescription="@string/background"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
                         android:layout_width="110dp"
                         android:layout_height="110dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/horizontal"
+                        android:background="@color/main_color"
                         android:contentDescription="@string/avatar"
                         android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>

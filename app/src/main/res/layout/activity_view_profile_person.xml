@@ -28,7 +28,7 @@
         android:id="@+id/backgroundPerson"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:background="@drawable/horizontal"
+        android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -55,7 +55,7 @@
                 android:id="@+id/avatarPerson"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/horizontal"
+                android:background="@color/main_color"
                 android:scaleType="centerCrop"
                 tools:ignore="InvalidId" />
         </androidx.cardview.widget.CardView>

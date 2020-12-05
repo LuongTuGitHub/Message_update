@@ -11,4 +11,6 @@
     <color name="text_send">#ffffff</color>
     <color name="text_to">#000000</color>
     <color name="to">#bbbbbb</color>
+    <color name="input_color">#E4E4E4</color>
+    <color name="main_color">#3b5998</color>
 </resources>

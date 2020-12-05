@@ -39,4 +39,6 @@
     <string name="input_new_password">Input New Password</string>
     <string name="repeat_new_password">Repeat New Password</string>
     <string name="keep_login">Keep Login</string>
+    <string name="welcome_to">Welcome To</string>
+    <string name="success">Success</string>
 </resources>
