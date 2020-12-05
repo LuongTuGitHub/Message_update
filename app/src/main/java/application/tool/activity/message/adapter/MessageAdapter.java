@@ -53,12 +53,6 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         ImageView avatar = convertView.findViewById(R.id.avatarTo);/////////////////////////  avatar to
         CardView layout = convertView.findViewById(R.id.layout);
         //////////////
-        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
-            layout.setVisibility(View.VISIBLE);
-            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
-        }else {
-            layout.setVisibility(View.INVISIBLE);
-        }
         if (list.get(position).getType() == 2) {
             /// to likeTo likeSend imageTo imageSend layoutTo layoutSend avatar layout send convertView
             layoutSend.setVisibility(View.GONE);
@@ -170,6 +164,12 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
                 new Avatar().getMessageImage(list.get(position).getBody(), imageTo);
                 layoutSend.setVisibility(View.GONE);
             }
+        }
+        if(new PositionTo().checkPosition(position,user.getEmail(),list)){
+            layout.setVisibility(View.VISIBLE);
+            new Avatar(list.get(position).getFrom()).setAvatar(avatar);
+        }else {
+            layout.setVisibility(View.INVISIBLE);
         }
         return convertView;
     }
