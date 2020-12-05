@@ -42,8 +42,11 @@ public class StartAppActivity extends AppCompatActivity {
                     Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
                     startActivity(intent);
                 }
-                finish();
+            }else {
+                Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
+                startActivity(intent);
             }
+            finish();
         }else {
             new Handler().postDelayed(() -> {
                 if(user!=null){
@@ -55,12 +58,11 @@ public class StartAppActivity extends AppCompatActivity {
                         Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                         startActivity(intent);
                     }
-                    finish();
                 }else{
                     Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                     startActivity(intent);
-                    finish();
                 }
+                finish();
             },TIME_DELAY);
         }
     }
