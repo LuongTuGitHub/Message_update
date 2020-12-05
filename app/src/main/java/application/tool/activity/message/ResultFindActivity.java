@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import application.tool.activity.message.adapter.ResultFindAdapter;
 import application.tool.activity.message.object.FindResult;
-import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Profile;
 
 public class ResultFindActivity extends AppCompatActivity {
@@ -60,18 +59,18 @@ public class ResultFindActivity extends AppCompatActivity {
         exit.setOnClickListener(v -> finish());
         if (content != null) {
             new Handler().postDelayed(() -> {
-                for (int i = 0; i <listPerson.size() ; i++) {
-                    if(listPerson.get(i).getName().toLowerCase().contains(content.toLowerCase())){
+                for (int i = 0; i < listPerson.size(); i++) {
+                    if (listPerson.get(i).getName().toLowerCase().contains(content.toLowerCase())) {
                         findResults.add(listPerson.get(i));
                         adapter.notifyDataSetChanged();
                     }
                 }
-            },3000);
+            }, 3000);
         }
         showResult.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(ResultFindActivity.this,ViewProfilePersonActivity.class);
-            intent.putExtra("email",findResults.get(position).getEmail());
-            intent.putExtra("to","conversation");
+            Intent intent = new Intent(ResultFindActivity.this, ViewProfilePersonActivity.class);
+            intent.putExtra("email", findResults.get(position).getEmail());
+            intent.putExtra("to", "conversation");
             startActivity(intent);
         });
         find.setOnClickListener(v -> {
@@ -101,26 +100,24 @@ public class ResultFindActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    Person person = snapshot.getValue(Person.class);
-                    if (person != null) {
-                        if (!person.getEmail().equals(user.getEmail())) {
-                            reference.child("profile" + person.getEmail().hashCode()).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.getValue() != null) {
-                                        Profile profile = snapshot.getValue(Profile.class);
-                                        if (profile != null) {
-                                            listPerson.add(new FindResult(profile.getName(), person.getEmail()));
-                                        }
+                    String person = snapshot.getValue().toString();
+                    if (!person.equals(user.getEmail())) {
+                        reference.child("profile" + person.hashCode()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.getValue() != null) {
+                                    Profile profile = snapshot.getValue(Profile.class);
+                                    if (profile != null) {
+                                        listPerson.add(new FindResult(profile.getName(), person));
                                     }
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
+                            }
+                        });
                     }
                 }
             }

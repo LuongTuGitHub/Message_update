@@ -27,7 +27,6 @@ import java.util.Objects;
 import application.tool.activity.message.R;
 import application.tool.activity.message.adapter.SelectAdapter;
 import application.tool.activity.message.list.SelectList;
-import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Select;
 
 public class SelectFragment extends Fragment {
@@ -73,10 +72,9 @@ public class SelectFragment extends Fragment {
         reference.child("list_account").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.getValue(Person.class) != null) {
-                    Person person = snapshot.getValue(Person.class);
-                    assert person != null;
-                    arrayList.add(person.getEmail());
+                if (snapshot.getValue()!=null) {
+                    String person = Objects.requireNonNull(snapshot.getValue()).toString();
+                    arrayList.add(person);
                 }
             }
 
@@ -108,10 +106,9 @@ public class SelectFragment extends Fragment {
         reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.getValue(Person.class) != null) {
-                    Person person = snapshot.getValue(Person.class);
-                    assert person != null;
-                    list.add(person.getEmail());
+                if (snapshot.getValue()!=null) {
+                    String person = Objects.requireNonNull(snapshot.getValue()).toString();
+                    list.add(person);
                 }
             }
 

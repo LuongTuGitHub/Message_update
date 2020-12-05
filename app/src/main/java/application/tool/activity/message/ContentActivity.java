@@ -53,7 +53,6 @@ import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.KeyConversation;
-import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
 import application.tool.activity.message.qr_code.QrCode;
 
@@ -207,8 +206,8 @@ public class ContentActivity extends AppCompatActivity {
                     check.setOnClickListener(v -> {
                         if (!Objects.requireNonNull(person.getText()).toString().equals("")) {
                             if (checkAccount(person.getText().toString())) {
-                                reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, person.getText().toString()));
-                                reference.child("friend" + person.getText().toString().hashCode()).push().setValue(new Person(1, user.getEmail()));
+                                reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(person.getText().toString());
+                                reference.child("friend" + person.getText().toString().hashCode()).push().setValue(user.getEmail());
                                 Toast.makeText(ContentActivity.this, "Success !", Toast.LENGTH_SHORT).show();
                             } else {
                                 status.setVisibility(View.VISIBLE);

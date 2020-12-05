@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import application.tool.activity.message.adapter.SelectAdapter;
 import application.tool.activity.message.object.Avatar;
-import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Profile;
 import application.tool.activity.message.object.Select;
 
@@ -93,8 +92,8 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
                 finish();
         });
         addFriend.setOnClickListener(v -> {
-            reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(new Person(1, email));
-            reference.child("friend" + email).push().setValue(new Person(1, user.getEmail()));
+            reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(email);
+            reference.child("friend" + email).push().setValue(user.getEmail());
             Intent intent = new Intent(ViewProfilePersonActivity.this, StartAppActivity.class);
             startActivity(intent);
             finish();
@@ -119,15 +118,13 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    Person person = snapshot.getValue(Person.class);
-                    if (person != null) {
-                        if (!Objects.equals(user.getEmail(), email)) {
-                            if (person.getEmail().equals(user.getEmail())) {
-                                addFriend.setVisibility(View.GONE);
-                            }
-                        } else {
+                   String person = snapshot.getValue().toString();
+                    if (!Objects.equals(user.getEmail(), email)) {
+                        if (person.equals(user.getEmail())) {
                             addFriend.setVisibility(View.GONE);
                         }
+                    } else {
+                        addFriend.setVisibility(View.GONE);
                     }
                 }
             }

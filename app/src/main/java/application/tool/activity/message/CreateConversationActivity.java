@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,6 @@ import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.DeniedSeenMessage;
 import application.tool.activity.message.object.MessageForConversation;
-import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
 
 public class CreateConversationActivity extends AppCompatActivity {
@@ -125,9 +123,7 @@ public class CreateConversationActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    Person person = snapshot.getValue(Person.class);
-                    assert person != null;
-                    friend.add(person.getEmail());
+                    friend.add(snapshot.getValue().toString());
                     adapter.notifyDataSetChanged();
                 }
             }
