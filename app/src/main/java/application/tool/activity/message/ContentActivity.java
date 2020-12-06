@@ -38,6 +38,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -53,6 +54,7 @@ import application.tool.activity.message.check.CheckUserInConversation;
 import application.tool.activity.message.fragment.SelectFragment;
 import application.tool.activity.message.fragment.ToolbarFragment;
 import application.tool.activity.message.fragment.UserFragment;
+import application.tool.activity.message.notification.Token;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.KeyConversation;
 import application.tool.activity.message.object.PersonInConversation;
@@ -106,6 +108,7 @@ public class ContentActivity extends AppCompatActivity {
         createConversation = findViewById(R.id.sendMessage);
         layout = findViewById(R.id.drawer_layout);
         listView = findViewById(R.id.listFriend);
+        setToken();
         userFragment = (UserFragment) getFragmentManager().findFragmentById(R.id.fragment3);
         toolbarFragment = (ToolbarFragment) getFragmentManager().findFragmentById(R.id.fragment5);
         toolbarFragment.openMenu.setOnClickListener(v -> layout.openDrawer(GravityCompat.START));
@@ -284,7 +287,10 @@ public class ContentActivity extends AppCompatActivity {
         }
         return false;
     }
-
+    public void setToken(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("Tokens").child(Objects.requireNonNull(user.getEmail()).hashCode()+"").setValue(new Token(FirebaseInstanceId.getInstance().getToken()));
+    }
     private void loadConversation() {
         ///////////////////////////////////
         reference.child("conversation").addChildEventListener(new ChildEventListener() {

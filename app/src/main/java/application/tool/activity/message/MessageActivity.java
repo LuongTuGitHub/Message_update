@@ -1,8 +1,6 @@
 package application.tool.activity.message;
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -24,20 +22,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.UUID;
 
 import application.tool.activity.message.adapter.MessageAdapter;
 import application.tool.activity.message.fragment.SendMessageFragment;
 import application.tool.activity.message.fragment.ToolbarMessageFragment;
+import application.tool.activity.message.notification.SendNotification;
+import application.tool.activity.message.notification.Token;
 import application.tool.activity.message.object.Avatar;
 import application.tool.activity.message.object.MessageForConversation;
+import application.tool.activity.message.object.PersonInConversation;
 
 public class MessageActivity extends AppCompatActivity {
     private final int TYPE_TEXT = 0;
@@ -51,6 +51,7 @@ public class MessageActivity extends AppCompatActivity {
     private final static int SELECT_IMAGE_SEND = 100;
     ArrayList<MessageForConversation> arrayList;
     MessageAdapter adapter;
+    ArrayList<PersonInConversation> personList;
     DatabaseReference reference;
     StorageReference storageReference;
     FirebaseUser user;
@@ -61,6 +62,7 @@ public class MessageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        personList = new ArrayList<>();
         storageReference = FirebaseStorage.getInstance().getReference();
         reference = FirebaseDatabase.getInstance().getReference();
         sendMessageFragment = (SendMessageFragment) getFragmentManager().findFragmentById(R.id.fragment9);
@@ -185,7 +187,9 @@ public class MessageActivity extends AppCompatActivity {
             dialog.show();
             return true;
         });
+        notification();
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -193,6 +197,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE_SEND) {
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 Uri uri = data.getData();
                 uploadFile(uri);
             }
@@ -205,8 +210,12 @@ public class MessageActivity extends AppCompatActivity {
         storageReference.child("image/" + key + ".png").putFile(uri).addOnFailureListener(e -> uploadFile(uri)).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis(), new ArrayList<>()));
+                for (int i = 0; i < personList.size() ; i++) {
+                    if(!personList.get(i).getPerson().equals(user.getEmail())){
+                        new SendNotification().sendMessage(personList.get(i).getPerson(),"Đã gửi một ảnh");
+                    }
+                }
                 reference.child("conversation/" + keyConversation + "/messageForConversationArrayList").setValue(arrayList);
-                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body","image").build());
                 arrayList.remove(arrayList.size() - 1);
             }
         });
@@ -225,10 +234,49 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    int index = Integer.parseInt(snapshot.getKey());
+                    int index = Integer.parseInt(Objects.requireNonNull(snapshot.getKey()));
                     arrayList.set(index, snapshot.getValue(MessageForConversation.class));
                     adapter.notifyDataSetChanged();
                 }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void updateToken(String tk) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token = new Token(tk);
+        reference.child(Objects.requireNonNull(user.getEmail()).hashCode() + "").setValue(token);
+    }
+
+    private void notification() {
+        reference.child("conversation/" + keyConversation + "/personInConversationArrayList").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if (snapshot.getValue() != null) {
+                    PersonInConversation personInConversation = snapshot.getValue(PersonInConversation.class);
+                    assert personInConversation != null;
+                    personList.add(personInConversation);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override

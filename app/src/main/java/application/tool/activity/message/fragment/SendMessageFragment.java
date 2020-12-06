@@ -20,14 +20,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.notification.APIService;
+import application.tool.activity.message.notification.Client;
+import application.tool.activity.message.notification.SendNotification;
 import application.tool.activity.message.object.MessageForConversation;
+import application.tool.activity.message.object.PersonInConversation;
 
 public class SendMessageFragment extends Fragment {
     FirebaseUser user;
@@ -35,6 +37,8 @@ public class SendMessageFragment extends Fragment {
     DatabaseReference reference;
     String key;
     Button send;
+    APIService apiService;
+    ArrayList<PersonInConversation> person;
     public EditText inputMessage;
     ArrayList<MessageForConversation> messageForConversationArrayList;
     public Button sendImage;
@@ -43,7 +47,9 @@ public class SendMessageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_message, container, false);
+        person = new ArrayList<>();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         sendImage = view.findViewById(R.id.sendImage);
@@ -81,20 +87,28 @@ public class SendMessageFragment extends Fragment {
         send.setOnClickListener(v -> {
             if (inputMessage.getText().toString().trim().length() > 0) {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), inputMessage.getText().toString(), 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
-                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body",inputMessage.getText().toString()).build());
+                for (int i = 0; i < person.size() ; i++) {
+                    if(!person.get(i).getPerson().equals(user.getEmail())){
+                        new SendNotification().sendMessage(person.get(i).getPerson(),inputMessage.getText().toString());
+                    }
+                }
                 inputMessage.setFocusable(false);
             } else {
                 messageForConversationArrayList.add(new MessageForConversation(user.getEmail(), "---like", 0,Calendar.getInstance().getTimeInMillis(),new ArrayList<>()));
-                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(key).addData("from",user.getEmail()).addData("body","like").build());
+                for (int i = 0; i < person.size() ; i++) {
+                    if(!person.get(i).getPerson().equals(user.getEmail())){
+                        new SendNotification().sendMessage(person.get(i).getPerson(),"like");
+                    }
+                }
             }
             reference.child("conversation/" + key + "/messageForConversationArrayList").setValue(messageForConversationArrayList);
             messageForConversationArrayList.remove(messageForConversationArrayList.size() - 1);
             inputMessage.setText("");
         });
+        notification();
         loadMessage();
         return view;
     }
-
     public void loadMessage() {
         reference.child("conversation/" + key + "/messageForConversationArrayList").addChildEventListener(new ChildEventListener() {
             @Override
@@ -125,5 +139,36 @@ public class SendMessageFragment extends Fragment {
             }
         });
     }
+    private void notification(){
+        reference.child("conversation/" + key+ "/personInConversationArrayList").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if(snapshot.getValue()!=null){
+                    PersonInConversation personInConversation = snapshot.getValue(PersonInConversation.class);
+                    assert personInConversation != null;
+                    person.add(personInConversation);
+                }
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }

@@ -45,6 +45,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
     implementation 'com.elpassion.android.commons:recycler:0.0.21'
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation 'com.google.firebase:firebase-inappmessaging-display:19.1.2'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
