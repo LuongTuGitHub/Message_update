@@ -1,7 +1,5 @@
 package application.tool.activity.message.notification;
 
-import application.tool.activity.message.notification.MyResponse;
-import application.tool.activity.message.notification.Sender;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
