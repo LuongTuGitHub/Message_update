@@ -66,7 +66,7 @@ public class CreateConversationActivity extends AppCompatActivity {
                     if (new CheckConversation().conversationExist(person, lists)) {
                         ArrayList<MessageForConversation> messageForConversationArrayList = new ArrayList<>();
                         ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList = new ArrayList<>();
-                        reference.child("conversation").push().setValue(new Conversation("",person, messageForConversationArrayList, deniedSeenMessageArrayList));
+                        reference.child("conversation").push().setValue(new Conversation("", person, messageForConversationArrayList, deniedSeenMessageArrayList));
                         finish();
                     }
                 }
@@ -83,7 +83,6 @@ public class CreateConversationActivity extends AppCompatActivity {
     }
 
     private void loadConversation() {
-        ///////////////////////////////////
         reference.child("conversation").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

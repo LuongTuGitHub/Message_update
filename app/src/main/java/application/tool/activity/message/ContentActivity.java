@@ -90,6 +90,7 @@ public class ContentActivity extends AppCompatActivity {
     AlertDialog alertDialogQr;
     SelectFragment selectFragment;
     AlertDialog dialogLoadConversation;
+
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -240,7 +241,7 @@ public class ContentActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.changePassword:
-                    Intent activityChangePassword = new Intent(ContentActivity.this,ChangePasswordPassword.class);
+                    Intent activityChangePassword = new Intent(ContentActivity.this, ChangePasswordPassword.class);
                     startActivity(activityChangePassword);
                     break;
             }
@@ -287,10 +288,12 @@ public class ContentActivity extends AppCompatActivity {
         }
         return false;
     }
-    public void setToken(){
+
+    public void setToken() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child("Tokens").child(Objects.requireNonNull(user.getEmail()).hashCode()+"").setValue(new Token(FirebaseInstanceId.getInstance().getToken()));
+        reference.child("Tokens").child(Objects.requireNonNull(user.getEmail()).hashCode() + "").setValue(new Token(FirebaseInstanceId.getInstance().getToken()));
     }
+
     private void loadConversation() {
         ///////////////////////////////////
         reference.child("conversation").addChildEventListener(new ChildEventListener() {
@@ -306,8 +309,8 @@ public class ContentActivity extends AppCompatActivity {
                             } else {
                                 keyConversations.add(new KeyConversation(new CheckUserInConversation().getNameConversation(user.getEmail(), conversation.getPersonInConversationArrayList()), snapshot.getKey(), ""));
                             }
-                            if (keyConversations.size()>0){
-                                if(dialogLoadConversation!=null){
+                            if (keyConversations.size() > 0) {
+                                if (dialogLoadConversation != null) {
                                     dialogLoadConversation.dismiss();
                                 }
                             }
@@ -351,7 +354,6 @@ public class ContentActivity extends AppCompatActivity {
         intent.setType("image/");
         startActivityForResult(intent, SELECT_IMAGE_AVATAR_CODE);
     }
-
 
     private void uploadImage(Uri uri, String type) {
         storageReference.child(type + "/" + Objects.requireNonNull(user.getEmail()).hashCode() + ".png").putFile(uri).addOnFailureListener(e -> uploadImage(uri, type));
