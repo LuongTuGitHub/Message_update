@@ -32,10 +32,10 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <receiver android:name=".notification.NotificationReceiver"/>
         <service
             android:name=".notification.MessagingService"
-            android:exported="false"
-            android:enabled="true">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

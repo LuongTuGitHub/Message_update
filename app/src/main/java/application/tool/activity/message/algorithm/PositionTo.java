@@ -11,6 +11,11 @@ public class PositionTo {
             if (position <= length - 1) {
                 if (position >= 0) {
                     if(position>0){
+                        if(position==length-2){
+                            if(messages.get(position).getFrom().equals(messages.get(position+1).getFrom())){
+                                return false;
+                            }
+                        }
                         int index;
                         for (index = position; index < length - 2; index++) {
                             if (!messages.get(index).getFrom().equals(messages.get(index + 1).getFrom())) {
