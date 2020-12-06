@@ -52,7 +52,6 @@ public class MessageAdapter extends ArrayAdapter<MessageForConversation> {
         ImageView imageSend = convertView.findViewById(R.id.pictureSend);
         ImageView avatar = convertView.findViewById(R.id.avatarTo);/////////////////////////  avatar to
         CardView layout = convertView.findViewById(R.id.layout);
-        //////////////
         if (new PositionTo().checkPosition(position, user.getEmail(), list)) {
             layout.setVisibility(View.VISIBLE);
             new Avatar().getIconImage(list.get(position).getFrom(), avatar);
