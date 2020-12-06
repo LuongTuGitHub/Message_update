@@ -27,43 +27,43 @@ public class StartAppActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         ImageView imageView = findViewById(R.id.imageView4);
-        Animation animation = AnimationUtils.loadAnimation(StartAppActivity.this,R.anim.anim_start_app);
+        Animation animation = AnimationUtils.loadAnimation(StartAppActivity.this, R.anim.anim_start_app);
         imageView.startAnimation(animation);
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> list = uri.getPathSegments();
-            if(user!=null){
-                if(user.isEmailVerified()){
-                    Intent intent = new Intent(StartAppActivity.this,ViewProfilePersonActivity.class);
-                    intent.putExtra("email",list.get(list.size()-1));
+            if (user != null) {
+                if (user.isEmailVerified()) {
+                    Intent intent = new Intent(StartAppActivity.this, ViewProfilePersonActivity.class);
+                    intent.putExtra("email", list.get(list.size() - 1));
                     startActivity(intent);
-                }else {
+                } else {
                     user.sendEmailVerification();
-                    Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
+                    Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
-            }else {
-                Intent intent = new Intent(StartAppActivity.this,LoginActivity.class);
+            } else {
+                Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
             finish();
-        }else {
+        } else {
             new Handler().postDelayed(() -> {
-                if(user!=null){
-                    if(user.isEmailVerified()){
-                       Intent intent = new Intent(StartAppActivity.this, ContentActivity.class);
-                       startActivity(intent);
-                    }else {
+                if (user != null) {
+                    if (user.isEmailVerified()) {
+                        Intent intent = new Intent(StartAppActivity.this, ContentActivity.class);
+                        startActivity(intent);
+                    } else {
                         user.sendEmailVerification();
                         Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                         startActivity(intent);
                     }
-                }else{
+                } else {
                     Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
                 finish();
-            },TIME_DELAY);
+            }, TIME_DELAY);
         }
     }
 }

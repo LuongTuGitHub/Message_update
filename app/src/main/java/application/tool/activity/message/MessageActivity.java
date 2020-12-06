@@ -116,7 +116,7 @@ public class MessageActivity extends AppCompatActivity {
                     reference.child("conversation/" + keyConversation + "/messageForConversationArrayList/" + position).setValue(message);
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
-                });//////////////////////////////////////// Complete!
+                });
                 hide.setOnClickListener(v -> {
                     if (arrayList.get(position).getType() == TYPE_TEXT) {
                         MessageForConversation message = arrayList.get(position);
@@ -210,9 +210,9 @@ public class MessageActivity extends AppCompatActivity {
         storageReference.child("image/" + key + ".png").putFile(uri).addOnFailureListener(e -> uploadFile(uri)).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 arrayList.add(new MessageForConversation(user.getEmail(), key, 1, Calendar.getInstance().getTimeInMillis(), new ArrayList<>()));
-                for (int i = 0; i < personList.size() ; i++) {
-                    if(!personList.get(i).getPerson().equals(user.getEmail())){
-                        new SendNotification().sendMessage(personList.get(i).getPerson(),"Đã gửi một ảnh");
+                for (int i = 0; i < personList.size(); i++) {
+                    if (!personList.get(i).getPerson().equals(user.getEmail())) {
+                        new SendNotification().sendMessage(personList.get(i).getPerson(), "Đã gửi một ảnh");
                     }
                 }
                 reference.child("conversation/" + keyConversation + "/messageForConversationArrayList").setValue(arrayList);
@@ -295,5 +295,4 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-
 }

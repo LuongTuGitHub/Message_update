@@ -15,31 +15,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import application.tool.activity.message.qr_code.QrCode;
 
 public class CreateQrCodeActivity extends AppCompatActivity {
-    Button create,down,exit;
+    Button create, down, exit;
     ImageView viewResult;
     EditText inputContent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_qr_code);
         Create();
         create.setOnClickListener(v -> {
-            if(inputContent.getText().toString().trim().length()>0){
+            if (inputContent.getText().toString().trim().length() > 0) {
                 viewResult.setImageBitmap(new QrCode().convertStringToQrCode(inputContent.getText().toString()));
                 inputContent.setText("");
             }
         });
         down.setOnClickListener(v -> {
             BitmapDrawable result = (BitmapDrawable) viewResult.getDrawable();
-            if(result!=null){
-                MediaStore.Images.Media.insertImage(getContentResolver(),result.getBitmap(),"createQrCode"+inputContent.getText().toString().hashCode(),null);
+            if (result != null) {
+                MediaStore.Images.Media.insertImage(getContentResolver(), result.getBitmap(), "createQrCode" + inputContent.getText().toString().hashCode(), null);
                 Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
             }
         });
         exit.setOnClickListener(v -> finish());
     }
 
-    public void Create(){
+    public void Create() {
         create = findViewById(R.id.createQrCode);
         down = findViewById(R.id.downLoadQrCode);
         viewResult = findViewById(R.id.showQrCode);

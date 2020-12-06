@@ -87,9 +87,9 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         }
         loadFriend();
         exit.setOnClickListener(v -> {
-                Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
-                startActivity(intent);
-                finish();
+            Intent intent = new Intent(ViewProfilePersonActivity.this, ContentActivity.class);
+            startActivity(intent);
+            finish();
         });
         addFriend.setOnClickListener(v -> {
             reference.child("friend" + Objects.requireNonNull(user.getEmail()).hashCode()).push().setValue(email);
@@ -98,8 +98,6 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
-
     }
 
     private void Reference() {
@@ -111,19 +109,15 @@ public class ViewProfilePersonActivity extends AppCompatActivity {
         listProfile.setAdapter(adapter);
     }
 
-
     public void loadFriend() {
         reference.child("friend" + email.hashCode()).addChildEventListener(new ChildEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                   String person = snapshot.getValue().toString();
-                    if (!Objects.equals(user.getEmail(), email)) {
-                        if (person.equals(user.getEmail())) {
-                            addFriend.setVisibility(View.GONE);
-                        }
-                    } else {
+                    String person = snapshot.getValue().toString();
+                    if ((!Objects.equals(user.getEmail(), email) && person.equals(user.getEmail()))
+                            || Objects.equals(user.getEmail(), email)) {
                         addFriend.setVisibility(View.GONE);
                     }
                 }
