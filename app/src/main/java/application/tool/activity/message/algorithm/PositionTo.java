@@ -35,14 +35,6 @@ public class PositionTo {
         }
         return false;
     }
-//    public boolean checkPosition(int position, String user, ArrayList<MessageForConversation> messages) {
-//        if (position == 0)
-//            return true;
-//        if (messages.get(position).getFrom() != user)
-//            return messages.get(position).getFrom() != messages.get(position - 1).getFrom();
-//        return false;
-//    }
-
     public boolean type(int type) {
         switch (type) {
             case 3:
