@@ -3,12 +3,16 @@ package application.tool.activity.message.object;
 import java.util.ArrayList;
 
 public class Conversation {
+    private ArrayList<PersonInConversation> persons;
+    private ArrayList<Message> messages;
     private String name;
-    private ArrayList<PersonInConversation> personInConversationArrayList;
-    private ArrayList<MessageForConversation> messageForConversationArrayList;
-    private ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList;
-
     public Conversation() {
+    }
+
+    public Conversation(ArrayList<PersonInConversation> persons, ArrayList<Message> messages, String name) {
+        this.persons = persons;
+        this.messages = messages;
+        this.name = name;
     }
 
     public String getName() {
@@ -19,34 +23,19 @@ public class Conversation {
         this.name = name;
     }
 
-    public Conversation(String name, ArrayList<PersonInConversation> personInConversationArrayList, ArrayList<MessageForConversation> messageForConversationArrayList, ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList) {
-        this.name = name;
-        this.personInConversationArrayList = personInConversationArrayList;
-        this.messageForConversationArrayList = messageForConversationArrayList;
-        this.deniedSeenMessageArrayList = deniedSeenMessageArrayList;
+    public ArrayList<PersonInConversation> getPersons() {
+        return persons;
     }
 
-    public ArrayList<PersonInConversation> getPersonInConversationArrayList() {
-        return personInConversationArrayList;
+    public void setPersons(ArrayList<PersonInConversation> persons) {
+        this.persons = persons;
     }
 
-    public void setPersonInConversationArrayList(ArrayList<PersonInConversation> personInConversationArrayList) {
-        this.personInConversationArrayList = personInConversationArrayList;
+    public ArrayList<Message> getMessages() {
+        return messages;
     }
 
-    public ArrayList<MessageForConversation> getMessageForConversationArrayList() {
-        return messageForConversationArrayList;
-    }
-
-    public void setMessageForConversationArrayList(ArrayList<MessageForConversation> messageForConversationArrayList) {
-        this.messageForConversationArrayList = messageForConversationArrayList;
-    }
-
-    public ArrayList<DeniedSeenMessage> getDeniedSeenMessageArrayList() {
-        return deniedSeenMessageArrayList;
-    }
-
-    public void setDeniedSeenMessageArrayList(ArrayList<DeniedSeenMessage> deniedSeenMessageArrayList) {
-        this.deniedSeenMessageArrayList = deniedSeenMessageArrayList;
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
     }
 }

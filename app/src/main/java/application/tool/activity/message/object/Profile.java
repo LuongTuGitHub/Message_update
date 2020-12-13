@@ -1,15 +1,16 @@
 package application.tool.activity.message.object;
 
 public class Profile {
-    public String name, day, address;
+    private String name,phone,day,address;
 
-    public Profile() {
-    }
-
-    public Profile(String name, String day, String address) {
+    public Profile(String name, String phone, String day, String address) {
         this.name = name;
+        this.phone = phone;
         this.day = day;
         this.address = address;
+    }
+
+    public Profile() {
     }
 
     public String getName() {
@@ -18,6 +19,14 @@ public class Profile {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getDay() {

@@ -78,7 +78,7 @@
         android:background="@drawable/to"
         android:maxWidth="200dp"
         android:padding="10dp"
-        android:textColor="@color/text_to"
+        android:textColor="@color/color_text_hint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout"
         app:layout_constraintTop_toTopOf="parent" />

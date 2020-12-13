@@ -1,20 +1,29 @@
 package application.tool.activity.message.object;
 
 public class PersonInConversation {
-    private String person;
+    public String  nickName,email;
 
     public PersonInConversation() {
     }
 
-    public PersonInConversation(String person) {
-        this.person = person;
+    public String getNickName() {
+        return nickName;
     }
 
-    public String getPerson() {
-        return person;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public void setPerson(String person) {
-        this.person = person;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public PersonInConversation(String nickName, String email) {
+        this.nickName = nickName;
+        this.email = email;
     }
 }

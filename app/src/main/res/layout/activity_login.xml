@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:backgroundTint="@color/white"
+    tools:context=".activity.LoginActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -96,10 +97,12 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginBottom="32dp"
+        android:autofillHints="@string/email"
         android:background="@drawable/background_input"
         android:drawableStart="@drawable/ic_baseline_email_24"
         android:drawableLeft="@drawable/ic_baseline_email_24"
         android:drawablePadding="10dp"
+        android:drawableTint="@color/main_color"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
@@ -107,11 +110,12 @@
         android:paddingLeft="10dp"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/color_text_hint"
         app:layout_constraintBottom_toTopOf="@+id/layoutPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="RtlSymmetry"
-        android:autofillHints="@string/email" />
+        tools:ignore="RtlSymmetry" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutPassword"
@@ -123,23 +127,28 @@
         android:layout_marginRight="32dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/background_input"
-        app:startIconDrawable="@drawable/ic_baseline_vpn_key_24"
-        app:passwordToggleEnabled="true"
-        app:hintEnabled="false"
         android:paddingStart="10dp"
         android:paddingLeft="10dp"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
+        app:hintEnabled="false"
         app:layout_constraintBottom_toTopOf="@+id/login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/main_color"
+        app:startIconDrawable="@drawable/ic_baseline_vpn_key_24"
+        app:startIconTint="@color/main_color">
+
         <com.google.android.material.textfield.TextInputEditText
-            android:hint="@string/password"
             android:id="@+id/password"
-            android:background="@android:color/transparent"
-            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

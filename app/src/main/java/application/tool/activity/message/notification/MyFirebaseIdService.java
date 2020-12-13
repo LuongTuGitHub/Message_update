@@ -9,6 +9,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import java.util.Objects;
 
+import static application.tool.activity.message.module.Firebase.TOKEN;
+
 public class MyFirebaseIdService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
@@ -21,7 +23,7 @@ public class MyFirebaseIdService extends FirebaseInstanceIdService {
     }
     private void updateToken(String refreshToken) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(TOKEN);
         Token token = new Token(refreshToken);
         assert user != null;
         reference.child(Objects.requireNonNull(user.getEmail()).hashCode()+"").setValue(token);
