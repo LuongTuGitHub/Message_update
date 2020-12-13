@@ -42,6 +42,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -51,6 +52,7 @@ import application.tool.activity.message.adapter.PostAdapter;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.Information;
+import application.tool.activity.message.object.Notification;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
 import application.tool.activity.message.object.Post;
@@ -60,9 +62,11 @@ import static application.tool.activity.message.module.Firebase.BACKGROUND;
 import static application.tool.activity.message.module.Firebase.CONVERSATION;
 import static application.tool.activity.message.module.Firebase.LIST_FRIEND;
 import static application.tool.activity.message.module.Firebase.LIST_FRIEND_REQUEST;
+import static application.tool.activity.message.module.Firebase.NOTIFICATION;
 import static application.tool.activity.message.module.Firebase.PERSON;
 import static application.tool.activity.message.module.Firebase.POST;
 import static application.tool.activity.message.module.Firebase.STATUS;
+import static application.tool.activity.message.module.Notification.REQUEST;
 
 public class ViewProfileActivity extends AppCompatActivity {
     private final static int RESULT_IMAGE = 99;
@@ -256,6 +260,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                 });
             }
             btAddFriend.setOnClickListener(v -> {
+                long key = Calendar.getInstance().getTimeInMillis();
+                Notification notification = new Notification(REQUEST,fUser.getEmail(),"Gửi lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
+                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
                 if (btAddFriend.getText().toString().equals("Cancel Add Friend")) {
                     refDb.child(LIST_FRIEND_REQUEST)
                             .child(email.hashCode() + "").child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").removeValue();
@@ -302,14 +310,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                         }else {
                             refStg.child("background/" + snapshot.getValue().toString() + ".png")
                                     .getBytes(Long.MAX_VALUE)
-                                    .addOnCompleteListener(new OnCompleteListener<byte[]>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<byte[]> task) {
-                                            if(task.isSuccessful()){
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
-                                                backgroundProfile.setImageBitmap(bitmap);
-                                                image.Add(snapshot.getValue().toString(),task.getResult());
-                                            }
+                                    .addOnCompleteListener(task -> {
+                                        if(task.isSuccessful()){
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
+                                            backgroundProfile.setImageBitmap(bitmap);
+                                            image.Add(snapshot.getValue().toString(),task.getResult());
                                         }
                                     });
                         }
@@ -332,14 +337,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                        }else {
                            refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
                                    .getBytes(Long.MAX_VALUE)
-                                   .addOnCompleteListener(new OnCompleteListener<byte[]>() {
-                                       @Override
-                                       public void onComplete(@NonNull Task<byte[]> task) {
-                                           if(task.isSuccessful()){
-                                               Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
-                                               avatarProfile.setImageBitmap(bitmap);
-                                               image.Add(snapshot.getValue().toString(),task.getResult());
-                                           }
+                                   .addOnCompleteListener(task -> {
+                                       if(task.isSuccessful()){
+                                           Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
+                                           avatarProfile.setImageBitmap(bitmap);
+                                           image.Add(snapshot.getValue().toString(),task.getResult());
                                        }
                                    });
                        }

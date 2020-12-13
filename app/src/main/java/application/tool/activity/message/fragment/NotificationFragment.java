@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import application.tool.activity.message.R;
 import application.tool.activity.message.activity.ContentFindActivity;
 import application.tool.activity.message.adapter.ItemOnClickListener;
+import application.tool.activity.message.adapter.NotificationAdapter;
 import application.tool.activity.message.object.Notification;
 
 import static application.tool.activity.message.module.Firebase.NOTIFICATION;
@@ -32,6 +35,8 @@ import static application.tool.activity.message.module.Firebase.NOTIFICATION;
 public class NotificationFragment extends Fragment implements ItemOnClickListener {
     private Button btSearch;
     private ArrayList<Notification> notifications;
+    private RecyclerView rvShowNotification;
+    private NotificationAdapter adapter;
     private DatabaseReference refDb;
     private FirebaseUser fUser;
     @Override
@@ -40,15 +45,24 @@ public class NotificationFragment extends Fragment implements ItemOnClickListene
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
 
         notifications = new ArrayList<>();
+        adapter =new NotificationAdapter(notifications,this);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,true);
 
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
 
         btSearch = view.findViewById(R.id.bt_search);
+        rvShowNotification = view.findViewById(R.id.rvShowNotification);
+
+        rvShowNotification.setLayoutManager(manager);
+        rvShowNotification.setAdapter(adapter);
+
         btSearch.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ContentFindActivity.class);
             startActivity(intent);
         });
+
+
         loadNotification();
         return view;
     }
@@ -61,9 +75,7 @@ public class NotificationFragment extends Fragment implements ItemOnClickListene
                     Notification notification = snapshot.getValue(Notification.class);
                     if(notification!=null){
                         notifications.add(notification);
-
-
-                        
+                        adapter.notifyDataSetChanged();
                     }
 
                 }
