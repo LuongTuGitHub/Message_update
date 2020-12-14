@@ -84,4 +84,5 @@
     <string name="select_image">Select Image</string>
     <string name="add_conversation">Add Conversation</string>
     <string name="create">Create</string>
+    <string name="auto">Auto</string>
 </resources>

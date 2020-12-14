@@ -27,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.activity.ChangePasswordActivity;
+import application.tool.activity.message.activity.CreateQRCodeActivity;
 import application.tool.activity.message.activity.LoginActivity;
 import application.tool.activity.message.adapter.ExtensionAdapter;
 import application.tool.activity.message.adapter.ItemOnClickListener;
@@ -80,6 +82,12 @@ public class ExtensionsFragment extends Fragment implements ItemOnClickListener 
                         });
                 break;
             case R.drawable.create:
+                Intent intent = new Intent(getContext(), CreateQRCodeActivity.class);
+                startActivity(intent);
+                break;
+            case R.drawable.padlock:
+                Intent changePassword = new Intent(getContext(), ChangePasswordActivity.class);
+                startActivity(changePassword);
                 break;
         }
     }

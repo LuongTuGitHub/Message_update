@@ -10,7 +10,7 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
 public class QrCode {
-    public Bitmap convertStringToQrCode(String string) {
+    public static Bitmap convertStringToQrCode(String string) {
         BitMatrix matrix = null;
         try {
             matrix = new MultiFormatWriter().encode(string, BarcodeFormat.QR_CODE, 300, 300, null);

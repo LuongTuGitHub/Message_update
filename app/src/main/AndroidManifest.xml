@@ -33,7 +33,9 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".activity.AddConversationActivity"></activity>
+        <activity android:name=".activity.ChangePasswordActivity"></activity>
+        <activity android:name=".activity.CreateQRCodeActivity" />
+        <activity android:name=".activity.AddConversationActivity" />
         <activity android:name=".activity.ContentFindActivity" />
         <activity android:name=".activity.CreatePostActivity" />
         <activity android:name=".activity.ViewProfileActivity" />
