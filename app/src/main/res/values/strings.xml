@@ -85,4 +85,8 @@
     <string name="add_conversation">Add Conversation</string>
     <string name="create">Create</string>
     <string name="auto">Auto</string>
+    <string name="continue_scan">Continue Scan</string>
+    <string name="result">Result</string>
+    <string name="complete">Complete</string>
+    <string name="please_check_email_verify_email_continue_login">Please Check Email! Verify Email Continue Login</string>
 </resources>

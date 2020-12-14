@@ -75,14 +75,11 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleHold
                     }else {
                         refStg.child("avatar/"+snapshot.getValue().toString()+".png")
                                 .getBytes(Long.MAX_VALUE)
-                                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<byte[]> task) {
-                                        if(task.isSuccessful()) {
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                            holder.iv.setImageBitmap(bitmap);
-                                            image.Add(snapshot.getValue().toString(),task.getResult());
-                                        }
+                                .addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()) {
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                        holder.iv.setImageBitmap(bitmap);
+                                        image.Add(snapshot.getValue().toString(),task.getResult());
                                     }
                                 });
                     }

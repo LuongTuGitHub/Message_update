@@ -1,15 +1,18 @@
 package application.tool.activity.message.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,10 +50,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Init();
         login.setOnClickListener(v -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+            dialog.setView(R.layout.load);
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             if (layout.getVisibility() == View.INVISIBLE) {
                 layout.setVisibility(View.VISIBLE);
             } else {
                 if ((!email.getText().toString().isEmpty()) && (!Objects.requireNonNull(password.getText()).toString().isEmpty())) {
+                    alertDialog.show();
                     auth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             fUser = auth.getCurrentUser();
@@ -60,11 +69,13 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         if (snapshot.getValue() == null) {
+                                            alertDialog.dismiss();
                                             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                                             intent.putExtra("status",true);
                                             startActivity(intent);
                                             finish();
                                         } else {
+                                            alertDialog.dismiss();
                                             Intent intent = new Intent(LoginActivity.this, ContentActivity.class);
                                             startActivity(intent);
                                             finish();
@@ -73,12 +84,15 @@ public class LoginActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
+                                        alertDialog.dismiss();
                                     }
                                 });
                             } else {
                                 fUser.sendEmailVerification();
-                                Toast.makeText(this, "Please! Verify Email. Open Box Inbox Your", Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder aBuilder = new AlertDialog.Builder(LoginActivity.this);
+                                aBuilder.setView(R.layout.dr_verify_email);
+                                alertDialog.dismiss();
+                                aBuilder.create().show();
                             }
                         }
                     });

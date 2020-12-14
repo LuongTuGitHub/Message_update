@@ -30,6 +30,7 @@ import application.tool.activity.message.R;
 import application.tool.activity.message.activity.ChangePasswordActivity;
 import application.tool.activity.message.activity.CreateQRCodeActivity;
 import application.tool.activity.message.activity.LoginActivity;
+import application.tool.activity.message.activity.ScanQRCodeActivity;
 import application.tool.activity.message.adapter.ExtensionAdapter;
 import application.tool.activity.message.adapter.ItemOnClickListener;
 import application.tool.activity.message.object.Extension;
@@ -88,6 +89,10 @@ public class ExtensionsFragment extends Fragment implements ItemOnClickListener 
             case R.drawable.padlock:
                 Intent changePassword = new Intent(getContext(), ChangePasswordActivity.class);
                 startActivity(changePassword);
+                break;
+            case R.drawable.ic_baseline_qr_code_24:
+                Intent scanQRCode = new Intent(getContext(), ScanQRCodeActivity.class);
+                startActivity(scanQRCode);
                 break;
         }
     }

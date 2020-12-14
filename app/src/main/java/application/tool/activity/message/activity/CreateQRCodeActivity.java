@@ -58,8 +58,10 @@ public class CreateQRCodeActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(swAuto.isChecked()){
-                    Bitmap bitmapQR = QrCode.convertStringToQrCode(s.toString());
-                    ivShowQrCode.setImageBitmap(bitmapQR);
+                    if(!s.toString().trim().isEmpty()){
+                        Bitmap bitmapQR = QrCode.convertStringToQrCode(s.toString());
+                        ivShowQrCode.setImageBitmap(bitmapQR);
+                    }
                 }
             }
 
