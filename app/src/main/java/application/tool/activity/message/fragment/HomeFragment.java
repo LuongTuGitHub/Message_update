@@ -3,6 +3,7 @@ package application.tool.activity.message.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +59,8 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
     public StorageReference refStg;
     public ArrayList<String> alFriend;
     public SQLiteImage image;
+    public NestedScrollView scrollView;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,8 +124,12 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
 
             }
         });
+        scrollView = view.findViewById(R.id.nvPost);
+        scrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        });
         return view;
     }
+
     public void Init(View view){
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refStg = FirebaseStorage.getInstance().getReference();

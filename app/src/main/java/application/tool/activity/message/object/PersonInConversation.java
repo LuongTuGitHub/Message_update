@@ -1,7 +1,7 @@
 package application.tool.activity.message.object;
 
 public class PersonInConversation {
-    public String  nickName,email;
+    public String nickName, email;
 
     public PersonInConversation() {
     }

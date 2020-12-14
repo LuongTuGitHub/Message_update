@@ -157,7 +157,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                 }
                             } else {
                                 tvName.setText(conversation.getName());
-                                btCall.setVisibility(View.INVISIBLE);
+                                btCall.setVisibility(View.GONE);
                             }
                         }
                     }

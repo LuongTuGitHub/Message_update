@@ -47,39 +47,42 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
     private StorageReference refStg;
     private SQLiteImage image;
     private Context context;
-    public AddConversationAdapter(ArrayList<Person> list, Context context) {
+    private ItemOnClickListener itemOnClickListener;
+
+    public AddConversationAdapter(ArrayList<Person> list, Context context, ItemOnClickListener itemOnClickListener) {
         this.list = list;
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
         refStg = FirebaseStorage.getInstance().getReference();
         image = new SQLiteImage(context);
+        this.itemOnClickListener = itemOnClickListener;
     }
 
     @NonNull
     @Override
     public AddConversationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_conversation,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_conversation, parent, false);
         return new AddConversationHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AddConversationHolder holder, int position) {
-        refDb.child(Firebase.AVATAR).child(Objects.requireNonNull(list.get(position)).getEmail().hashCode()+"")
+        refDb.child(Firebase.AVATAR).child(Objects.requireNonNull(list.get(position)).getEmail().hashCode() + "")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.getValue()!=null){
-                            if(image.checkExist(snapshot.getValue().toString())){
+                        if (snapshot.getValue() != null) {
+                            if (image.checkExist(snapshot.getValue().toString())) {
                                 byte[] bytes = image.getImage(snapshot.getValue().toString());
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                 holder.ivAvatar.setImageBitmap(bitmap);
-                            }else {
-                                refStg.child("avatar/"+snapshot.getValue().toString()+".png")
+                            } else {
+                                refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
                                         .getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
+                                    if (task.isSuccessful()) {
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                         holder.ivAvatar.setImageBitmap(bitmap);
-                                        image.Add(snapshot.getValue().toString(),task.getResult());
+                                        image.Add(snapshot.getValue().toString(), task.getResult());
                                     }
                                 });
                             }
@@ -92,20 +95,33 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
                     }
                 });
         holder.tvName.setText(list.get(position).getName());
+        holder.check.setOnClickListener(v -> {
+            holder.check.setChecked(!holder.check.isChecked());
+            itemOnClickListener.onClickItem(v, position);
+        });
+        holder.ivAvatar.setOnClickListener(v -> {
+            holder.check.setChecked(!holder.check.isChecked());
+            itemOnClickListener.onClickItem(v, position);
+        });
+        holder.tvName.setOnClickListener(v -> {
+            holder.check.setChecked(!holder.check.isChecked());
+            itemOnClickListener.onClickItem(v, position);
+        });
     }
 
     @Override
     public int getItemCount() {
-        if(list==null){
-            return  0;
+        if (list == null) {
+            return 0;
         }
         return list.size();
     }
 
-    public static class AddConversationHolder extends RecyclerView.ViewHolder{
+    public static class AddConversationHolder extends RecyclerView.ViewHolder {
         public ImageView ivAvatar;
         public TextView tvName;
         public CheckBox check;
+
         public AddConversationHolder(@NonNull View itemView) {
             super(itemView);
             check = itemView.findViewById(R.id.check);

@@ -195,7 +195,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                                 }
                             }
                         } else {
-
+                            holder.nameConversation.setText(conversation.getName());
+                            holder.avatar.setImageResource(R.drawable.teamwork);
                         }
                     }
                 }

@@ -26,11 +26,16 @@ import java.util.ArrayList;
 
 import application.tool.activity.message.R;
 import application.tool.activity.message.activity.ContentFindActivity;
+import application.tool.activity.message.activity.ConversationActivity;
+import application.tool.activity.message.activity.ViewProfileActivity;
 import application.tool.activity.message.adapter.ItemOnClickListener;
 import application.tool.activity.message.adapter.NotificationAdapter;
 import application.tool.activity.message.object.Notification;
 
 import static application.tool.activity.message.module.Firebase.NOTIFICATION;
+import static application.tool.activity.message.module.Notification.MESSAGE;
+import static application.tool.activity.message.module.Notification.REQUEST;
+import static application.tool.activity.message.module.Notification.RESPONSE;
 
 public class NotificationFragment extends Fragment implements ItemOnClickListener {
     private Button btSearch;
@@ -105,6 +110,22 @@ public class NotificationFragment extends Fragment implements ItemOnClickListene
 
     @Override
     public void onClickItem(View view, int position) {
+            if(notifications.get(position).getType().equals(RESPONSE)){
+                Intent intent = new Intent(getContext(), ViewProfileActivity.class);
+                intent.putExtra("email",notifications.get(position).getFrom());
+                intent.putExtra("status",false);
+                startActivity(intent);
+            }else if(notifications.get(position).getType().equals(MESSAGE)){
+                Intent intent =new Intent(getContext(), ConversationActivity.class);
+                intent.putExtra("key",notifications.get(position).getKey());
+                intent.putExtra("status",false);
+                startActivity(intent);
+            }else if(notifications.get(position).getType().equals(REQUEST)){
+                Intent intent = new Intent(getContext(), ViewProfileActivity.class);
+                intent.putExtra("email",notifications.get(position).getFrom());
+                intent.putExtra("status",false);
+                startActivity(intent);
+            }
 
     }
 

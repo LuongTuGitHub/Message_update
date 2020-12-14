@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import application.tool.activity.message.R;
-import application.tool.activity.message.activity.ViewProfileActivity;
+import application.tool.activity.message.module.Firebase;
 import application.tool.activity.message.object.Conversation;
 import application.tool.activity.message.object.Notification;
 import application.tool.activity.message.object.PersonInConversation;
@@ -34,6 +34,7 @@ import static application.tool.activity.message.module.Firebase.LIST_FRIEND;
 import static application.tool.activity.message.module.Firebase.LIST_FRIEND_REQUEST;
 import static application.tool.activity.message.module.Notification.MESSAGE;
 import static application.tool.activity.message.module.Notification.REQUEST;
+import static application.tool.activity.message.module.Notification.RESPONSE;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationHolder> {
     private ArrayList<Notification> notifications;
@@ -57,7 +58,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_message,parent,false);
             return new NotificationHolder(view);
         }
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_friend_adapter,parent,false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_request_friend,parent,false);
         return new NotificationHolder(view);
     }
 
@@ -65,11 +66,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull NotificationHolder holder, int position) {
         holder.tvFrom.setText(notifications.get(position).getFrom());
         holder.body.setText(notifications.get(position).getBody());
-        if(getItemViewType(position)==MESSAGE_CODE){
+        if(getItemViewType(position)==MESSAGE_CODE||notifications.get(position).getType().equals(RESPONSE)){
             holder.denied.setVisibility(View.GONE);
             holder.confirm.setVisibility(View.GONE);
         }else {
-            refDb.child(REQUEST).child(fUser.getEmail().hashCode()+"")
+            refDb.child(LIST_FRIEND_REQUEST).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"")
                     .addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -121,13 +122,30 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         if (task.isSuccessful()) {
                             refDb.child(LIST_FRIEND_REQUEST)
                                     .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(notifications.get(position).getFrom().hashCode() + "").removeValue();
+                            holder.denied.setVisibility(View.GONE);
+                            holder.confirm.setVisibility(View.GONE);
                             dialog.cancel();
                         }
                     });
         });
-        holder.denied.setOnClickListener(v -> refDb.child(LIST_FRIEND_REQUEST)
-                .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(notifications.get(position).getFrom().hashCode() + "").removeValue());
-        holder.itemView.setOnClickListener(v -> itemOnClickListener.onClickItem(v,position));
+        holder.denied.setOnClickListener(v ->{
+            holder.denied.setVisibility(View.GONE);
+            holder.confirm.setVisibility(View.GONE);
+            refDb.child(LIST_FRIEND_REQUEST)
+                .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(notifications.get(position).getFrom().hashCode() + "").removeValue();
+        });
+        holder.body.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemOnClickListener.onClickItem(v,position);
+            }
+        });
+        holder.tvFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemOnClickListener.onClickItem(v,position);
+            }
+        });
     }
 
     @Override

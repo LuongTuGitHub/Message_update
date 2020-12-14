@@ -67,6 +67,7 @@ import static application.tool.activity.message.module.Firebase.PERSON;
 import static application.tool.activity.message.module.Firebase.POST;
 import static application.tool.activity.message.module.Firebase.STATUS;
 import static application.tool.activity.message.module.Notification.REQUEST;
+import static application.tool.activity.message.module.Notification.RESPONSE;
 
 public class ViewProfileActivity extends AppCompatActivity {
     private final static int RESULT_IMAGE = 99;
@@ -281,6 +282,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 dialog.show();
+                long key = Calendar.getInstance().getTimeInMillis();
+                Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Chấp nhận lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                        ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
+                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
                 refDb.child(LIST_FRIEND).child(email.hashCode() + "")
                         .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue(fUser.getEmail());
                 refDb.child(LIST_FRIEND)
@@ -297,8 +302,14 @@ public class ViewProfileActivity extends AppCompatActivity {
                             }
                         });
             });
-            denied.setOnClickListener(v -> refDb.child(LIST_FRIEND_REQUEST)
-                    .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(email.hashCode() + "").removeValue());
+            denied.setOnClickListener(v -> {
+                long key = Calendar.getInstance().getTimeInMillis();
+                refDb.child(LIST_FRIEND_REQUEST)
+                    .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(email.hashCode() + "").removeValue();
+                Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Từ chối lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                        ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
+                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
+            });
             refDb.child(BACKGROUND).child(email.hashCode() + "").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -40,7 +40,7 @@ public class ContentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_content);
         Init();
         ContentViewPagerAdapter adapter =
-                new ContentViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+                new ContentViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.POSITION_UNCHANGED);
         vpContent.setAdapter(adapter);
         vpContent.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
