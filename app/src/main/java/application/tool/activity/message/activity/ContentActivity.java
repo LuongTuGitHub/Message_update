@@ -33,6 +33,7 @@ public class ContentActivity extends AppCompatActivity {
     private FirebaseUser fUser;
     private DatabaseReference refDb;
     private StorageReference refStg;
+
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,18 +51,12 @@ public class ContentActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         navigation.getMenu().findItem(R.id.homeFragment).setChecked(true);
                         break;
                     case 1:
                         navigation.getMenu().findItem(R.id.conversationFragment).setChecked(true);
-                        break;
-                    case 2:
-                        navigation.getMenu().findItem(R.id.notificationFragment).setChecked(true);
-                        break;
-                    case 3:
-                        navigation.getMenu().findItem(R.id.extensionsFragment).setChecked(true);
                         break;
                 }
             }
@@ -72,23 +67,17 @@ public class ContentActivity extends AppCompatActivity {
             }
         });
         navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.homeFragment:
                     vpContent.setCurrentItem(0);
                     break;
                 case R.id.conversationFragment:
                     vpContent.setCurrentItem(1);
                     break;
-                case R.id.notificationFragment:
-                    vpContent.setCurrentItem(2);
-                    break;
-                case R.id.extensionsFragment:
-                    vpContent.setCurrentItem(3);
-                    break;
             }
             return true;
         });
-        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"").setValue("online");
+        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue("online");
     }
 
     @SuppressLint("NonConstantResourceId")

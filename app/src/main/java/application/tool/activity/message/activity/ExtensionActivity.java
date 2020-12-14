@@ -1,55 +1,45 @@
-package application.tool.activity.message.fragment;
+package application.tool.activity.message.activity;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridLayout;
+import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import application.tool.activity.message.R;
-import application.tool.activity.message.activity.ChangePasswordActivity;
-import application.tool.activity.message.activity.CreateQRCodeActivity;
-import application.tool.activity.message.activity.LoginActivity;
-import application.tool.activity.message.activity.ScanQRCodeActivity;
 import application.tool.activity.message.adapter.ExtensionAdapter;
 import application.tool.activity.message.adapter.ItemOnClickListener;
 import application.tool.activity.message.object.Extension;
 
 import static application.tool.activity.message.module.Firebase.STATUS;
+import static application.tool.activity.message.module.Notification.MESSAGE;
+import static application.tool.activity.message.module.Notification.REQUEST;
+import static application.tool.activity.message.module.Notification.RESPONSE;
 
-public class ExtensionsFragment extends Fragment implements ItemOnClickListener {
+public class ExtensionActivity extends AppCompatActivity implements ItemOnClickListener {
     private ArrayList<Extension> extensions;
-    private RecyclerView rvEx;
-    private FirebaseAuth fAuth;
     private FirebaseUser fUser;
     private DatabaseReference refDb;
+    private Button bt_exit;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.fragment_extensions, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_extension);
 
-        fAuth = FirebaseAuth.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         fUser = fAuth.getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
         extensions = new ArrayList<>();
@@ -58,12 +48,11 @@ public class ExtensionsFragment extends Fragment implements ItemOnClickListener 
         extensions.add(new Extension(R.drawable.ic_baseline_qr_code_24));
         extensions.add(new Extension(R.drawable.song));
         extensions.add(new Extension(R.drawable.logout));
-        rvEx = view.findViewById(R.id.rvExtension);
+        RecyclerView rvEx = findViewById(R.id.rvExtension);
         ExtensionAdapter adapter = new ExtensionAdapter(extensions, this);
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
         rvEx.setLayoutManager(manager);
         rvEx.setAdapter(adapter);
-        return view;
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -71,29 +60,30 @@ public class ExtensionsFragment extends Fragment implements ItemOnClickListener 
     public void onClickItem(View view, int position) {
         switch (extensions.get(position).getID()) {
             case R.drawable.logout:
-                refDb.child(STATUS).child(fUser.getEmail().hashCode() + "")
+                refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "")
                         .setValue("offline")
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(getContext(), LoginActivity.class);
-                                getActivity().startActivity(intent);
-                                getActivity().finish();
+                                Intent intent = new Intent(this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
                         });
                 break;
             case R.drawable.create:
-                Intent intent = new Intent(getContext(), CreateQRCodeActivity.class);
+                Intent intent = new Intent(this, CreateQRCodeActivity.class);
                 startActivity(intent);
                 break;
             case R.drawable.padlock:
-                Intent changePassword = new Intent(getContext(), ChangePasswordActivity.class);
+                Intent changePassword = new Intent(this, ChangePasswordActivity.class);
                 startActivity(changePassword);
                 break;
             case R.drawable.ic_baseline_qr_code_24:
-                Intent scanQRCode = new Intent(getContext(), ScanQRCodeActivity.class);
+                Intent scanQRCode = new Intent(this, ScanQRCodeActivity.class);
                 startActivity(scanQRCode);
                 break;
         }
     }
+
 }

@@ -6,9 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import application.tool.activity.message.fragment.ConversationFragment;
-import application.tool.activity.message.fragment.ExtensionsFragment;
 import application.tool.activity.message.fragment.HomeFragment;
-import application.tool.activity.message.fragment.NotificationFragment;
 
 public class ContentViewPagerAdapter extends FragmentStatePagerAdapter {
     public ContentViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -21,17 +19,14 @@ public class ContentViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position){
             case 1:
                 return new ConversationFragment();
-            case 2:
-                return new NotificationFragment();
-            case 3:
-                return new ExtensionsFragment();
-            default:
+            case 0:
                 return new HomeFragment();
         }
+        return new HomeFragment();
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return 2;
     }
 }

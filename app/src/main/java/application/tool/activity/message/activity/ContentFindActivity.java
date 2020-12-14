@@ -39,7 +39,7 @@ import application.tool.activity.message.object.Person;
 
 import static application.tool.activity.message.module.Firebase.STATUS;
 
-public class ContentFindActivity extends AppCompatActivity implements ItemOnClickListener {
+public class ContentFindActivity extends AppCompatActivity  {
     private TextInputEditText edt;
     private RecyclerView rv;
     private DatabaseReference refDb;
@@ -55,7 +55,7 @@ public class ContentFindActivity extends AppCompatActivity implements ItemOnClic
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         setContentView(R.layout.activity_content_find);
         account = new ArrayList<>();
-        adapter = new PeopleAdapter(account,this);
+        adapter = new PeopleAdapter(account);
         Init();
         FrameLayout fBackground = findViewById(R.id.fBackground);
         Button button = findViewById(R.id.btExit);
@@ -131,13 +131,6 @@ public class ContentFindActivity extends AppCompatActivity implements ItemOnClic
 
             }
         });
-    }
-    @Override
-    public void onClickItem(View view, int position) {
-        Intent intent = new Intent(ContentFindActivity.this,ViewProfileActivity.class);
-        intent.putExtra("email", account.get(position).getEmail());
-        intent.putExtra("status",false);
-        startActivity(intent);
     }
 
     @Override

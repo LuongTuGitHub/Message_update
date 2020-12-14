@@ -46,7 +46,6 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
     private DatabaseReference refDb;
     private StorageReference refStg;
     private SQLiteImage image;
-    private Context context;
     private ItemOnClickListener itemOnClickListener;
 
     public AddConversationAdapter(ArrayList<Person> list, Context context, ItemOnClickListener itemOnClickListener) {
@@ -96,7 +95,6 @@ public class AddConversationAdapter extends RecyclerView.Adapter<AddConversation
                 });
         holder.tvName.setText(list.get(position).getName());
         holder.check.setOnClickListener(v -> {
-            holder.check.setChecked(!holder.check.isChecked());
             itemOnClickListener.onClickItem(v, position);
         });
         holder.ivAvatar.setOnClickListener(v -> {

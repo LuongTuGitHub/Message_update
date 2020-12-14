@@ -37,6 +37,8 @@ import java.util.Objects;
 import application.tool.activity.message.R;
 import application.tool.activity.message.activity.ContentFindActivity;
 import application.tool.activity.message.activity.CreatePostActivity;
+import application.tool.activity.message.activity.ExtensionActivity;
+import application.tool.activity.message.activity.NotificationActivity;
 import application.tool.activity.message.activity.ViewProfileActivity;
 import application.tool.activity.message.adapter.FriendAdapter;
 import application.tool.activity.message.adapter.ItemOnClickListener;
@@ -48,8 +50,8 @@ import application.tool.activity.message.object.Post;
 
 public class HomeFragment extends Fragment implements ItemOnClickListener {
     public TextView tvNameUser;
-    public Button btCreatePost,btViewProfile,btSearch;
-    public RecyclerView rvViewPost,rvFriend;
+    public Button btCreatePost, btViewProfile, btSearch, bt_extension, bt_notification;
+    public RecyclerView rvViewPost, rvFriend;
     public ArrayList<String> key;
     public PostAdapter adapter;
     public FriendAdapter friendAdapter;
@@ -59,18 +61,18 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
     public StorageReference refStg;
     public ArrayList<String> alFriend;
     public SQLiteImage image;
-    public NestedScrollView scrollView;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         image = new SQLiteImage(view.getContext());
         Init(view);
         btViewProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewProfileActivity.class);
             intent.putExtra("email", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
-            intent.putExtra("status",false);
+            intent.putExtra("status", false);
             requireActivity().startActivity(intent);
         });
         btCreatePost.setOnClickListener(v -> {
@@ -82,64 +84,72 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
             startActivity(intent);
         });
         refDb.child(Firebase.PERSON)
-                .child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"").addValueEventListener(new ValueEventListener() {
+                .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null){
+                if (snapshot.getValue() != null) {
                     Person person = snapshot.getValue(Person.class);
-                    if(person!=null){
+                    if (person != null) {
                         tvNameUser.setText(person.getName());
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        refDb.child(Firebase.AVATAR).child(fUser.getEmail().hashCode()+"")
+        refDb.child(Firebase.AVATAR).child(fUser.getEmail().hashCode() + "")
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null){
-                    if(image.checkExist(snapshot.getValue().toString())){
-                        byte[] bytes =image.getImage(snapshot.getValue().toString());
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        ivAvatar.setImageBitmap(bitmap);
-                    }else {
-                        refStg.child("avatar/"+ snapshot.getValue().toString()+".png")
-                                .getBytes(Long.MAX_VALUE)
-                                .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
-                                        ivAvatar.setImageBitmap(bitmap);
-                                        image.Add(snapshot.getValue().toString(),task.getResult());
-                                    }
-                                });
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue() != null) {
+                            if (image.checkExist(snapshot.getValue().toString())) {
+                                byte[] bytes = image.getImage(snapshot.getValue().toString());
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                ivAvatar.setImageBitmap(bitmap);
+                            } else {
+                                refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
+                                        .getBytes(Long.MAX_VALUE)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                ivAvatar.setImageBitmap(bitmap);
+                                                image.Add(snapshot.getValue().toString(), task.getResult());
+                                            }
+                                        });
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
+                    }
+                });
+        bt_extension.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ExtensionActivity.class);
+            startActivity(intent);
         });
-        scrollView = view.findViewById(R.id.nvPost);
-        scrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        bt_notification.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NotificationActivity.class);
+            startActivity(intent);
         });
         return view;
     }
 
-    public void Init(View view){
+    public void Init(View view) {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refStg = FirebaseStorage.getInstance().getReference();
         refDb = FirebaseDatabase.getInstance().getReference();
         alFriend = new ArrayList<>();
         alFriend.add(fUser.getEmail());
-        friendAdapter = new FriendAdapter(alFriend,this);
+        friendAdapter = new FriendAdapter(alFriend, this);
         rvFriend = view.findViewById(R.id.rvFriend);
         rvFriend.setAdapter(friendAdapter);
-        rvFriend.setLayoutManager(new LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false));
+        bt_extension = view.findViewById(R.id.bt_extension);
+        bt_notification = view.findViewById(R.id.btNotification);
+        rvFriend.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
         btCreatePost = view.findViewById(R.id.btCreatePost);
         btViewProfile = view.findViewById(R.id.btView);
         btSearch = view.findViewById(R.id.btSearch);
@@ -149,16 +159,16 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
         loadFriend();
         key = new ArrayList<>();
         adapter = new PostAdapter(key);
-        rvViewPost.setLayoutManager(new LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false));
+        rvViewPost.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
         rvViewPost.setAdapter(adapter);
         loadPost();
     }
 
     @Override
     public void onClickItem(View view, int position) {
-        Intent intent = new Intent(getActivity(),ViewProfileActivity.class);
-        intent.putExtra("email",alFriend.get(position));
-        intent.putExtra("status",false);
+        Intent intent = new Intent(getActivity(), ViewProfileActivity.class);
+        intent.putExtra("email", alFriend.get(position));
+        intent.putExtra("status", false);
         startActivity(intent);
     }
 
@@ -167,10 +177,10 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        if(snapshot.getValue()!=null){
+                        if (snapshot.getValue() != null) {
                             Post post = snapshot.getValue(Post.class);
-                            if(post!=null){
-                                if(isFriend(post.getEmail())){
+                            if (post != null) {
+                                if (isFriend(post.getEmail())) {
                                     key.add(snapshot.getKey());
                                     adapter.notifyDataSetChanged();
                                 }
@@ -199,44 +209,46 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
                     }
                 });
     }
-    public boolean isFriend(String email){
-        for (int i = 0; i <alFriend.size() ; i++) {
-            if(alFriend.get(i).equals(email)){
+
+    public boolean isFriend(String email) {
+        for (int i = 0; i < alFriend.size(); i++) {
+            if (alFriend.get(i).equals(email)) {
                 return true;
             }
         }
         return false;
     }
+
     private void loadFriend() {
-        refDb.child(Firebase.LIST_FRIEND).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"")
+        refDb.child(Firebase.LIST_FRIEND).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "")
                 .addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue()!=null){
-                    alFriend.add(snapshot.getValue().toString());
-                    friendAdapter.notifyDataSetChanged();
-                }
-            }
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        if (snapshot.getValue() != null) {
+                            alFriend.add(snapshot.getValue().toString());
+                            friendAdapter.notifyDataSetChanged();
+                        }
+                    }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-            }
+                    }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
-            }
+                    }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-            }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    }
+                });
     }
 }

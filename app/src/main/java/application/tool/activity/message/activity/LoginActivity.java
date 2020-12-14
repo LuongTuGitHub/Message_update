@@ -9,10 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +35,7 @@ import static application.tool.activity.message.module.Firebase.TOKEN;
 
 public class LoginActivity extends AppCompatActivity {
     public Button login, signUp, resetPassword;
-    public EditText email;
+    public TextInputEditText email;
     public TextInputEditText password;
     public TextInputLayout layout;
     public FirebaseAuth auth;
@@ -134,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         signUp = findViewById(R.id.signUp);
         resetPassword = findViewById(R.id.resetPassword);
-        email = findViewById(R.id.email);
+        email = findViewById(R.id.input_layout);
         password = findViewById(R.id.password);
         layout = findViewById(R.id.layoutPassword);
         auth = FirebaseAuth.getInstance();

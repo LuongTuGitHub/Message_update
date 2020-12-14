@@ -33,7 +33,9 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".activity.ScanQRCodeActivity"></activity>
+        <activity android:name=".activity.NotificationActivity"></activity>
+        <activity android:name=".activity.ExtensionActivity" />
+        <activity android:name=".activity.ScanQRCodeActivity" />
         <activity android:name=".activity.ChangePasswordActivity" />
         <activity android:name=".activity.CreateQRCodeActivity" />
         <activity android:name=".activity.AddConversationActivity" />

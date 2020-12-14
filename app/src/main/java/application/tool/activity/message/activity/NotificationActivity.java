@@ -1,17 +1,14 @@
-package application.tool.activity.message.fragment;
-
-import android.content.Intent;
-import android.os.Bundle;
+package application.tool.activity.message.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,11 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import application.tool.activity.message.R;
-import application.tool.activity.message.activity.ContentFindActivity;
-import application.tool.activity.message.activity.ConversationActivity;
-import application.tool.activity.message.activity.ViewProfileActivity;
 import application.tool.activity.message.adapter.ItemOnClickListener;
 import application.tool.activity.message.adapter.NotificationAdapter;
 import application.tool.activity.message.object.Notification;
@@ -37,48 +32,47 @@ import static application.tool.activity.message.module.Notification.MESSAGE;
 import static application.tool.activity.message.module.Notification.REQUEST;
 import static application.tool.activity.message.module.Notification.RESPONSE;
 
-public class NotificationFragment extends Fragment implements ItemOnClickListener {
+public class NotificationActivity extends AppCompatActivity implements ItemOnClickListener {
     private Button btSearch;
     private ArrayList<Notification> notifications;
     private RecyclerView rvShowNotification;
     private NotificationAdapter adapter;
     private DatabaseReference refDb;
     private FirebaseUser fUser;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notification, container, false);
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_notification);
         notifications = new ArrayList<>();
-        adapter =new NotificationAdapter(notifications,this);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,true);
+        adapter = new NotificationAdapter(notifications, this);
+        LinearLayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, true);
 
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
 
-        btSearch = view.findViewById(R.id.bt_search);
-        rvShowNotification = view.findViewById(R.id.rvShowNotification);
+        btSearch = findViewById(R.id.bt_search);
+        rvShowNotification = findViewById(R.id.rvShowNotification);
 
         rvShowNotification.setLayoutManager(manager);
         rvShowNotification.setAdapter(adapter);
 
         btSearch.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ContentFindActivity.class);
+            Intent intent = new Intent(this, ContentFindActivity.class);
             startActivity(intent);
         });
 
 
         loadNotification();
-        return view;
     }
 
     private void loadNotification() {
-        refDb.child(NOTIFICATION).child(fUser.getEmail().hashCode()+"").addChildEventListener(new ChildEventListener() {
+        refDb.child(NOTIFICATION).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue()!=null){
+                if (snapshot.getValue() != null) {
                     Notification notification = snapshot.getValue(Notification.class);
-                    if(notification!=null){
+                    if (notification != null) {
                         notifications.add(notification);
                         adapter.notifyDataSetChanged();
                     }
@@ -110,23 +104,23 @@ public class NotificationFragment extends Fragment implements ItemOnClickListene
 
     @Override
     public void onClickItem(View view, int position) {
-            if(notifications.get(position).getType().equals(RESPONSE)){
-                Intent intent = new Intent(getContext(), ViewProfileActivity.class);
-                intent.putExtra("email",notifications.get(position).getFrom());
-                intent.putExtra("status",false);
+        switch (notifications.get(position).getType()) {
+            case RESPONSE:
+            case REQUEST: {
+                Intent intent = new Intent(this, ViewProfileActivity.class);
+                intent.putExtra("email", notifications.get(position).getFrom());
+                intent.putExtra("status", false);
                 startActivity(intent);
-            }else if(notifications.get(position).getType().equals(MESSAGE)){
-                Intent intent =new Intent(getContext(), ConversationActivity.class);
-                intent.putExtra("key",notifications.get(position).getKey());
-                intent.putExtra("status",false);
-                startActivity(intent);
-            }else if(notifications.get(position).getType().equals(REQUEST)){
-                Intent intent = new Intent(getContext(), ViewProfileActivity.class);
-                intent.putExtra("email",notifications.get(position).getFrom());
-                intent.putExtra("status",false);
-                startActivity(intent);
+                break;
             }
+            case MESSAGE: {
+                Intent intent = new Intent(this, ConversationActivity.class);
+                intent.putExtra("key", notifications.get(position).getKey());
+                intent.putExtra("status", false);
+                startActivity(intent);
+                break;
+            }
+        }
 
     }
-
 }
