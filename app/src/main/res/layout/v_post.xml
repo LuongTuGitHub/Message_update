@@ -70,7 +70,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         app:cardCornerRadius="10dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,9 +80,8 @@
             android:adjustViewBounds="true"
             android:layout_gravity="center"
             android:saveEnabled="true"
-            android:scaleType="centerInside"
             android:id="@+id/ivBodyImagePost"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </androidx.cardview.widget.CardView>
 

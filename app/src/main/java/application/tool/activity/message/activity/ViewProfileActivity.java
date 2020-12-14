@@ -48,6 +48,7 @@ import java.util.UUID;
 
 import application.tool.activity.message.R;
 import application.tool.activity.message.adapter.InformationAdapter;
+import application.tool.activity.message.adapter.OnClickShowImage;
 import application.tool.activity.message.adapter.PostAdapter;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.object.Conversation;
@@ -69,7 +70,7 @@ import static application.tool.activity.message.module.Firebase.STATUS;
 import static application.tool.activity.message.module.Notification.REQUEST;
 import static application.tool.activity.message.module.Notification.RESPONSE;
 
-public class ViewProfileActivity extends AppCompatActivity {
+public class ViewProfileActivity extends AppCompatActivity implements OnClickShowImage {
     private final static int RESULT_IMAGE = 99;
     private final static int RESULT_CAPTURE = 100;
     private final static int PERMISSION_CAMERA = 101;
@@ -98,7 +99,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         information = new ArrayList<>();
         informationAdapter = new InformationAdapter(information);
         key = new ArrayList<>();
-        adapter = new PostAdapter(key);
+        adapter = new PostAdapter(key,this);
         Init();
         status = getIntent().getBooleanExtra("status", false);
         email = getIntent().getStringExtra("email");
@@ -442,6 +443,13 @@ public class ViewProfileActivity extends AppCompatActivity {
         loadPost();
         lvInformation.setAdapter(informationAdapter);
         loadInformation();
+    }
+
+    @Override
+    public void OnClick(View view, String key) {
+        Intent intent = new Intent(ViewProfileActivity.this,ViewImageActivity.class);
+        intent.putExtra("bitmap",key);
+        startActivity(intent);
     }
 
     private void loadInformation() {

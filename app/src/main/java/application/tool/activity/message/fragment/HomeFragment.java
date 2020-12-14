@@ -39,16 +39,18 @@ import application.tool.activity.message.activity.ContentFindActivity;
 import application.tool.activity.message.activity.CreatePostActivity;
 import application.tool.activity.message.activity.ExtensionActivity;
 import application.tool.activity.message.activity.NotificationActivity;
+import application.tool.activity.message.activity.ViewImageActivity;
 import application.tool.activity.message.activity.ViewProfileActivity;
 import application.tool.activity.message.adapter.FriendAdapter;
 import application.tool.activity.message.adapter.ItemOnClickListener;
+import application.tool.activity.message.adapter.OnClickShowImage;
 import application.tool.activity.message.adapter.PostAdapter;
 import application.tool.activity.message.module.Firebase;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Post;
 
-public class HomeFragment extends Fragment implements ItemOnClickListener {
+public class HomeFragment extends Fragment implements ItemOnClickListener, OnClickShowImage {
     public TextView tvNameUser;
     public Button btCreatePost, btViewProfile, btSearch, bt_extension, bt_notification;
     public RecyclerView rvViewPost, rvFriend;
@@ -158,10 +160,17 @@ public class HomeFragment extends Fragment implements ItemOnClickListener {
         rvViewPost = view.findViewById(R.id.rvPost);
         loadFriend();
         key = new ArrayList<>();
-        adapter = new PostAdapter(key);
+        adapter = new PostAdapter(key,this);
         rvViewPost.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
         rvViewPost.setAdapter(adapter);
         loadPost();
+    }
+
+    @Override
+    public void OnClick(View view, String key) {
+        Intent intent = new Intent(getActivity(), ViewImageActivity.class);
+        intent.putExtra("bitmap",key);
+        startActivity(intent);
     }
 
     @Override

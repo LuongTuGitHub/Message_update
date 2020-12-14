@@ -1,9 +1,14 @@
 package application.tool.activity.message.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +35,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.activity.ViewImageActivity;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.Post;
@@ -48,10 +56,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     private final FirebaseUser fUser;
     private final DatabaseReference refDb;
     private final StorageReference refStg;
+    private OnClickShowImage onClickShowImage;
     private SQLiteImage image;
-
-    public PostAdapter(ArrayList<String> key) {
+    public PostAdapter(ArrayList<String> key,OnClickShowImage onClickShowImage) {
         this.key = key;
+        this.onClickShowImage = onClickShowImage;
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
         refStg = FirebaseStorage.getInstance().getReference();
@@ -71,6 +80,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         final int[] count = {0};
         holder.reactTime.setText(count[0] + "");
         refDb.child(POST).child(key.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
@@ -96,18 +106,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.getValue() != null) {
-                                    if(image.checkExist(snapshot.getValue().toString())){
+                                    if (image.checkExist(snapshot.getValue().toString())) {
                                         byte[] bytes = image.getImage(snapshot.getValue().toString());
-                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                         holder.avatarAuthor.setImageBitmap(bitmap);
-                                    }else {
+                                    } else {
                                         refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
                                                 .getBytes(Long.MAX_VALUE)
                                                 .addOnCompleteListener(task -> {
                                                     if (task.isSuccessful()) {
                                                         Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                                         holder.avatarAuthor.setImageBitmap(bitmap);
-                                                        image.Add(snapshot.getValue().toString(),task.getResult());
+                                                        image.Add(snapshot.getValue().toString(), task.getResult());
                                                     }
                                                 });
                                     }
@@ -125,21 +135,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             holder.title.setVisibility(View.GONE);
                         }
                         if ((post.getBodyImage() != null) && (!post.getBodyImage().equals(""))) {
-                            if(image.checkExist(post.getBodyImage())){
+                            if (image.checkExist(post.getBodyImage())) {
                                 byte[] bytes = image.getImage(post.getBodyImage());
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                 holder.bodyImage.setImageBitmap(bitmap);
-                            }else {
+                            } else {
                                 refStg.child("post/" + post.getBodyImage() + ".png")
                                         .getBytes(Long.MAX_VALUE)
                                         .addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
                                                 Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                                 holder.bodyImage.setImageBitmap(bitmap);
-                                                image.Add(post.getBodyImage(),task.getResult());
+                                                image.Add(post.getBodyImage(), task.getResult());
                                             }
                                         });
                             }
+                            holder.bodyImage.setOnClickListener(v -> {
+                                onClickShowImage.OnClick(v,post.getBodyImage());
+                            });
                         } else {
                             holder.bodyImage.setVisibility(View.GONE);
                         }
@@ -179,7 +192,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.getValue()!=null){
+                                if (snapshot.getValue() != null) {
                                     if (Objects.equals(snapshot.getKey(), Objects.requireNonNull(fUser.getEmail()).hashCode() + "")) {
                                         click[0] = false;
                                         holder.react.setBackgroundResource(R.drawable.ic_baseline_add_reaction_24);

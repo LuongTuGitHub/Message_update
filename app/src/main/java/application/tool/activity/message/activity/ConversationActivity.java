@@ -193,9 +193,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 if (edtMessage.getText().toString().trim().isEmpty()) {
                     for (int i = 0; i < people.size(); i++) {
                         if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                            if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                                new SendNotification().sendMessage(people.get(i).getEmail(),"like",key);
-                            }
+                            new SendNotification().sendMessage(people.get(i).getEmail(),"like",key);
                         }
                     }
                     messages.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));

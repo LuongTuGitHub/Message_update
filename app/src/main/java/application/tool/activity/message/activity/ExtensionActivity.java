@@ -65,22 +65,22 @@ public class ExtensionActivity extends AppCompatActivity implements ItemOnClickL
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(this, LoginActivity.class);
+                                Intent intent = new Intent(ExtensionActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
                         });
                 break;
             case R.drawable.create:
-                Intent intent = new Intent(this, CreateQRCodeActivity.class);
+                Intent intent = new Intent(ExtensionActivity.this, CreateQRCodeActivity.class);
                 startActivity(intent);
                 break;
             case R.drawable.padlock:
-                Intent changePassword = new Intent(this, ChangePasswordActivity.class);
+                Intent changePassword = new Intent(ExtensionActivity.this, ChangePasswordActivity.class);
                 startActivity(changePassword);
                 break;
             case R.drawable.ic_baseline_qr_code_24:
-                Intent scanQRCode = new Intent(this, ScanQRCodeActivity.class);
+                Intent scanQRCode = new Intent(ExtensionActivity.this, ScanQRCodeActivity.class);
                 startActivity(scanQRCode);
                 break;
         }

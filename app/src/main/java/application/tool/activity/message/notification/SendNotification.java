@@ -42,27 +42,29 @@ public class SendNotification {
         refDb.child(TOKEN).child(receiver.hashCode() + "").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Token token = snapshot.getValue(Token.class);
-                Log.e("AAA",token.getToken());
-                Data data = new Data(MESSAGE, fUser.getEmail(),message,key);
-                assert token != null;
-                Sender sender = new Sender(data, token.getToken());
-                apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
-                    @Override
-                    public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                        Log.e("CODE",response.code()+"");
-                        if (response.isSuccessful()){
-                            Log.e("RES","SUCCESS");
-                        }else {
-                            Log.e("RES","FAILED");
-                        }
-                    }
+               if(snapshot.getValue()!=null){
+                   Token token = snapshot.getValue(Token.class);
+                   assert token != null;
+                   Log.e("AAA",token.getToken());
+                   Data data = new Data(MESSAGE, fUser.getEmail(),message,key);
+                   Sender sender = new Sender(data, token.getToken());
+                   apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
+                       @Override
+                       public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                           Log.e("CODE",response.code()+"");
+                           if (response.isSuccessful()){
+                               Log.e("RES","SUCCESS");
+                           }else {
+                               Log.e("RES","FAILED");
+                           }
+                       }
 
-                    @Override
-                    public void onFailure(Call<MyResponse> call, Throwable t) {
+                       @Override
+                       public void onFailure(Call<MyResponse> call, Throwable t) {
 
-                    }
-                });
+                       }
+                   });
+               }
             }
 
             @Override
