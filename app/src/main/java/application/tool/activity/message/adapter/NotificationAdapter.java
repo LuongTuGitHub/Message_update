@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import application.tool.activity.message.R;
@@ -32,6 +33,7 @@ import application.tool.activity.message.object.PersonInConversation;
 import static application.tool.activity.message.module.Firebase.CONVERSATION;
 import static application.tool.activity.message.module.Firebase.LIST_FRIEND;
 import static application.tool.activity.message.module.Firebase.LIST_FRIEND_REQUEST;
+import static application.tool.activity.message.module.Firebase.NOTIFICATION;
 import static application.tool.activity.message.module.Notification.MESSAGE;
 import static application.tool.activity.message.module.Notification.REQUEST;
 import static application.tool.activity.message.module.Notification.RESPONSE;
@@ -104,6 +106,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     });
         }
         holder.confirm.setOnClickListener(v -> {
+            long key = Calendar.getInstance().getTimeInMillis();
+            Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Chấp nhận lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                    ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
+            refDb.child(NOTIFICATION).child(notifications.get(position).getFrom().hashCode()+"").child(key+"").setValue(notification);
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
             builder.setView(R.layout.load);
             AlertDialog dialog = builder.create();
@@ -129,23 +135,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     });
         });
         holder.denied.setOnClickListener(v ->{
+            long key = Calendar.getInstance().getTimeInMillis();
+            Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Từ chối lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                    ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
+            refDb.child(NOTIFICATION).child(notifications.get(position).getFrom().hashCode()+"").child(key+"").setValue(notification);
             holder.denied.setVisibility(View.GONE);
             holder.confirm.setVisibility(View.GONE);
             refDb.child(LIST_FRIEND_REQUEST)
                 .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(notifications.get(position).getFrom().hashCode() + "").removeValue();
         });
-        holder.body.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemOnClickListener.onClickItem(v,position);
-            }
-        });
-        holder.tvFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemOnClickListener.onClickItem(v,position);
-            }
-        });
+        holder.body.setOnClickListener(v -> itemOnClickListener.onClickItem(v,position));
+        holder.tvFrom.setOnClickListener(v -> itemOnClickListener.onClickItem(v,position));
     }
 
     @Override

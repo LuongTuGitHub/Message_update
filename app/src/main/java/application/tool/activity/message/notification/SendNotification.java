@@ -12,32 +12,39 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import application.tool.activity.message.module.Notification;
+import java.util.Calendar;
+
 import application.tool.activity.message.object.Data;
+import application.tool.activity.message.object.Notification;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static application.tool.activity.message.module.Firebase.NOTIFICATION;
 import static application.tool.activity.message.module.Firebase.TOKEN;
 import static application.tool.activity.message.module.Notification.MESSAGE;
 
 public class SendNotification {
-    FirebaseUser user;
+    FirebaseUser fUser;
     APIService apiService;
 
     public SendNotification() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
     }
 
     public void sendMessage(String receiver, String message,String key) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(TOKEN);
-        reference.child(receiver.hashCode() + "").addValueEventListener(new ValueEventListener() {
+        long time = Calendar.getInstance().getTimeInMillis();
+        DatabaseReference refDb = FirebaseDatabase.getInstance().getReference();
+        Notification notification = new Notification(MESSAGE,fUser.getEmail(),message,key, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),time);
+        refDb.child(NOTIFICATION).child(receiver.hashCode()+"").child(time+"").setValue(notification);
+        refDb.child(TOKEN).child(receiver.hashCode() + "").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Token token = snapshot.getValue(Token.class);
                 Log.e("AAA",token.getToken());
-                Data data = new Data(MESSAGE, user.getEmail(),message,key);
+                Data data = new Data(MESSAGE, fUser.getEmail(),message,key);
                 assert token != null;
                 Sender sender = new Sender(data, token.getToken());
                 apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {

@@ -158,6 +158,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                             } else {
                                 tvName.setText(conversation.getName());
                                 btCall.setVisibility(View.GONE);
+                                ivConversation.setImageResource(R.drawable.teamwork);
                             }
                         }
                     }
