@@ -3,19 +3,22 @@ package application.tool.activity.message.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,34 +37,22 @@ import java.util.Calendar;
 
 import application.tool.activity.message.R;
 import application.tool.activity.message.adapter.MessageAdapter;
-import application.tool.activity.message.module.Notification;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.module.TypeMessage;
-import application.tool.activity.message.notification.APIService;
-import application.tool.activity.message.notification.Client;
-import application.tool.activity.message.notification.MyResponse;
 import application.tool.activity.message.notification.SendNotification;
-import application.tool.activity.message.notification.Sender;
-import application.tool.activity.message.notification.Token;
 import application.tool.activity.message.object.Conversation;
-import application.tool.activity.message.object.Data;
 import application.tool.activity.message.object.Message;
 import application.tool.activity.message.object.Person;
 import application.tool.activity.message.object.PersonInConversation;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static application.tool.activity.message.module.Firebase.AVATAR;
 import static application.tool.activity.message.module.Firebase.CONVERSATION;
 import static application.tool.activity.message.module.Firebase.PERSON;
-import static application.tool.activity.message.module.Firebase.TOKEN;
 
 public class ConversationActivity extends AppCompatActivity implements View.OnClickListener {
-    private String key;
-    private Button exit, menu, btSendMessage, btCall;
+    private Button exit, btSendMessage, btCall;
     private ListView lvChat;
-    private String numberPhone;
+    private String numberPhone, key;
     private EditText edtMessage;
     private MessageAdapter adapter;
     private TextView tvName;
@@ -73,6 +64,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
     private boolean status = false;
     private SQLiteImage image;
     ArrayList<PersonInConversation> people;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +106,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                                             if (snapshot.getValue() != null) {
                                                                 Person person = snapshot.getValue(Person.class);
                                                                 if (person != null) {
+                                                                    numberPhone = person.getPhone();
                                                                     tvName.setText(person.getName());
                                                                 }
                                                             }
@@ -193,7 +186,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 if (edtMessage.getText().toString().trim().isEmpty()) {
                     for (int i = 0; i < people.size(); i++) {
                         if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                            new SendNotification().sendMessage(people.get(i).getEmail(),"like",key);
+                            new SendNotification().sendMessage(people.get(i).getEmail(), "like", key);
                         }
                     }
                     messages.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
@@ -203,7 +196,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     for (int i = 0; i < people.size(); i++) {
                         if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                            new SendNotification().sendMessage(people.get(i).getEmail(),edtMessage.getText().toString(),key);
+                            new SendNotification().sendMessage(people.get(i).getEmail(), edtMessage.getText().toString(), key);
                         }
                     }
                     messages.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
@@ -216,6 +209,45 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         }
         adapter = new MessageAdapter(ConversationActivity.this, messages);
         lvChat.setAdapter(adapter);
+        lvChat.setOnItemLongClickListener((parent, view, position, id) -> {
+            AlertDialog.Builder aBuilder = new AlertDialog.Builder(ConversationActivity.this);
+            View v = LayoutInflater.from(ConversationActivity.this).inflate(R.layout.ad_message_delete,null);
+            aBuilder.setView(v);
+            AlertDialog dialog = aBuilder.create();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Button bt_delete = v.findViewById(R.id.bt_delete);
+            Button bt_hide = v.findViewById(R.id.bt_hide);
+            if (!messages.get(position).getFrom().equals(fUser.getEmail())) {
+                bt_delete.setVisibility(View.GONE);
+            }
+            ArrayList<String> denied = messages.get(position).getDenied();
+            bt_delete.setOnClickListener(v1 -> {
+                messages.get(position).setType(TypeMessage.MESSAGE_DELETE);
+                refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(messages.get(position));
+                dialog.dismiss();
+            });
+            bt_hide.setOnClickListener(v1 -> {
+                if (messages.get(position).getType() == TypeMessage.MESSAGE_TEXT||messages.get(position).getType()==TypeMessage.MESSAGE_TEXT_HIDE) {
+                    messages.get(position).setType(TypeMessage.MESSAGE_TEXT_HIDE);
+                } else if(messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE||messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE_HIDE){
+                    messages.get(position).setType(TypeMessage.MESSAGE_IMAGE_HIDE);
+                }
+                denied.add(fUser.getEmail());
+                messages.get(position).setDenied(denied);
+                refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(messages.get(position));
+                dialog.dismiss();
+            });
+            dialog.show();
+            return true;
+        });
+        lvChat.setOnItemClickListener((parent, view, position, id) -> {
+            if(messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE_HIDE||messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE){
+                Intent intent = new Intent(ConversationActivity.this,ViewImageActivity.class);
+                intent.putExtra("bitmap",messages.get(position).getBody());
+                intent.putExtra("method","messages");
+                startActivity(intent);
+            }
+        });
         loadMessages();
     }
 
@@ -234,11 +266,11 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue()!=null){
+                if (snapshot.getValue() != null) {
                     Message message = snapshot.getValue(Message.class);
-                    if(message!=null){
+                    if (message != null) {
                         int index = Integer.parseInt(snapshot.getKey());
-                        messages.set(index,message);
+                        messages.set(index, message);
                         adapter.notifyDataSetChanged();
                     }
                 }

@@ -20,6 +20,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -32,6 +35,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import application.tool.activity.message.R;
@@ -71,6 +75,19 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         image = new SQLiteImage(view.getContext());
         Init(view);
+
+        ImageSlider slider = view.findViewById(R.id.sliderCode);
+        List<SlideModel> list = new ArrayList<>();
+        list.add(new SlideModel(R.drawable._5,null));
+        list.add(new SlideModel(R.drawable.pikmail_emails_to_pictures_using_kotlin_lede,null));
+        list.add(new SlideModel(R.drawable.def40d80_cb4c_11e9_971a_7434089990ed,null));
+        list.add(new SlideModel(R.drawable.git_reset_origin_to_commit,null));
+        list.add(new SlideModel(R.drawable._288755792019456,null));
+        list.add(new SlideModel(R.drawable.tong_quan_nodejs_trungquandev_02,null));
+        list.add(new SlideModel(R.drawable.cafedev_angularjs_profile,null));
+        list.add(new SlideModel(R.drawable.s3uitx6rdv7sod1g2acz,null));
+        list.add(new SlideModel(R.drawable.vuejs,null));
+        slider.setImageList(list, ScaleTypes.CENTER_CROP);
         btViewProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewProfileActivity.class);
             intent.putExtra("email", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
@@ -170,6 +187,7 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
     public void OnClick(View view, String key) {
         Intent intent = new Intent(getActivity(), ViewImageActivity.class);
         intent.putExtra("bitmap",key);
+        intent.putExtra("method","post");
         startActivity(intent);
     }
 

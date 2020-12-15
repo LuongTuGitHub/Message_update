@@ -52,6 +52,9 @@ public class Message {
     }
 
     public ArrayList<String> getDenied() {
+        if(denied==null){
+            return new ArrayList<>();
+        }
         return denied;
     }
 

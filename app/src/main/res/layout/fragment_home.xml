@@ -173,6 +173,19 @@
                 android:layout_marginLeft="16dp"
                 android:saveEnabled="true" />
 
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/sliderCode"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:iss_auto_cycle="true"
+                app:iss_corner_radius="100"
+                app:iss_delay="1000"
+                app:iss_period="1000" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPost"
                 android:layout_width="match_parent"

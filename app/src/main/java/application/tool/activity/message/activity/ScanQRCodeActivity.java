@@ -23,8 +23,6 @@ import java.io.IOException;
 import application.tool.activity.message.R;
 
 public class ScanQRCodeActivity extends AppCompatActivity {
-    private Button btExit;
-    private SurfaceView svCamera;
     CameraSource cameraSource;
     BarcodeDetector barcodeDetector;
     private TextView tvResult;
@@ -33,8 +31,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_q_r_code);
 
-        btExit = findViewById(R.id.bt_exit_scan_code);
-        svCamera = findViewById(R.id.surfaceView);
+        Button btExit = findViewById(R.id.bt_exit_scan_code);
+        SurfaceView svCamera = findViewById(R.id.surfaceView);
         tvResult = findViewById(R.id.tv_result);
         btExit.setOnClickListener(v -> finish());
         barcodeDetector = new BarcodeDetector.Builder(getApplicationContext()).setBarcodeFormats(Barcode.QR_CODE).build();
@@ -71,9 +69,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
-                final SparseArray<Barcode> qrcode = detections.getDetectedItems();
-                if (qrcode.size() != 0) {
-                    tvResult.post(() -> tvResult.setText(qrcode.valueAt(0).displayValue));
+                final SparseArray<Barcode> QRCode = detections.getDetectedItems();
+                if (QRCode.size() != 0) {
+                    tvResult.post(() -> tvResult.setText(QRCode.valueAt(0).displayValue));
                 }
             }
         });

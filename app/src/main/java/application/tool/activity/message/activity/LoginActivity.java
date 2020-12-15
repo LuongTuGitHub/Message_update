@@ -92,6 +92,8 @@ public class LoginActivity extends AppCompatActivity {
                                 alertDialog.dismiss();
                                 aBuilder.create().show();
                             }
+                        }else {
+                            alertDialog.dismiss();
                         }
                     });
                 }

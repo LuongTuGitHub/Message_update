@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import application.tool.activity.message.R;
 import application.tool.activity.message.adapter.ContentViewPagerAdapter;
-import application.tool.activity.message.module.Firebase;
 import application.tool.activity.message.notification.Token;
 
 import static application.tool.activity.message.module.Firebase.STATUS;

@@ -33,9 +33,7 @@ import static application.tool.activity.message.module.Notification.REQUEST;
 import static application.tool.activity.message.module.Notification.RESPONSE;
 
 public class NotificationActivity extends AppCompatActivity implements ItemOnClickListener {
-    private Button btSearch;
     private ArrayList<Notification> notifications;
-    private RecyclerView rvShowNotification;
     private NotificationAdapter adapter;
     private DatabaseReference refDb;
     private FirebaseUser fUser;
@@ -51,8 +49,9 @@ public class NotificationActivity extends AppCompatActivity implements ItemOnCli
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
 
-        btSearch = findViewById(R.id.bt_search);
-        rvShowNotification = findViewById(R.id.rvShowNotification);
+        Button btSearch = findViewById(R.id.bt_search);
+        RecyclerView rvShowNotification = findViewById(R.id.rvShowNotification);
+        Button bt_exit = findViewById(R.id.bt_exit_notification);
 
         rvShowNotification.setLayoutManager(manager);
         rvShowNotification.setAdapter(adapter);
@@ -61,7 +60,7 @@ public class NotificationActivity extends AppCompatActivity implements ItemOnCli
             Intent intent = new Intent(this, ContentFindActivity.class);
             startActivity(intent);
         });
-
+        bt_exit.setOnClickListener(v -> finish());
 
         loadNotification();
     }

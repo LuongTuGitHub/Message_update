@@ -62,10 +62,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             if (newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
                                 new Handler().postDelayed(() -> fUser.updatePassword(newPassword.getText().toString()).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        dialog.cancel();
+                                        dialog.dismiss();
                                         message.setText("");
                                         reference.child(ACCOUNT).child("" + Objects.requireNonNull(fUser.getEmail()).hashCode()).setValue(new Account(fUser.getEmail(), newPassword.getText().toString()));
                                         Toast.makeText(this, "Change Success !", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        dialog.dismiss();
                                     }
                                 }), 1500);
                             } else {

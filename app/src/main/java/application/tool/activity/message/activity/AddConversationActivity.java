@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -106,8 +107,9 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
                 });
         Create.setOnClickListener(v -> {
             if(add.size()>=2){
-                BottomSheetDialog dialog = new BottomSheetDialog(AddConversationActivity.this);
-                dialog.setContentView(R.layout.load);
+                AlertDialog.Builder aBuilder = new AlertDialog.Builder(AddConversationActivity.this);
+                aBuilder.setView(R.layout.load);
+                AlertDialog dialog = aBuilder.create();
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 dialog.show();

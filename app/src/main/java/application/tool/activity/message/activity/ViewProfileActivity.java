@@ -449,6 +449,7 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
     public void OnClick(View view, String key) {
         Intent intent = new Intent(ViewProfileActivity.this,ViewImageActivity.class);
         intent.putExtra("bitmap",key);
+        intent.putExtra("method","post");
         startActivity(intent);
     }
 

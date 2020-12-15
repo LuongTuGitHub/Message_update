@@ -1,19 +1,19 @@
 package application.tool.activity.message.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.UUID;
 
@@ -24,6 +24,7 @@ public class CreateQRCodeActivity extends AppCompatActivity {
     public Button btExit,btCreateQRCode,btDownQRCode;
     public EditText edtEnterContent;
     public ImageView ivShowQrCode;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public Switch swAuto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

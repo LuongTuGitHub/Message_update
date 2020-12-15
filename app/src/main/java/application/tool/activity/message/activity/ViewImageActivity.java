@@ -26,7 +26,7 @@ public class ViewImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_image);
         String key = getIntent().getStringExtra("bitmap");
-
+        String method = getIntent().getStringExtra("method");
         Button bt_exit = findViewById(R.id.bt_exit_view_image);
         Button bt_download = findViewById(R.id.bt_download_image);
         ImageView iv_show_image = findViewById(R.id.iv_show_image);
@@ -45,7 +45,7 @@ public class ViewImageActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 iv_show_image.setImageBitmap(bitmap);
             } else {
-                refStg.child("post/" + key + ".png")
+                refStg.child(method+"/" + key + ".png")
                         .getBytes(Long.MAX_VALUE)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
