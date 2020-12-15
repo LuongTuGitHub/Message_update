@@ -15,4 +15,5 @@ public abstract class Firebase {
     public final static String NOTIFICATION = "notification";
     public final static String POST = "post/list_post";
     public final static String CONVERSATION = "conversation/list_conversation";
+    public final static String MUSIC = "extensions/music";
 }

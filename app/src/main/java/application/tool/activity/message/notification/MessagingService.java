@@ -113,8 +113,9 @@ public class MessagingService extends FirebaseMessagingService {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(TOKEN);
         Token token = new Token(refreshToken);
-        assert user != null;
-        reference.child(Objects.requireNonNull(user.getEmail()).hashCode() + "").setValue(token);
+        if(user!=null){
+            reference.child(Objects.requireNonNull(user.getEmail()).hashCode() + "").setValue(token);
+        }
     }
 
 }

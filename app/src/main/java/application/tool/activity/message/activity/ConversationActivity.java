@@ -414,7 +414,6 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                image.Add(keyMessage, bytes);
                                 Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                 message.add(messages);
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
@@ -450,7 +449,6 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                image.Add(keyMessage, bytes);
                                 Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                 message.add(messages);
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
