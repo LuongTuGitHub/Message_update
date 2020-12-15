@@ -218,7 +218,6 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     refDb.child(CONVERSATION).child(key).child("messages")
                             .setValue(message);
                     message.remove(message.size() - 1);
-                    rv_show_message.scrollToPosition(message.size() - 1);
                 } else {
                     for (int i = 0; i < people.size(); i++) {
                         if (!people.get(i).getEmail().equals(fUser.getEmail())) {
@@ -229,7 +228,6 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     refDb.child(CONVERSATION).child(key).child("messages")
                             .setValue(message);
                     message.remove(message.size() - 1);
-                    rv_show_message.scrollToPosition(message.size() - 1);
                     edtMessage.setText("");
                 }
             });
@@ -287,6 +285,9 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     if (messages != null) {
                         message.add(messages);
                         adapter.notifyDataSetChanged();
+                        if(messages.getFrom().equals(fUser.getEmail())){
+                            rv_show_message.scrollToPosition(message.size()-1);
+                        }
                     }
                 }
             }
@@ -299,6 +300,9 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                         int index = Integer.parseInt(Objects.requireNonNull(snapshot.getKey()));
                         message.set(index, messages);
                         adapter.notifyItemChanged(index);
+                        if(index>0){
+                            adapter.notifyItemChanged(index-1);
+                        }
                     }
                 }
             }

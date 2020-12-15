@@ -8,12 +8,12 @@
 
     <Button
         android:id="@+id/bt_like_message"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/like"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -10,23 +10,25 @@
         android:id="@+id/civ_avatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/ic_baseline_person_24"
-        android:scaleType="centerCrop"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/ic_baseline_person_24"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/bt_like_message"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/like"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/civ_avatar" />
+        app:layout_constraintStart_toEndOf="@+id/civ_avatar"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

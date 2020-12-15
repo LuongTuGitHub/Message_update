@@ -76,7 +76,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @Override
     public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_image_right, parent, false);
-        ;
+
         if (viewType == MESSAGE_IMAGE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_image_left, parent, false);
         }
@@ -106,10 +106,44 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         ArrayList<String> denied = message.getDenied();
         if (message.getType() == TypeMessage.MESSAGE_DELETE) {
             holder.itemView.setVisibility(View.GONE);
+            ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+            iv_show_image.setVisibility(View.GONE);
+
         } else {
             if (message.getType() == TypeMessage.MESSAGE_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_TEXT_HIDE) {
                 if (check(denied)) {
                     holder.itemView.setVisibility(View.GONE);
+                    if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
+                        CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
+                        ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+                        civ.setVisibility(View.GONE);
+                        iv_show_image.setVisibility(View.GONE);
+                    }
+                    if (getItemViewType(position) == MESSAGE_IMAGE_RIGHT) {
+                        ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+                        iv_show_image.setVisibility(View.GONE);
+                    }
+                    if (getItemViewType(position) == MESSAGE_TEXT_LEFT) {
+                        CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
+                        TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
+                        civ.setVisibility(View.GONE);
+                        tv_show_text.setVisibility(View.GONE);
+                    }
+                    if (getItemViewType(position) == MESSAGE_TEXT_RIGHT) {
+                        TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
+                        tv_show_text.setVisibility(View.GONE);
+                    }
+
+                    if (getItemViewType(position) == MESSAGE_LIKE_LEFT) {
+                        CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
+                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
+                        bt_like.setVisibility(View.GONE);
+                        civ.setVisibility(View.GONE);
+                    }
+                    if (getItemViewType(position) == MESSAGE_LIKE_RIGHT) {
+                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
+                        bt_like.setVisibility(View.GONE);
+                    }
                 } else {
                     if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
