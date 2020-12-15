@@ -1,11 +1,12 @@
 package application.tool.activity.message;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import application.tool.activity.message.object.Message;
 
 public class PositionTo {
-    public boolean checkPosition(int position, String user, ArrayList<Message> messages) {
+    public boolean checkPosition(int position, String user, List<Message> messages) {
         int length = messages.size();
         if (!messages.get(position).getFrom().equals(user)) {
             if (position <= length - 1) {

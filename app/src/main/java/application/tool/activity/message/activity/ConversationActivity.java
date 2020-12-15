@@ -1,11 +1,17 @@
 package application.tool.activity.message.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,14 +19,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -31,12 +42,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.adapter.ItemOnClickListener;
 import application.tool.activity.message.adapter.MessageAdapter;
+import application.tool.activity.message.adapter.OnLongClickItemListener;
 import application.tool.activity.message.module.SQLiteImage;
 import application.tool.activity.message.module.TypeMessage;
 import application.tool.activity.message.notification.SendNotification;
@@ -49,14 +68,17 @@ import static application.tool.activity.message.module.Firebase.AVATAR;
 import static application.tool.activity.message.module.Firebase.CONVERSATION;
 import static application.tool.activity.message.module.Firebase.PERSON;
 
-public class ConversationActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button exit, btSendMessage, btCall;
-    private ListView lvChat;
+public class ConversationActivity extends AppCompatActivity implements View.OnClickListener, ItemOnClickListener, OnLongClickItemListener {
+    private final static int PERMISSION_CAMERA = 100;
+    private final static int IMAGE_GALLERY = 98;
+    private final static int IMAGE_CAPTURE = 102;
+    private Button exit, btSendMessage, btCall, btSendImage;
+    private RecyclerView rv_show_message;
     private String numberPhone, key;
     private EditText edtMessage;
     private MessageAdapter adapter;
     private TextView tvName;
-    private ArrayList<Message> messages;
+    private List<Message> message;
     private ImageView ivConversation;
     private FirebaseUser fUser;
     private DatabaseReference refDb;
@@ -65,6 +87,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
     private SQLiteImage image;
     ArrayList<PersonInConversation> people;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +99,8 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         status = getIntent().getBooleanExtra("status", false);
         key = getIntent().getStringExtra("key");
         Init();
+
+
         exit.setOnClickListener(v -> {
             if (status) {
                 Intent intent = new Intent(ConversationActivity.this, ContentActivity.class);
@@ -189,76 +214,78 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                             new SendNotification().sendMessage(people.get(i).getEmail(), "like", key);
                         }
                     }
-                    messages.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
+                    message.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
                     refDb.child(CONVERSATION).child(key).child("messages")
-                            .setValue(messages);
-                    messages.remove(messages.size() - 1);
+                            .setValue(message);
+                    message.remove(message.size() - 1);
+                    rv_show_message.scrollToPosition(message.size() - 1);
                 } else {
                     for (int i = 0; i < people.size(); i++) {
                         if (!people.get(i).getEmail().equals(fUser.getEmail())) {
                             new SendNotification().sendMessage(people.get(i).getEmail(), edtMessage.getText().toString(), key);
                         }
                     }
-                    messages.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
+                    message.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
                     refDb.child(CONVERSATION).child(key).child("messages")
-                            .setValue(messages);
-                    messages.remove(messages.size() - 1);
+                            .setValue(message);
+                    message.remove(message.size() - 1);
+                    rv_show_message.scrollToPosition(message.size() - 1);
                     edtMessage.setText("");
                 }
             });
         }
-        adapter = new MessageAdapter(ConversationActivity.this, messages);
-        lvChat.setAdapter(adapter);
-        lvChat.setOnItemLongClickListener((parent, view, position, id) -> {
-            AlertDialog.Builder aBuilder = new AlertDialog.Builder(ConversationActivity.this);
-            View v = LayoutInflater.from(ConversationActivity.this).inflate(R.layout.ad_message_delete,null);
-            aBuilder.setView(v);
-            AlertDialog dialog = aBuilder.create();
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Button bt_delete = v.findViewById(R.id.bt_delete);
-            Button bt_hide = v.findViewById(R.id.bt_hide);
-            if (!messages.get(position).getFrom().equals(fUser.getEmail())) {
-                bt_delete.setVisibility(View.GONE);
-            }
-            ArrayList<String> denied = messages.get(position).getDenied();
-            bt_delete.setOnClickListener(v1 -> {
-                messages.get(position).setType(TypeMessage.MESSAGE_DELETE);
-                refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(messages.get(position));
-                dialog.dismiss();
-            });
-            bt_hide.setOnClickListener(v1 -> {
-                if (messages.get(position).getType() == TypeMessage.MESSAGE_TEXT||messages.get(position).getType()==TypeMessage.MESSAGE_TEXT_HIDE) {
-                    messages.get(position).setType(TypeMessage.MESSAGE_TEXT_HIDE);
-                } else if(messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE||messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE_HIDE){
-                    messages.get(position).setType(TypeMessage.MESSAGE_IMAGE_HIDE);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
+        manager.setStackFromEnd(true);
+        rv_show_message.setLayoutManager(manager);
+        adapter = new MessageAdapter(message, ConversationActivity.this, this, this);
+        rv_show_message.setAdapter(adapter);
+        loadMessage();
+        btSendImage.setOnClickListener(v -> {
+            BottomSheetDialog dialog = new BottomSheetDialog(ConversationActivity.this);
+            dialog.setContentView(R.layout.bt_dialog_method);
+            Button btCamera = dialog.findViewById(R.id.btCamera);
+            Button btGallery = dialog.findViewById(R.id.btMethodGallery);
+            assert btCamera != null;
+            btCamera.setOnClickListener(v1 -> {
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, IMAGE_CAPTURE);
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
                 }
-                denied.add(fUser.getEmail());
-                messages.get(position).setDenied(denied);
-                refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(messages.get(position));
-                dialog.dismiss();
+                dialog.cancel();
+            });
+            assert btGallery != null;
+            btGallery.setOnClickListener(v12 -> {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/");
+                startActivityForResult(intent, IMAGE_GALLERY);
+                dialog.cancel();
             });
             dialog.show();
-            return true;
         });
-        lvChat.setOnItemClickListener((parent, view, position, id) -> {
-            if(messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE_HIDE||messages.get(position).getType()==TypeMessage.MESSAGE_IMAGE){
-                Intent intent = new Intent(ConversationActivity.this,ViewImageActivity.class);
-                intent.putExtra("bitmap",messages.get(position).getBody());
-                intent.putExtra("method","messages");
-                startActivity(intent);
-            }
-        });
-        loadMessages();
     }
 
-    private void loadMessages() {
+    private void Init() {
+        message = new ArrayList<>();
+        exit = findViewById(R.id.backConversation);
+        rv_show_message = findViewById(R.id.rvListMessage);
+        btCall = findViewById(R.id.btCall);
+        tvName = findViewById(R.id.nameConversation);
+        ivConversation = findViewById(R.id.avatarConversation);
+        edtMessage = findViewById(R.id.bodyMessage);
+        btSendMessage = findViewById(R.id.sendMessage);
+        btSendImage = findViewById(R.id.sendImage);
+    }
+
+    private void loadMessage() {
         refDb.child(CONVERSATION).child(key).child("messages").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    Message message = snapshot.getValue(Message.class);
-                    if (message != null) {
-                        messages.add(message);
+                    Message messages = snapshot.getValue(Message.class);
+                    if (messages != null) {
+                        message.add(messages);
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -267,11 +294,11 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.getValue() != null) {
-                    Message message = snapshot.getValue(Message.class);
-                    if (message != null) {
-                        int index = Integer.parseInt(snapshot.getKey());
-                        messages.set(index, message);
-                        adapter.notifyDataSetChanged();
+                    Message messages = snapshot.getValue(Message.class);
+                    if (messages != null) {
+                        int index = Integer.parseInt(Objects.requireNonNull(snapshot.getKey()));
+                        message.set(index, messages);
+                        adapter.notifyItemChanged(index);
                     }
                 }
             }
@@ -293,15 +320,47 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    private void Init() {
-        messages = new ArrayList<>();
-        exit = findViewById(R.id.backConversation);
-        lvChat = findViewById(R.id.rvListMessage);
-        btCall = findViewById(R.id.btCall);
-        tvName = findViewById(R.id.nameConversation);
-        ivConversation = findViewById(R.id.avatarConversation);
-        edtMessage = findViewById(R.id.bodyMessage);
-        btSendMessage = findViewById(R.id.sendMessage);
+    @Override
+    public void onClickItem(View view, int position) {
+        if (message.get(position).getType() == TypeMessage.MESSAGE_IMAGE_HIDE || message.get(position).getType() == TypeMessage.MESSAGE_IMAGE) {
+            Intent intent = new Intent(ConversationActivity.this, ViewImageActivity.class);
+            intent.putExtra("bitmap", message.get(position).getBody());
+            intent.putExtra("method", "messages");
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public boolean OnLongClick(View view, int position) {
+        AlertDialog.Builder aBuilder = new AlertDialog.Builder(ConversationActivity.this);
+        View v = LayoutInflater.from(ConversationActivity.this).inflate(R.layout.ad_message_delete, null);
+        aBuilder.setView(v);
+        AlertDialog dialog = aBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button bt_delete = v.findViewById(R.id.bt_delete);
+        Button bt_hide = v.findViewById(R.id.bt_hide);
+        if (!message.get(position).getFrom().equals(fUser.getEmail())) {
+            bt_delete.setVisibility(View.GONE);
+        }
+        ArrayList<String> denied = message.get(position).getDenied();
+        bt_delete.setOnClickListener(v1 -> {
+            message.get(position).setType(TypeMessage.MESSAGE_DELETE);
+            refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(message.get(position));
+            dialog.dismiss();
+        });
+        bt_hide.setOnClickListener(v1 -> {
+            if (message.get(position).getType() == TypeMessage.MESSAGE_TEXT || message.get(position).getType() == TypeMessage.MESSAGE_TEXT_HIDE) {
+                message.get(position).setType(TypeMessage.MESSAGE_TEXT_HIDE);
+            } else if (message.get(position).getType() == TypeMessage.MESSAGE_IMAGE || message.get(position).getType() == TypeMessage.MESSAGE_IMAGE_HIDE) {
+                message.get(position).setType(TypeMessage.MESSAGE_IMAGE_HIDE);
+            }
+            denied.add(fUser.getEmail());
+            message.get(position).setDenied(denied);
+            refDb.child(CONVERSATION).child(key).child("messages").child(position + "").setValue(message.get(position));
+            dialog.dismiss();
+        });
+        dialog.show();
+        return true;
     }
 
     @Override
@@ -316,6 +375,86 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
             finish();
         } else {
             ConversationActivity.super.onBackPressed();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CAMERA) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ConversationActivity.this);
+                builder.setView(R.layout.load);
+                androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+                String keyMessage = UUID.randomUUID().toString();
+                assert data != null;
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] bytes = stream.toByteArray();
+                refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                image.Add(keyMessage, bytes);
+                                Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
+                                message.add(messages);
+                                refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
+                                message.remove(message.size()-1);
+                            }
+                            alertDialog.dismiss();
+                        });
+            }
+        }
+        if (requestCode == IMAGE_GALLERY) {
+            if(resultCode==RESULT_OK){
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ConversationActivity.this);
+                builder.setView(R.layout.load);
+                androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+                String keyMessage = UUID.randomUUID().toString();
+                assert data != null;
+                Uri uri = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    alertDialog.dismiss();
+                    Toast.makeText(this, "Fail", Toast.LENGTH_SHORT).show();
+                }
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                assert bitmap != null;
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] bytes = stream.toByteArray();
+                refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                image.Add(keyMessage, bytes);
+                                Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
+                                message.add(messages);
+                                refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
+                                message.remove(message.size()-1);
+                            }
+                            alertDialog.dismiss();
+                        });
+            }
         }
     }
 }

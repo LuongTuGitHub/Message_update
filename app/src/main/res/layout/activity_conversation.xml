@@ -192,22 +192,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
+        android:saveEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-        <ListView
-            android:saveEnabled="true"
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvListMessage"
-            android:transcriptMode="alwaysScroll"
-            style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
             android:scrollbars="none"
-            android:stackFromBottom="true" />
+            app:stackFromEnd="true" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
