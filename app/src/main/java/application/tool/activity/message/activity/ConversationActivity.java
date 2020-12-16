@@ -173,6 +173,19 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                         }
                                     }
                                 }
+                                btCall.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(checkSelfPermission(Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED){
+                                            /***
+                                             *
+                                             *
+                                             *
+                                             *
+                                             */
+                                        }
+                                    }
+                                });
                             } else {
                                 tvName.setText(conversation.getName());
                                 btCall.setVisibility(View.GONE);

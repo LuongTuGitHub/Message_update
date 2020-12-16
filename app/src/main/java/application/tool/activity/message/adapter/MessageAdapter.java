@@ -177,6 +177,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
                                         }
                                     });
+                            if (sqLite.checkExist(message.getBody())) {
+                                byte[] bytes = sqLite.getImage(message.getBody());
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                civ.setImageBitmap(bitmap);
+                            } else {
+                                refStg.child("messages").child(message.getBody() + ".png")
+                                        .getBytes(Long.MAX_VALUE)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                civ.setImageBitmap(bitmap);
+                                                sqLite.Add(message.getBody(), task.getResult());
+                                            }
+                                        });
+                            }
                         } else {
                             civ.setVisibility(View.INVISIBLE);
                             if (sqLite.checkExist(message.getBody())) {
@@ -337,6 +352,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
                                     }
                                 });
+                        if (sqLite.checkExist(message.getBody())) {
+                            byte[] bytes = sqLite.getImage(message.getBody());
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            civ.setImageBitmap(bitmap);
+                        } else {
+                            refStg.child("messages").child(message.getBody() + ".png")
+                                    .getBytes(Long.MAX_VALUE)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                            civ.setImageBitmap(bitmap);
+                                            sqLite.Add(message.getBody(), task.getResult());
+                                        }
+                                    });
+                        }
                     } else {
                         civ.setVisibility(View.INVISIBLE);
                         if (sqLite.checkExist(message.getBody())) {
