@@ -1,5 +1,7 @@
 package application.tool.activity.message.notification;
 
+import application.tool.activity.message.object.Data;
+
 public class Sender {
     public Data data;
     public String to;

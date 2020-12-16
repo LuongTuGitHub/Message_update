@@ -13,4 +13,7 @@
     <color name="to">#bbbbbb</color>
     <color name="input_color">#E4E4E4</color>
     <color name="main_color">#3b5998</color>
+    <color name="color_text_hint">#808080</color>
+    <color name="online">#00ff00</color>
+    <color name="select_image">#80808080</color>
 </resources>
