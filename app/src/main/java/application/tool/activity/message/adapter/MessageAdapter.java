@@ -148,67 +148,51 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                     if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
-                        if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
-                            refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
-                                    .addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.getValue() != null) {
-                                                if (sqLite.checkExist(snapshot.getValue().toString())) {
-                                                    byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
-                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                    civ.setImageBitmap(bitmap);
-                                                } else {
-                                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
-                                                            .getBytes(Long.MAX_VALUE)
-                                                            .addOnCompleteListener(task -> {
-                                                                if (task.isSuccessful()) {
-                                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                                    civ.setImageBitmap(bitmap);
-                                                                    sqLite.Add(snapshot.getValue().toString(), task.getResult());
-                                                                }
-                                                            });
-                                                }
+                        refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.getValue() != null) {
+                                            if (sqLite.checkExist(snapshot.getValue().toString())) {
+                                                byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                civ.setImageBitmap(bitmap);
+                                            } else {
+                                                refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
+                                                        .getBytes(Long.MAX_VALUE)
+                                                        .addOnCompleteListener(task -> {
+                                                            if (task.isSuccessful()) {
+                                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                                civ.setImageBitmap(bitmap);
+                                                                sqLite.Add(snapshot.getValue().toString(), task.getResult());
+                                                            }
+                                                        });
                                             }
                                         }
+                                    }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
+                                    }
+                                });
+                        if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
+                            civ.setVisibility(View.INVISIBLE);
+                        }
+                        if (sqLite.checkExist(message.getBody())) {
+                            byte[] bytes = sqLite.getImage(message.getBody());
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            iv_show_image.setImageBitmap(bitmap);
+                        } else {
+                            refStg.child("messages/" + message.getBody() + ".png")
+                                    .getBytes(Long.MAX_VALUE)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                            iv_show_image.setImageBitmap(bitmap);
+                                            sqLite.Add(message.getBody(), task.getResult());
                                         }
                                     });
-                            if (sqLite.checkExist(message.getBody())) {
-                                byte[] bytes = sqLite.getImage(message.getBody());
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                civ.setImageBitmap(bitmap);
-                            } else {
-                                refStg.child("messages").child(message.getBody() + ".png")
-                                        .getBytes(Long.MAX_VALUE)
-                                        .addOnCompleteListener(task -> {
-                                            if (task.isSuccessful()) {
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                civ.setImageBitmap(bitmap);
-                                                sqLite.Add(message.getBody(), task.getResult());
-                                            }
-                                        });
-                            }
-                        } else {
-                            civ.setVisibility(View.INVISIBLE);
-                            if (sqLite.checkExist(message.getBody())) {
-                                byte[] bytes = sqLite.getImage(message.getBody());
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                iv_show_image.setImageBitmap(bitmap);
-                            } else {
-                                refStg.child("messages/" + message.getBody() + ".png")
-                                        .getBytes(Long.MAX_VALUE)
-                                        .addOnCompleteListener(task -> {
-                                            if (task.isSuccessful()) {
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                iv_show_image.setImageBitmap(bitmap);
-                                                sqLite.Add(message.getBody(), task.getResult());
-                                            }
-                                        });
-                            }
                         }
                         iv_show_image.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
                         iv_show_image.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
@@ -237,93 +221,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         tv_show_text.setText(message.getBody());
-                        if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
-                            refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
-                                    .addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.getValue() != null) {
-                                                if (sqLite.checkExist(snapshot.getValue().toString())) {
-                                                    byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
-                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                    civ.setImageBitmap(bitmap);
-                                                } else {
-                                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
-                                                            .getBytes(Long.MAX_VALUE)
-                                                            .addOnCompleteListener(task -> {
-                                                                if (task.isSuccessful()) {
-                                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                                    civ.setImageBitmap(bitmap);
-                                                                    sqLite.Add(snapshot.getValue().toString(), task.getResult());
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                        } else {
-                            civ.setVisibility(View.INVISIBLE);
-                        }
-                        tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
-                    }
-                    if (getItemViewType(position) == MESSAGE_TEXT_RIGHT) {
-                        TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
-                        tv_show_text.setText(message.getBody());
-                        tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
-                    }
-
-                    if (getItemViewType(position) == MESSAGE_LIKE_LEFT) {
-                        CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
-                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
-                        if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
-                            refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
-                                    .addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.getValue() != null) {
-                                                if (sqLite.checkExist(snapshot.getValue().toString())) {
-                                                    byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
-                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                    civ.setImageBitmap(bitmap);
-                                                } else {
-                                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
-                                                            .getBytes(Long.MAX_VALUE)
-                                                            .addOnCompleteListener(task -> {
-                                                                if (task.isSuccessful()) {
-                                                                    Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                                    civ.setImageBitmap(bitmap);
-                                                                    sqLite.Add(snapshot.getValue().toString(), task.getResult());
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                        } else {
-                            civ.setVisibility(View.INVISIBLE);
-                        }
-                        bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
-                    }
-                    if (getItemViewType(position) == MESSAGE_LIKE_RIGHT) {
-                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
-                        bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
-                    }
-                }
-            } else {
-                if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
-                    CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
-                    ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
-                    if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
                         refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
                                 .addValueEventListener(new ValueEventListener() {
                                     @Override
@@ -352,42 +249,117 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
                                     }
                                 });
-                        if (sqLite.checkExist(message.getBody())) {
-                            byte[] bytes = sqLite.getImage(message.getBody());
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            civ.setImageBitmap(bitmap);
-                        } else {
-                            refStg.child("messages").child(message.getBody() + ".png")
-                                    .getBytes(Long.MAX_VALUE)
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                        if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
+                            civ.setVisibility(View.INVISIBLE);
+                        }
+                        tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
+                    }
+                    if (getItemViewType(position) == MESSAGE_TEXT_RIGHT) {
+                        TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
+                        tv_show_text.setText(message.getBody());
+                        tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
+                    }
+
+                    if (getItemViewType(position) == MESSAGE_LIKE_LEFT) {
+                        CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
+                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
+                        refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.getValue() != null) {
+                                            if (sqLite.checkExist(snapshot.getValue().toString())) {
+                                                byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                civ.setImageBitmap(bitmap);
+                                            } else {
+                                                refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
+                                                        .getBytes(Long.MAX_VALUE)
+                                                        .addOnCompleteListener(task -> {
+                                                            if (task.isSuccessful()) {
+                                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                                civ.setImageBitmap(bitmap);
+                                                                sqLite.Add(snapshot.getValue().toString(), task.getResult());
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                        if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
+                            civ.setVisibility(View.INVISIBLE);
+                        }
+                        bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
+                    }
+                    if (getItemViewType(position) == MESSAGE_LIKE_RIGHT) {
+                        Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
+                        bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
+                    }
+                }
+            } else {
+
+
+                if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
+                    CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
+                    ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+                    refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() != null) {
+                                        if (sqLite.checkExist(snapshot.getValue().toString())) {
+                                            byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                             civ.setImageBitmap(bitmap);
-                                            sqLite.Add(message.getBody(), task.getResult());
+                                        } else {
+                                            refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
+                                                    .getBytes(Long.MAX_VALUE)
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful()) {
+                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                            civ.setImageBitmap(bitmap);
+                                                            sqLite.Add(snapshot.getValue().toString(), task.getResult());
+                                                        }
+                                                    });
                                         }
-                                    });
-                        }
-                    } else {
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                    if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
                         civ.setVisibility(View.INVISIBLE);
-                        if (sqLite.checkExist(message.getBody())) {
-                            byte[] bytes = sqLite.getImage(message.getBody());
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            iv_show_image.setImageBitmap(bitmap);
-                        } else {
-                            refStg.child("messages/" + message.getBody() + ".png")
-                                    .getBytes(Long.MAX_VALUE)
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                            iv_show_image.setImageBitmap(bitmap);
-                                            sqLite.Add(message.getBody(), task.getResult());
-                                        }
-                                    });
-                        }
+                    }
+
+
+                    if (sqLite.checkExist(message.getBody())) {
+                        byte[] bytes = sqLite.getImage(message.getBody());
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        iv_show_image.setImageBitmap(bitmap);
+                    } else {
+                        refStg.child("messages/" + message.getBody() + ".png")
+                                .getBytes(Long.MAX_VALUE)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                        iv_show_image.setImageBitmap(bitmap);
+                                        sqLite.Add(message.getBody(), task.getResult());
+                                    }
+                                });
                     }
                     iv_show_image.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
                     iv_show_image.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                 }
+
+
                 if (getItemViewType(position) == MESSAGE_IMAGE_RIGHT) {
                     ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
                     if (sqLite.checkExist(message.getBody())) {
@@ -408,44 +380,47 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                     iv_show_image.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
                     iv_show_image.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                 }
+
+
                 if (getItemViewType(position) == MESSAGE_TEXT_LEFT) {
                     CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                     TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                     tv_show_text.setText(message.getBody());
-                    if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
-                        refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.getValue() != null) {
-                                            if (sqLite.checkExist(snapshot.getValue().toString())) {
-                                                byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                civ.setImageBitmap(bitmap);
-                                            } else {
-                                                refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
-                                                        .getBytes(Long.MAX_VALUE)
-                                                        .addOnCompleteListener(task -> {
-                                                            if (task.isSuccessful()) {
-                                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                                civ.setImageBitmap(bitmap);
-                                                                sqLite.Add(snapshot.getValue().toString(), task.getResult());
-                                                            }
-                                                        });
-                                            }
+                    refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() != null) {
+                                        if (sqLite.checkExist(snapshot.getValue().toString())) {
+                                            byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                            civ.setImageBitmap(bitmap);
+                                        } else {
+                                            refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
+                                                    .getBytes(Long.MAX_VALUE)
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful()) {
+                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                            civ.setImageBitmap(bitmap);
+                                                            sqLite.Add(snapshot.getValue().toString(), task.getResult());
+                                                        }
+                                                    });
                                         }
                                     }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                    } else {
+                                }
+                            });
+                    if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
                         civ.setVisibility(View.INVISIBLE);
                     }
                     tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                 }
+
+
                 if (getItemViewType(position) == MESSAGE_TEXT_RIGHT) {
                     TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                     tv_show_text.setText(message.getBody());
@@ -455,40 +430,42 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 if (getItemViewType(position) == MESSAGE_LIKE_LEFT) {
                     CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                     Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
-                    if (positionTo.checkPosition(position, fUser.getEmail(), messages)) {
-                        refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.getValue() != null) {
-                                            if (sqLite.checkExist(snapshot.getValue().toString())) {
-                                                byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                civ.setImageBitmap(bitmap);
-                                            } else {
-                                                refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
-                                                        .getBytes(Long.MAX_VALUE)
-                                                        .addOnCompleteListener(task -> {
-                                                            if (task.isSuccessful()) {
-                                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                                                                civ.setImageBitmap(bitmap);
-                                                                sqLite.Add(snapshot.getValue().toString(), task.getResult());
-                                                            }
-                                                        });
-                                            }
+                    refDb.child(AVATAR).child(message.getFrom().hashCode() + "")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() != null) {
+                                        if (sqLite.checkExist(snapshot.getValue().toString())) {
+                                            byte[] bytes = sqLite.getImage(snapshot.getValue().toString());
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                            civ.setImageBitmap(bitmap);
+                                        } else {
+                                            refStg.child("avatar").child(snapshot.getValue().toString() + ".png")
+                                                    .getBytes(Long.MAX_VALUE)
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful()) {
+                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                            civ.setImageBitmap(bitmap);
+                                                            sqLite.Add(snapshot.getValue().toString(), task.getResult());
+                                                        }
+                                                    });
                                         }
                                     }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                    } else {
+                                }
+                            });
+
+                    if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
                         civ.setVisibility(View.INVISIBLE);
                     }
                     bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                 }
+
+
                 if (getItemViewType(position) == MESSAGE_LIKE_RIGHT) {
                     Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
                     bt_like.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
@@ -511,6 +488,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
         public MessageHolder(@NonNull View itemView) {
             super(itemView);
+            this.setIsRecyclable(false);
         }
     }
 

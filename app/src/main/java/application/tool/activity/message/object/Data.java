@@ -1,32 +1,25 @@
 package application.tool.activity.message.object;
 
 public class Data {
-    private String type,from,body, conversation;
+    private String user;
+    private String body;
+    private String title;
 
     public Data() {
     }
 
-    public Data(String type, String from, String body, String conversation) {
-        this.type = type;
-        this.from = from;
+    public Data(String user, String body, String title) {
+        this.user = user;
         this.body = body;
-        this.conversation = conversation;
+        this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getUser() {
+        return user;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getBody() {
@@ -37,11 +30,12 @@ public class Data {
         this.body = body;
     }
 
-    public String getConversation() {
-        return conversation;
+    public String getTitle() {
+        return title;
     }
 
-    public void setConversation(String conversation) {
-        this.conversation = conversation;
+    public void setTitle(String title) {
+        this.title = title;
     }
+
 }

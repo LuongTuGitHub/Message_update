@@ -176,7 +176,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                 btCall.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if(checkSelfPermission(Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED){
+                                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                                             /***
                                              *
                                              *
@@ -223,9 +223,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
             btSendMessage.setOnClickListener(v -> {
                 if (edtMessage.getText().toString().trim().isEmpty()) {
                     for (int i = 0; i < people.size(); i++) {
-                        if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                            new SendNotification().sendMessage(people.get(i).getEmail(), "like", key);
-                        }
+                        new SendNotification().sendMessage(people.get(i).getEmail(), "like", key);
                     }
                     message.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
                     refDb.child(CONVERSATION).child(key).child("messages")
@@ -233,9 +231,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     message.remove(message.size() - 1);
                 } else {
                     for (int i = 0; i < people.size(); i++) {
-                        if (!people.get(i).getEmail().equals(fUser.getEmail())) {
-                            new SendNotification().sendMessage(people.get(i).getEmail(), edtMessage.getText().toString(), key);
-                        }
+                        new SendNotification().sendMessage(people.get(i).getEmail(), edtMessage.getText().toString(), key);
                     }
                     message.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
                     refDb.child(CONVERSATION).child(key).child("messages")
@@ -298,9 +294,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     if (messages != null) {
                         message.add(messages);
                         adapter.notifyDataSetChanged();
-                        if(messages.getFrom().equals(fUser.getEmail())){
-                            rv_show_message.scrollToPosition(message.size()-1);
-                        }
+                        rv_show_message.scrollToPosition(message.size() - 1);
                     }
                 }
             }
@@ -312,10 +306,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                     if (messages != null) {
                         int index = Integer.parseInt(Objects.requireNonNull(snapshot.getKey()));
                         message.set(index, messages);
-                        adapter.notifyItemChanged(index);
-                        if(index>0){
-                            adapter.notifyItemChanged(index-1);
-                        }
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -430,14 +421,17 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                 Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                 message.add(messages);
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
-                                message.remove(message.size()-1);
+                                message.remove(message.size() - 1);
+                                for (int i = 0; i < people.size(); i++) {
+                                    new SendNotification().sendMessage(people.get(i).getEmail(), "Đã gửi một hình ảnh", key);
+                                }
                             }
                             alertDialog.dismiss();
                         });
             }
         }
         if (requestCode == IMAGE_GALLERY) {
-            if(resultCode==RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ConversationActivity.this);
                 builder.setView(R.layout.load);
                 androidx.appcompat.app.AlertDialog alertDialog = builder.create();
@@ -465,7 +459,10 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                 Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                 message.add(messages);
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
-                                message.remove(message.size()-1);
+                                message.remove(message.size() - 1);
+                                for (int i = 0; i < people.size(); i++) {
+                                    new SendNotification().sendMessage(people.get(i).getEmail(), "Đã gửi một hình ảnh", key);
+                                }
                             }
                             alertDialog.dismiss();
                         });
