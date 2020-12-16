@@ -60,7 +60,7 @@ public class SQLiteImage extends SQLiteOpenHelper {
     public boolean checkExist(String key){
         SQLiteDatabase database = getReadableDatabase();
         @SuppressLint("Recycle") Cursor cursor = database.rawQuery("SELECT * FROM IMAGE WHERE UUID LIKE ?",new String[]{key});
-        if(cursor.getCount()==1){
+        if(cursor.getCount()>0){
             return true;
         }
         return false;
