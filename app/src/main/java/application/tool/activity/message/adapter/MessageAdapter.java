@@ -136,7 +136,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             iv_show_image.setVisibility(View.GONE);
 
         } else {
-            if (message.getType() == TypeMessage.MESSAGE_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_TEXT_HIDE) {
+            if (message.getType() == TypeMessage.MESSAGE_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_TEXT_HIDE || message.getType() == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
                 if (check(denied)) {
                     holder.itemView.setVisibility(View.GONE);
                     if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
@@ -1090,6 +1090,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                                 }
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                         }

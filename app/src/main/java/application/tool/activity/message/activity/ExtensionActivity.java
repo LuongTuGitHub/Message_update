@@ -74,7 +74,7 @@ public class ExtensionActivity extends AppCompatActivity implements ItemOnClickL
         extensions.add(new Extension(R.drawable.logout));
         RecyclerView rvEx = findViewById(R.id.rvExtension);
         ExtensionAdapter adapter = new ExtensionAdapter(extensions, this);
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        GridLayoutManager manager = new GridLayoutManager(this, 2);
         rvEx.setLayoutManager(manager);
         rvEx.setAdapter(adapter);
     }
