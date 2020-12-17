@@ -34,6 +34,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <activity
+            android:parentActivityName=".activity.ExtensionActivity"
             android:name=".activity.MusicActivity"
             android:launchMode="singleTask" />
         <activity
@@ -67,6 +68,7 @@
             android:name=".activity.ViewProfileActivity"
             android:launchMode="singleTask" />
         <activity
+            android:parentActivityName=".activity.ContentActivity"
             android:name=".activity.ConversationActivity"
             android:launchMode="singleTask" />
         <activity

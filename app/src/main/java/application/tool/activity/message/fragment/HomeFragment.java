@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -67,7 +68,7 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
     public StorageReference refStg;
     public ArrayList<String> alFriend;
     public SQLiteImage image;
-
+    private final static int SCROLL = 60;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,6 +119,18 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+        LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+        NestedScrollView nestedScrollView = view.findViewById(R.id.scView);
+        nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if((scrollY-oldScrollY)>SCROLL){
+                linearLayout.setVisibility(View.GONE);
+            }
+            if((oldScrollY-scrollY)>SCROLL){
+                linearLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
         refDb.child(Firebase.AVATAR).child(fUser.getEmail().hashCode() + "")
                 .addValueEventListener(new ValueEventListener() {
                     @Override

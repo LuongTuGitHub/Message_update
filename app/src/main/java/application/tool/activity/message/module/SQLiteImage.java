@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream;
 import application.tool.activity.message.R;
 
 public class SQLiteImage extends SQLiteOpenHelper {
-    private final static String DB_IMAGE = "image.db";
+    private final static String DB_IMAGE = "image.sqlite";
     private final static int VERSION = 1;
     Context context;
 
@@ -35,24 +35,30 @@ public class SQLiteImage extends SQLiteOpenHelper {
     public void Add(String key, byte[] bytes) {
         String sql = "INSERT INTO IMAGE VALUES(null,?,?)";
         SQLiteStatement statement = getWritableDatabase().compileStatement(sql);
+        statement.clearBindings();
         statement.bindString(1, key);
         statement.bindBlob(2, bytes);
         statement.executeInsert();
     }
 
     public byte[] getImage(String key) {
-        byte[] bytes;
-        SQLiteDatabase database = getReadableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery("SELECT BYTES FROM IMAGE WHERE UUID LIKE ?", new String[]{key});
-        cursor.moveToFirst();
-        bytes = cursor.getBlob(0);
-        if (bytes == null) {
-            Resources res = context.getResources();
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable d = res.getDrawable(R.drawable.image_placeholder);
-            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            bytes = stream.toByteArray();
+        byte[] bytes = new byte[0];
+        try {
+            SQLiteDatabase database = getReadableDatabase();
+            @SuppressLint("Recycle") Cursor cursor = database.rawQuery("SELECT BYTES FROM IMAGE WHERE UUID LIKE ?", new String[]{key});
+            cursor.moveToFirst();
+            bytes = cursor.getBlob(0);
+            if (bytes == null) {
+                Resources res = context.getResources();
+                @SuppressLint("UseCompatLoadingForDrawables") Drawable d = res.getDrawable(R.drawable.image_placeholder);
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                bytes = stream.toByteArray();
+            }
+            cursor.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
         return bytes;
     }
@@ -66,6 +72,11 @@ public class SQLiteImage extends SQLiteOpenHelper {
         SQLiteDatabase database = getReadableDatabase();
         @SuppressLint("Recycle") Cursor cursor = database.rawQuery("SELECT UUID FROM IMAGE WHERE UUID LIKE ?", new String[]{key});
         cursor.moveToFirst();
-        return cursor.getCount() > 0;
+        if(cursor.getCount()>0){
+            cursor.close();
+            return true;
+        }
+        cursor.close();
+        return false;
     }
 }
