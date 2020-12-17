@@ -7,6 +7,24 @@ public class Message {
     private int type;
     private ArrayList<String> denied;
     private long time;
+    private String forMessage;
+
+    public Message(String from, String body, int type, ArrayList<String> denied, long time, String forMessage) {
+        this.from = from;
+        this.body = body;
+        this.type = type;
+        this.denied = denied;
+        this.time = time;
+        this.forMessage = forMessage;
+    }
+
+    public String getForMessage() {
+        return forMessage;
+    }
+
+    public void setForMessage(String forMessage) {
+        this.forMessage = forMessage;
+    }
 
     public long getTime() {
         return time;
