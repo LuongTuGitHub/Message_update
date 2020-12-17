@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream;
 import application.tool.activity.message.R;
 
 public class SQLiteImage extends SQLiteOpenHelper {
-    private final static String DB_IMAGE = "image.sqlite";
+    private final static String DB_IMAGE = "image.db";
     private final static int VERSION = 1;
     Context context;
 
