@@ -57,7 +57,7 @@ public class SQLiteImage extends SQLiteOpenHelper {
                 bytes = stream.toByteArray();
             }
             cursor.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return bytes;
@@ -72,7 +72,7 @@ public class SQLiteImage extends SQLiteOpenHelper {
         SQLiteDatabase database = getReadableDatabase();
         @SuppressLint("Recycle") Cursor cursor = database.rawQuery("SELECT UUID FROM IMAGE WHERE UUID LIKE ?", new String[]{key});
         cursor.moveToFirst();
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             cursor.close();
             return true;
         }

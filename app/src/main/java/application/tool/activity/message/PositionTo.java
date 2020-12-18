@@ -1,6 +1,5 @@
 package application.tool.activity.message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import application.tool.activity.message.object.Message;

@@ -2,10 +2,12 @@ package application.tool.activity.message.object;
 
 public class Person extends Profile {
     private String email;
-    public Person(){
+
+    public Person() {
     }
-    public Person(String name,String phone,String day,String address,String email){
-        super(name,phone,day,address);
+
+    public Person(String name, String phone, String day, String address, String email) {
+        super(name, phone, day, address);
         this.email = email;
     }
 

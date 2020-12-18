@@ -13,9 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +37,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendHold
     private DatabaseReference refDb;
     private StorageReference refStg;
     private SQLiteImage image;
+
     public FriendAdapter(ArrayList<String> alFriend, ItemOnClickListener imItemOnClickListener) {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         refDb = FirebaseDatabase.getInstance().getReference();
@@ -52,66 +50,66 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendHold
     @Override
     public FriendHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         image = new SQLiteImage(parent.getContext());
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_friend_adapter,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_friend_adapter, parent, false);
         return new FriendHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FriendHolder holder, int position) {
-        refDb.child(Firebase.STATUS).child(alFriend.get(position).hashCode()+"")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null){
-                    String status = snapshot.getValue().toString();
-                    if(status.equals("online")){
-                        holder.fStatus.setBackgroundColor(Color.GREEN);
-                    }else {
-                        holder.fStatus.setBackgroundColor(Color.GRAY);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        refDb.child(Firebase.AVATAR).child(alFriend.get(position).hashCode()+"")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null){
-                    if(image.checkExist(snapshot.getValue().toString())){
-                        byte[] bytes = image.getImage(snapshot.getValue().toString());
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        holder.ivAvatarFriend.setImageBitmap(bitmap);
-                    }else {
-                        refStg.child("avatar/"+snapshot.getValue().toString()+".png")
-                                .getBytes(Long.MAX_VALUE)
-                                .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
-                                        holder.ivAvatarFriend.setImageBitmap(bitmap);
-                                        image.Add(snapshot.getValue().toString(),task.getResult());
-                                    }
-                                });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        refDb.child(Firebase.PERSON).child(alFriend.get(position).hashCode()+"")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        refDb.child(Firebase.STATUS).child(alFriend.get(position).hashCode() + "")
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.getValue()!=null){
+                        if (snapshot.getValue() != null) {
+                            String status = snapshot.getValue().toString();
+                            if (status.equals("online")) {
+                                holder.fStatus.setBackgroundColor(Color.GREEN);
+                            } else {
+                                holder.fStatus.setBackgroundColor(Color.GRAY);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        refDb.child(Firebase.AVATAR).child(alFriend.get(position).hashCode() + "")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue() != null) {
+                            if (image.checkExist(snapshot.getValue().toString())) {
+                                byte[] bytes = image.getImage(snapshot.getValue().toString());
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                holder.ivAvatarFriend.setImageBitmap(bitmap);
+                            } else {
+                                refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
+                                        .getBytes(Long.MAX_VALUE)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                                holder.ivAvatarFriend.setImageBitmap(bitmap);
+                                                image.Add(snapshot.getValue().toString(), task.getResult());
+                                            }
+                                        });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        refDb.child(Firebase.PERSON).child(alFriend.get(position).hashCode() + "")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue() != null) {
                             Person person = snapshot.getValue(Person.class);
-                            if(person!=null){
+                            if (person != null) {
                                 holder.tvName.setText(person.getName());
                             }
                         }
@@ -122,7 +120,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendHold
 
                     }
                 });
-        holder.ivAvatarFriend.setOnClickListener(v -> imItemOnClickListener.onClickItem(v,position));
+        holder.ivAvatarFriend.setOnClickListener(v -> imItemOnClickListener.onClickItem(v, position));
     }
 
     @Override
@@ -134,6 +132,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendHold
         public FrameLayout fStatus;
         public ImageView ivAvatarFriend;
         public TextView tvName;
+
         public FriendHolder(@NonNull View itemView) {
             super(itemView);
             fStatus = itemView.findViewById(R.id.fStatus);

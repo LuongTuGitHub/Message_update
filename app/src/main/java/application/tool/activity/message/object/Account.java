@@ -1,7 +1,8 @@
 package application.tool.activity.message.object;
 
 public class Account {
-    private String email,password;
+    private String email, password;
+
     public Account() {
     }
 

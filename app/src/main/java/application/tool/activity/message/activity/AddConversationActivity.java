@@ -46,6 +46,7 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
     AddConversationAdapter adapter;
     FirebaseUser fUser;
     DatabaseReference refDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,24 +54,24 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
         Init();
         btExist.setOnClickListener(v -> finish());
         rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+        rv.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false));
         rv.setHasFixedSize(true);
         loadFriend();
     }
 
     private void loadFriend() {
-        refDb.child(Firebase.LIST_FRIEND).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"")
+        refDb.child(Firebase.LIST_FRIEND).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        if(snapshot.getValue()!=null){
-                            refDb.child(PERSON).child(snapshot.getValue().toString().hashCode()+"")
+                        if (snapshot.getValue() != null) {
+                            refDb.child(PERSON).child(snapshot.getValue().toString().hashCode() + "")
                                     .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if(snapshot.getValue()!=null){
+                                            if (snapshot.getValue() != null) {
                                                 Person person = snapshot.getValue(Person.class);
-                                                if(person!=null){
+                                                if (person != null) {
                                                     listFri.add(person);
                                                     adapter.notifyDataSetChanged();
                                                 }
@@ -106,7 +107,7 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
                     }
                 });
         Create.setOnClickListener(v -> {
-            if(add.size()>=2){
+            if (add.size() >= 2) {
                 AlertDialog.Builder aBuilder = new AlertDialog.Builder(AddConversationActivity.this);
                 aBuilder.setView(R.layout.load);
                 AlertDialog dialog = aBuilder.create();
@@ -114,19 +115,19 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 dialog.show();
                 ArrayList<PersonInConversation> person = new ArrayList<>();
-                for (int i = 0; i <add.size() ; i++) {
-                    person.add(new PersonInConversation(null,add.get(i).getEmail()));
+                for (int i = 0; i < add.size(); i++) {
+                    person.add(new PersonInConversation(null, add.get(i).getEmail()));
                 }
-                person.add(new PersonInConversation(null,fUser.getEmail()));
-                refDb.child(PERSON).child(fUser.getEmail().hashCode()+"").addValueEventListener(new ValueEventListener() {
+                person.add(new PersonInConversation(null, fUser.getEmail()));
+                refDb.child(PERSON).child(fUser.getEmail().hashCode() + "").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.getValue()!=null){
+                        if (snapshot.getValue() != null) {
                             Person ps = snapshot.getValue(Person.class);
-                            if(ps!=null){
-                                Conversation conversation = new Conversation(person,new ArrayList<>(),"Create by :"+ps.getName());
+                            if (ps != null) {
+                                Conversation conversation = new Conversation(person, new ArrayList<>(), "Create by :" + ps.getName());
                                 refDb.child(CONVERSATION).push().setValue(conversation).addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         dialog.cancel();
                                         adapter.notifyDataSetChanged();
                                         add.clear();
@@ -143,33 +144,34 @@ public class AddConversationActivity extends AppCompatActivity implements ItemOn
                         Toast.makeText(AddConversationActivity.this, "Fail !", Toast.LENGTH_SHORT).show();
                     }
                 });
-             }
+            }
         });
     }
 
     private void Init() {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-        refDb  = FirebaseDatabase.getInstance().getReference();
+        refDb = FirebaseDatabase.getInstance().getReference();
         btExist = findViewById(R.id.bt_cancel_exit);
         Create = findViewById(R.id.bt_create);
         rv = findViewById(R.id.rvFriend);
         listFri = new ArrayList<>();
         list = new ArrayList<>();
         add = new ArrayList<>();
-        adapter = new AddConversationAdapter(listFri,AddConversationActivity.this,this);
+        adapter = new AddConversationAdapter(listFri, AddConversationActivity.this, this);
     }
 
     @Override
     public void onClickItem(View view, int position) {
-        if(check(listFri.get(position))){
+        if (check(listFri.get(position))) {
             add.remove(listFri.get(position));
-        }else {
+        } else {
             add.add(listFri.get(position));
         }
     }
-    public boolean check(Person person){
-        for (int i = 0; i < add.size() ; i++) {
-            if(add.get(i).getEmail().equals(person.getEmail())){
+
+    public boolean check(Person person) {
+        for (int i = 0; i < add.size(); i++) {
+            if (add.get(i).getEmail().equals(person.getEmail())) {
                 return true;
             }
         }

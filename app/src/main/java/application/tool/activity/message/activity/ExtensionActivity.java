@@ -52,16 +52,16 @@ public class ExtensionActivity extends AppCompatActivity implements ItemOnClickL
         ImageSlider slider = findViewById(R.id.slider);
 
         List<SlideModel> list = new ArrayList<>();
-        list.add(new SlideModel(R.drawable._5,null));
-        list.add(new SlideModel(R.drawable.pikmail_emails_to_pictures_using_kotlin_lede,null));
-        list.add(new SlideModel(R.drawable.def40d80_cb4c_11e9_971a_7434089990ed,null));
-        list.add(new SlideModel(R.drawable.git_reset_origin_to_commit,null));
-        list.add(new SlideModel(R.drawable._288755792019456,null));
-        list.add(new SlideModel(R.drawable.tong_quan_nodejs_trungquandev_02,null));
-        list.add(new SlideModel(R.drawable.cafedev_angularjs_profile,null));
-        list.add(new SlideModel(R.drawable.s3uitx6rdv7sod1g2acz,null));
-        list.add(new SlideModel(R.drawable.vuejs,null));
-        slider.setImageList(list,ScaleTypes.CENTER_CROP);
+        list.add(new SlideModel(R.drawable._5, null));
+        list.add(new SlideModel(R.drawable.pikmail_emails_to_pictures_using_kotlin_lede, null));
+        list.add(new SlideModel(R.drawable.def40d80_cb4c_11e9_971a_7434089990ed, null));
+        list.add(new SlideModel(R.drawable.git_reset_origin_to_commit, null));
+        list.add(new SlideModel(R.drawable._288755792019456, null));
+        list.add(new SlideModel(R.drawable.tong_quan_nodejs_trungquandev_02, null));
+        list.add(new SlideModel(R.drawable.cafedev_angularjs_profile, null));
+        list.add(new SlideModel(R.drawable.s3uitx6rdv7sod1g2acz, null));
+        list.add(new SlideModel(R.drawable.vuejs, null));
+        slider.setImageList(list, ScaleTypes.CENTER_CROP);
 
 
         bt_exit.setOnClickListener(v -> finish());
@@ -105,11 +105,11 @@ public class ExtensionActivity extends AppCompatActivity implements ItemOnClickL
                 startActivity(changePassword);
                 break;
             case R.drawable.ic_baseline_qr_code_24:
-                if(checkSelfPermission(Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     Intent scanQRCode = new Intent(ExtensionActivity.this, ScanQRCodeActivity.class);
                     startActivity(scanQRCode);
-                }else {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},PERMISSION_CAMERA);
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
                 }
                 break;
         }
@@ -119,8 +119,8 @@ public class ExtensionActivity extends AppCompatActivity implements ItemOnClickL
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==PERMISSION_CAMERA){
-            if(checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_CAMERA) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 Intent scanQRCode = new Intent(ExtensionActivity.this, ScanQRCodeActivity.class);
                 startActivity(scanQRCode);
             }

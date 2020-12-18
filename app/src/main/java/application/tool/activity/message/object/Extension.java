@@ -1,6 +1,6 @@
 package application.tool.activity.message.object;
 
-public class Extension  {
+public class Extension {
     private int ID;
 
     public Extension(int ID) {

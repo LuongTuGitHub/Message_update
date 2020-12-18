@@ -49,6 +49,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     private final StorageReference refStg;
     private final ItemOnClickListener imItemOnClickListener;
     private SQLiteImage image;
+
     public ConversationAdapter(ArrayList<String> conversations, ItemOnClickListener imItemOnClickListener) {
         this.conversations = conversations;
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -151,18 +152,18 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     if (snapshot.getValue() != null) {
-                                                        if(image.checkExist(snapshot.getValue().toString())){
+                                                        if (image.checkExist(snapshot.getValue().toString())) {
                                                             byte[] bytes = image.getImage(snapshot.getValue().toString());
-                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                                             holder.avatar.setImageBitmap(bitmap);
-                                                        }else {
+                                                        } else {
                                                             refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
                                                                     .getBytes(Long.MAX_VALUE)
                                                                     .addOnCompleteListener(task -> {
-                                                                        if(task.isSuccessful()){
-                                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
+                                                                        if (task.isSuccessful()) {
+                                                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                                                             holder.avatar.setImageBitmap(bitmap);
-                                                                            image.Add(snapshot.getValue().toString(),task.getResult());
+                                                                            image.Add(snapshot.getValue().toString(), task.getResult());
                                                                         }
                                                                     });
                                                         }

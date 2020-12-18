@@ -58,7 +58,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     private final StorageReference refStg;
     private OnClickShowImage onClickShowImage;
     private SQLiteImage image;
-    public PostAdapter(ArrayList<String> key,OnClickShowImage onClickShowImage) {
+
+    public PostAdapter(ArrayList<String> key, OnClickShowImage onClickShowImage) {
         this.key = key;
         this.onClickShowImage = onClickShowImage;
         fUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -151,7 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                                         });
                             }
                             holder.bodyImage.setOnClickListener(v -> {
-                                onClickShowImage.OnClick(v,post.getBodyImage());
+                                onClickShowImage.OnClick(v, post.getBodyImage());
                             });
                         } else {
                             holder.bodyImage.setVisibility(View.GONE);

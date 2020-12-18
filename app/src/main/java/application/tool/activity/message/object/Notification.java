@@ -1,8 +1,8 @@
 package application.tool.activity.message.object;
 
 public class Notification {
-    private String type,from,body,key;
-    private int day,mouth,year;
+    private String type, from, body, key;
+    private int day, mouth, year;
     private long time;
 
     public Notification() {

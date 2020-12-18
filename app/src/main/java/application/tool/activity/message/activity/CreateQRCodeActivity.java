@@ -21,11 +21,12 @@ import application.tool.activity.message.R;
 import application.tool.activity.message.qr_code.QrCode;
 
 public class CreateQRCodeActivity extends AppCompatActivity {
-    public Button btExit,btCreateQRCode,btDownQRCode;
+    public Button btExit, btCreateQRCode, btDownQRCode;
     public EditText edtEnterContent;
     public ImageView ivShowQrCode;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     public Switch swAuto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +45,7 @@ public class CreateQRCodeActivity extends AppCompatActivity {
 
         btExit.setOnClickListener(v -> finish());
         btCreateQRCode.setOnClickListener(v -> {
-            if(!edtEnterContent.getText().toString().trim().isEmpty()){
+            if (!edtEnterContent.getText().toString().trim().isEmpty()) {
                 Bitmap bitmapQR = QrCode.convertStringToQrCode(edtEnterContent.getText().toString().trim());
                 ivShowQrCode.setImageBitmap(bitmapQR);
                 edtEnterContent.setText("");
@@ -58,8 +59,8 @@ public class CreateQRCodeActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(swAuto.isChecked()){
-                    if(!s.toString().trim().isEmpty()){
+                if (swAuto.isChecked()) {
+                    if (!s.toString().trim().isEmpty()) {
                         Bitmap bitmapQR = QrCode.convertStringToQrCode(s.toString());
                         ivShowQrCode.setImageBitmap(bitmapQR);
                     }
@@ -75,7 +76,7 @@ public class CreateQRCodeActivity extends AppCompatActivity {
             String Uuid = UUID.randomUUID().toString();
             BitmapDrawable drawable = (BitmapDrawable) ivShowQrCode.getDrawable();
             Bitmap bitmapQRCode = drawable.getBitmap();
-            MediaStore.Images.Media.insertImage(getContentResolver(),bitmapQRCode,Uuid,null);
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmapQRCode, Uuid, null);
             Toast.makeText(this, "Saved !", Toast.LENGTH_SHORT).show();
         });
     }

@@ -69,6 +69,7 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
     public ArrayList<String> alFriend;
     public SQLiteImage image;
     private final static int SCROLL = 60;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,15 +80,15 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
 
         ImageSlider slider = view.findViewById(R.id.sliderCode);
         List<SlideModel> list = new ArrayList<>();
-        list.add(new SlideModel(R.drawable._5,null));
-        list.add(new SlideModel(R.drawable.pikmail_emails_to_pictures_using_kotlin_lede,null));
-        list.add(new SlideModel(R.drawable.def40d80_cb4c_11e9_971a_7434089990ed,null));
-        list.add(new SlideModel(R.drawable.git_reset_origin_to_commit,null));
-        list.add(new SlideModel(R.drawable._288755792019456,null));
-        list.add(new SlideModel(R.drawable.tong_quan_nodejs_trungquandev_02,null));
-        list.add(new SlideModel(R.drawable.cafedev_angularjs_profile,null));
-        list.add(new SlideModel(R.drawable.s3uitx6rdv7sod1g2acz,null));
-        list.add(new SlideModel(R.drawable.vuejs,null));
+        list.add(new SlideModel(R.drawable._5, null));
+        list.add(new SlideModel(R.drawable.pikmail_emails_to_pictures_using_kotlin_lede, null));
+        list.add(new SlideModel(R.drawable.def40d80_cb4c_11e9_971a_7434089990ed, null));
+        list.add(new SlideModel(R.drawable.git_reset_origin_to_commit, null));
+        list.add(new SlideModel(R.drawable._288755792019456, null));
+        list.add(new SlideModel(R.drawable.tong_quan_nodejs_trungquandev_02, null));
+        list.add(new SlideModel(R.drawable.cafedev_angularjs_profile, null));
+        list.add(new SlideModel(R.drawable.s3uitx6rdv7sod1g2acz, null));
+        list.add(new SlideModel(R.drawable.vuejs, null));
         slider.setImageList(list, ScaleTypes.CENTER_CROP);
         btViewProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewProfileActivity.class);
@@ -123,10 +124,10 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
         LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
         NestedScrollView nestedScrollView = view.findViewById(R.id.scView);
         nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if((scrollY-oldScrollY)>SCROLL){
+            if ((scrollY - oldScrollY) > SCROLL) {
                 linearLayout.setVisibility(View.GONE);
             }
-            if((oldScrollY-scrollY)>SCROLL){
+            if ((oldScrollY - scrollY) > SCROLL) {
                 linearLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -190,7 +191,7 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
         rvViewPost = view.findViewById(R.id.rvPost);
         loadFriend();
         key = new ArrayList<>();
-        adapter = new PostAdapter(key,this);
+        adapter = new PostAdapter(key, this);
         rvViewPost.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
         rvViewPost.setAdapter(adapter);
         loadPost();
@@ -199,8 +200,8 @@ public class HomeFragment extends Fragment implements ItemOnClickListener, OnCli
     @Override
     public void OnClick(View view, String key) {
         Intent intent = new Intent(getActivity(), ViewImageActivity.class);
-        intent.putExtra("bitmap",key);
-        intent.putExtra("method","post");
+        intent.putExtra("bitmap", key);
+        intent.putExtra("method", "post");
         startActivity(intent);
     }
 

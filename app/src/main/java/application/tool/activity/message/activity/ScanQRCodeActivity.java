@@ -26,6 +26,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     CameraSource cameraSource;
     BarcodeDetector barcodeDetector;
     private TextView tvResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

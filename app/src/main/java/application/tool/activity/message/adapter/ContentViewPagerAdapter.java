@@ -16,7 +16,7 @@ public class ContentViewPagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 1:
                 return new ConversationFragment();
             case 0:

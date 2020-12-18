@@ -2,11 +2,11 @@ package application.tool.activity.message.object;
 
 import java.util.ArrayList;
 
-public class Post  {
+public class Post {
     /***
      * @author
      */
-    private String email,title,bodyText,bodyImage,hashTag;
+    private String email, title, bodyText, bodyImage, hashTag;
 
     public Post() {
     }

@@ -28,8 +28,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.e("AAA", body + " " + from);
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent intentSend = new Intent(context, ConversationActivity.class);
-        intentSend.putExtra("key",key);
-        intentSend.putExtra("status",true);
+        intentSend.putExtra("key", key);
+        intentSend.putExtra("status", true);
         intentSend.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentSend, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

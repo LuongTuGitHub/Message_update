@@ -1,7 +1,7 @@
 package application.tool.activity.message.object;
 
 public class Profile {
-    private String name,phone,day,address;
+    private String name, phone, day, address;
 
     public Profile(String name, String phone, String day, String address) {
         this.name = name;

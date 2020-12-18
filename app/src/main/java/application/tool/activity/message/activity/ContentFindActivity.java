@@ -39,7 +39,7 @@ import application.tool.activity.message.object.Person;
 
 import static application.tool.activity.message.module.Firebase.STATUS;
 
-public class ContentFindActivity extends AppCompatActivity  {
+public class ContentFindActivity extends AppCompatActivity {
     private TextInputEditText edt;
     private RecyclerView rv;
     private DatabaseReference refDb;
@@ -47,6 +47,7 @@ public class ContentFindActivity extends AppCompatActivity  {
     private StorageReference refStg;
     private PeopleAdapter adapter;
     private ArrayList<Person> account;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,7 @@ public class ContentFindActivity extends AppCompatActivity  {
         Button button = findViewById(R.id.btExit);
         button.setOnClickListener(v -> finish());
         rv.setVisibility(View.GONE);
-        rv.setLayoutManager(new LinearLayoutManager(ContentFindActivity.this,RecyclerView.VERTICAL,false));
+        rv.setLayoutManager(new LinearLayoutManager(ContentFindActivity.this, RecyclerView.VERTICAL, false));
         rv.setAdapter(adapter);
         rv.setHasFixedSize(true);
         edt.addTextChangedListener(new TextWatcher() {
@@ -84,7 +85,7 @@ public class ContentFindActivity extends AppCompatActivity  {
         loadPerson();
     }
 
-    private void Init(){
+    private void Init() {
         edt = findViewById(R.id.edtEnter);
         rv = findViewById(R.id.rvViewResult);
     }
@@ -94,15 +95,16 @@ public class ContentFindActivity extends AppCompatActivity  {
         refDb.child(Firebase.LIST_ACCOUNT).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue()!=null){
-                    refDb.child(Firebase.PERSON).child(snapshot.getValue().toString().hashCode()+"").addValueEventListener(new ValueEventListener() {
+                if (snapshot.getValue() != null) {
+                    refDb.child(Firebase.PERSON).child(snapshot.getValue().toString().hashCode() + "").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.getValue()!=null){
+                            if (snapshot.getValue() != null) {
                                 account.add(snapshot.getValue(Person.class));
                                 adapter.notifyDataSetChanged();
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -136,6 +138,6 @@ public class ContentFindActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"").setValue("online");
+        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue("online");
     }
 }

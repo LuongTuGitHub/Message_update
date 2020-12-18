@@ -46,7 +46,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private final static int SELECT_IMAGE = 99;
     private final static int CAPTURE_IMAGE = 100;
     private final static int PERMISSION = 11;
-    private Button exit, create,btSelectImage;
+    private Button exit, create, btSelectImage;
     private EditText etTitle, etBody, etHashTag;
     private ImageView ivImage;
     private FirebaseUser fUser;
@@ -107,14 +107,14 @@ public class CreatePostActivity extends AppCompatActivity {
                             refDb.child(Firebase.POST).child(key).setValue(new Post(
                                     Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail(), etTitle.getText().toString(), etBody.getText().toString(),
                                     key, etHashTag.getText().toString())).addOnCompleteListener(task1 -> {
-                                        if(task1.isSuccessful()){
-                                            etBody.setText("");
-                                            etTitle.setText("");
-                                            etHashTag.setText("");
-                                            ivImage.setImageResource(R.drawable.ic_launcher_foreground);
-                                        }
-                                        alertDialog.dismiss();
-                                    });
+                                if (task1.isSuccessful()) {
+                                    etBody.setText("");
+                                    etTitle.setText("");
+                                    etHashTag.setText("");
+                                    ivImage.setImageResource(R.drawable.ic_launcher_foreground);
+                                }
+                                alertDialog.dismiss();
+                            });
                         }
                     });
                 } else {
@@ -192,9 +192,10 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"").setValue("online");
+        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue("online");
     }
 }

@@ -96,6 +96,7 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
     private ConstraintLayout layoutReply;
     private Button cancelReply;
     private TextView messageReply;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,10 +240,10 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                     for (int i = 0; i < people.size(); i++) {
                         new SendNotification().sendMessage(people.get(i).getEmail(), "like", key);
                     }
-                    if(layoutReply.getVisibility()==View.GONE){
+                    if (layoutReply.getVisibility() == View.GONE) {
                         message.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
-                    }else {
-                        message.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_REPLY_TEXT, null, Calendar.getInstance().getTimeInMillis(),positionReply+""));
+                    } else {
+                        message.add(new Message(fUser.getEmail(), "---like", TypeMessage.MESSAGE_REPLY_TEXT, null, Calendar.getInstance().getTimeInMillis(), positionReply + ""));
                         layoutReply.setVisibility(View.GONE);
                         positionReply = -1;
                     }
@@ -253,10 +254,10 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                     for (int i = 0; i < people.size(); i++) {
                         new SendNotification().sendMessage(people.get(i).getEmail(), edtMessage.getText().toString(), key);
                     }
-                    if(layoutReply.getVisibility()==View.GONE){
+                    if (layoutReply.getVisibility() == View.GONE) {
                         message.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_TEXT, null, Calendar.getInstance().getTimeInMillis()));
-                    }else {
-                        message.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_REPLY_TEXT, null, Calendar.getInstance().getTimeInMillis(),positionReply+""));
+                    } else {
+                        message.add(new Message(fUser.getEmail(), edtMessage.getText().toString(), TypeMessage.MESSAGE_REPLY_TEXT, null, Calendar.getInstance().getTimeInMillis(), positionReply + ""));
                         layoutReply.setVisibility(View.GONE);
                         positionReply = -1;
                     }
@@ -310,16 +311,16 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                 positionReply = viewHolder.getAdapterPosition();
                 layoutReply.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
-                if(positionReply>=0){
+                if (positionReply >= 0) {
                     Message messages = message.get(positionReply);
-                    if(messages.getType()==TypeMessage.MESSAGE_REPLY_TEXT||messages.getType()==TypeMessage.MESSAGE_REPLY_TEXT_HIDE||messages.getType()==TypeMessage.MESSAGE_TEXT_HIDE||messages.getType()==TypeMessage.MESSAGE_TEXT){
-                        if(messages.getBody().equals("---like")){
+                    if (messages.getType() == TypeMessage.MESSAGE_REPLY_TEXT || messages.getType() == TypeMessage.MESSAGE_REPLY_TEXT_HIDE || messages.getType() == TypeMessage.MESSAGE_TEXT_HIDE || messages.getType() == TypeMessage.MESSAGE_TEXT) {
+                        if (messages.getBody().equals("---like")) {
                             messageReply.setText("like");
-                        }else {
+                        } else {
                             messageReply.setText(messages.getBody());
                         }
                     }
-                    if(messages.getType()==TypeMessage.MESSAGE_REPLY_IMAGE_HIDE||messages.getType()==TypeMessage.MESSAGE_REPLY_IMAGE||messages.getType()==TypeMessage.MESSAGE_IMAGE_HIDE||messages.getType()==TypeMessage.MESSAGE_IMAGE){
+                    if (messages.getType() == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE || messages.getType() == TypeMessage.MESSAGE_REPLY_IMAGE || messages.getType() == TypeMessage.MESSAGE_IMAGE_HIDE || messages.getType() == TypeMessage.MESSAGE_IMAGE) {
                         messageReply.setText("Trả lời một ảnh");
                     }
                 }
@@ -419,7 +420,7 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
             if (message.get(position).getType() == TypeMessage.MESSAGE_IMAGE || message.get(position).getType() == TypeMessage.MESSAGE_IMAGE_HIDE) {
                 message.get(position).setType(TypeMessage.MESSAGE_IMAGE_HIDE);
             }
-            if (message.get(position).getType()==TypeMessage.MESSAGE_REPLY_IMAGE||message.get(position).getType()==TypeMessage.MESSAGE_REPLY_IMAGE_HIDE){
+            if (message.get(position).getType() == TypeMessage.MESSAGE_REPLY_IMAGE || message.get(position).getType() == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
                 message.get(position).setType(TypeMessage.MESSAGE_REPLY_IMAGE_HIDE);
             }
             if (message.get(position).getType() == TypeMessage.MESSAGE_REPLY_TEXT || message.get(position).getType() == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
@@ -482,14 +483,14 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                 refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                if(layoutReply.getVisibility()==View.GONE){
+                                if (layoutReply.getVisibility() == View.GONE) {
                                     Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                     message.add(messages);
-                                }else {
-                                    Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_REPLY_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis(),positionReply+"");
+                                } else {
+                                    Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_REPLY_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis(), positionReply + "");
                                     message.add(messages);
                                     layoutReply.setVisibility(View.GONE);
-                                    positionReply= -1;
+                                    positionReply = -1;
                                 }
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
                                 message.remove(message.size() - 1);
@@ -527,14 +528,14 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                 refStg.child("messages/" + keyMessage + ".png").putBytes(bytes)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                if(layoutReply.getVisibility()==View.GONE){
+                                if (layoutReply.getVisibility() == View.GONE) {
                                     Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis());
                                     message.add(messages);
-                                }else {
-                                    Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_REPLY_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis(),positionReply+"");
+                                } else {
+                                    Message messages = new Message(fUser.getEmail(), keyMessage, TypeMessage.MESSAGE_REPLY_IMAGE, new ArrayList<>(), Calendar.getInstance().getTimeInMillis(), positionReply + "");
                                     message.add(messages);
                                     layoutReply.setVisibility(View.GONE);
-                                    positionReply= -1;
+                                    positionReply = -1;
                                 }
                                 refDb.child(CONVERSATION).child(key).child("messages").setValue(message);
                                 message.remove(message.size() - 1);

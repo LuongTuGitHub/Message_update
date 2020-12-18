@@ -32,6 +32,7 @@ public class StartAppActivity extends AppCompatActivity {
     private FirebaseUser fUser;
     private DatabaseReference refDb;
     private StorageReference refStg;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,25 +48,25 @@ public class StartAppActivity extends AppCompatActivity {
                 if (fUser.isEmailVerified()) {
                     refDb.child(PROFILE).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "")
                             .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.getValue() == null) {
-                                Intent intent = new Intent(StartAppActivity.this, ProfileActivity.class);
-                                intent.putExtra("status", true);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Intent intent = new Intent(StartAppActivity.this, ContentActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() == null) {
+                                        Intent intent = new Intent(StartAppActivity.this, ProfileActivity.class);
+                                        intent.putExtra("status", true);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(StartAppActivity.this, ContentActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                                }
+                            });
                 } else {
                     fUser.sendEmailVerification();
                     Intent intent = new Intent(StartAppActivity.this, LoginActivity.class);

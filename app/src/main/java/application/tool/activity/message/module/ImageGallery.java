@@ -5,7 +5,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 
 public class ImageGallery {
-    public ArrayList<Uri> getData(){
+    public ArrayList<Uri> getData() {
         ArrayList<Uri> data = new ArrayList<>();
 
 

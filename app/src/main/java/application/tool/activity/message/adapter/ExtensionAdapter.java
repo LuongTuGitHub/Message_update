@@ -25,14 +25,14 @@ public class ExtensionAdapter extends RecyclerView.Adapter<ExtensionAdapter.Exte
     @NonNull
     @Override
     public ExtensionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.v_extension,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.v_extension, parent, false);
         return new ExtensionHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExtensionHolder holder, int position) {
         holder.btEx.setBackgroundResource(extensions.get(position).getID());
-        holder.btEx.setOnClickListener(v -> itemOnClickListener.onClickItem(v,position));
+        holder.btEx.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
     }
 
     @Override
@@ -40,8 +40,9 @@ public class ExtensionAdapter extends RecyclerView.Adapter<ExtensionAdapter.Exte
         return extensions.size();
     }
 
-    public static class ExtensionHolder extends RecyclerView.ViewHolder{
+    public static class ExtensionHolder extends RecyclerView.ViewHolder {
         public Button btEx;
+
         public ExtensionHolder(@NonNull View itemView) {
             super(itemView);
             btEx = itemView.findViewById(R.id.btExtension);

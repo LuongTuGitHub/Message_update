@@ -96,7 +96,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleHold
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(holder.itemView.getContext(), ViewProfileActivity.class);
             intent.putExtra("email", people.get(position).getEmail());
-            intent.putExtra("status",false);
+            intent.putExtra("status", false);
             holder.itemView.getContext().startActivity(intent);
         });
 

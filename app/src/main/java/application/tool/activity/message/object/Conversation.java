@@ -6,6 +6,7 @@ public class Conversation {
     private ArrayList<PersonInConversation> persons;
     private ArrayList<Message> messages;
     private String name;
+
     public Conversation() {
     }
 

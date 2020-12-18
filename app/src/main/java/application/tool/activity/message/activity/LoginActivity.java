@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (snapshot.getValue() == null) {
                                             alertDialog.dismiss();
                                             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                                            intent.putExtra("status",true);
+                                            intent.putExtra("status", true);
                                             startActivity(intent);
                                             finish();
                                         } else {
@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                                 alertDialog.dismiss();
                                 aBuilder.create().show();
                             }
-                        }else {
+                        } else {
                             alertDialog.dismiss();
                         }
                     });

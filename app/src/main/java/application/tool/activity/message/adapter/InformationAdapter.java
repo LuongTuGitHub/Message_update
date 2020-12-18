@@ -36,7 +36,7 @@ public class InformationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        @SuppressLint({"InflateParams", "ViewHolder"}) View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.v_information,null);
+        @SuppressLint({"InflateParams", "ViewHolder"}) View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.v_information, null);
         View vIcon = view.findViewById(R.id.vIcon);
         TextView tvContent = view.findViewById(R.id.tvContent);
         vIcon.setBackgroundResource(information.get(position).getId());

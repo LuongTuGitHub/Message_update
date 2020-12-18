@@ -66,7 +66,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                         message.setText("");
                                         reference.child(ACCOUNT).child("" + Objects.requireNonNull(fUser.getEmail()).hashCode()).setValue(new Account(fUser.getEmail(), newPassword.getText().toString()));
                                         Toast.makeText(this, "Change Success !", Toast.LENGTH_SHORT).show();
-                                    }else {
+                                    } else {
                                         dialog.dismiss();
                                     }
                                 }), 1500);

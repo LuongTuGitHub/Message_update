@@ -49,10 +49,10 @@ public class SQLiteText extends SQLiteOpenHelper {
 
     public void updateData(String email, String UUID) {
         SQLiteDatabase database = getReadableDatabase();
-        if(checkExist(email)){
-            database.execSQL("UPDATE AVATAR SET UUID = ? WHERE EMAIL = ?",new String[]{UUID,email});
-        }else {
-            database.execSQL("INSERT INTO AVATAR VALUES(null,?,?)",new String[]{email,UUID});
+        if (checkExist(email)) {
+            database.execSQL("UPDATE AVATAR SET UUID = ? WHERE EMAIL = ?", new String[]{UUID, email});
+        } else {
+            database.execSQL("INSERT INTO AVATAR VALUES(null,?,?)", new String[]{email, UUID});
         }
     }
 }

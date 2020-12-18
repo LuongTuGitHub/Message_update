@@ -75,7 +75,7 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
     private final static int RESULT_CAPTURE = 100;
     private final static int PERMISSION_CAMERA = 101;
     private static String method = "";
-    private Button exit, confirm, denied, btEditProfile, btAddFriend,btSearch;
+    private Button exit, confirm, denied, btEditProfile, btAddFriend, btSearch;
     private String email;
     private boolean status = false;
     private FirebaseUser fUser;
@@ -90,16 +90,17 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
     private ArrayList<Information> information;
     private InformationAdapter informationAdapter;
     private SQLiteImage image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
         image = new SQLiteImage(getApplicationContext());
-        refStg  = FirebaseStorage.getInstance().getReference();
+        refStg = FirebaseStorage.getInstance().getReference();
         information = new ArrayList<>();
         informationAdapter = new InformationAdapter(information);
         key = new ArrayList<>();
-        adapter = new PostAdapter(key,this);
+        adapter = new PostAdapter(key, this);
         Init();
         status = getIntent().getBooleanExtra("status", false);
         email = getIntent().getStringExtra("email");
@@ -263,9 +264,9 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
             }
             btAddFriend.setOnClickListener(v -> {
                 long key = Calendar.getInstance().getTimeInMillis();
-                Notification notification = new Notification(REQUEST,fUser.getEmail(),"Gửi lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
-                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
+                Notification notification = new Notification(REQUEST, fUser.getEmail(), "Gửi lời mời kết bạn", null, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                        , Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.YEAR), key);
+                refDb.child(NOTIFICATION).child(email.hashCode() + "").child(key + "").setValue(notification);
                 if (btAddFriend.getText().toString().equals("Cancel Add Friend")) {
                     refDb.child(LIST_FRIEND_REQUEST)
                             .child(email.hashCode() + "").child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").removeValue();
@@ -284,9 +285,9 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 dialog.show();
                 long key = Calendar.getInstance().getTimeInMillis();
-                Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Chấp nhận lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                        ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
-                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
+                Notification notification = new Notification(RESPONSE, fUser.getEmail(), "Chấp nhận lời mời kết bạn", null, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                        , Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.YEAR), key);
+                refDb.child(NOTIFICATION).child(email.hashCode() + "").child(key + "").setValue(notification);
                 refDb.child(LIST_FRIEND).child(email.hashCode() + "")
                         .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue(fUser.getEmail());
                 refDb.child(LIST_FRIEND)
@@ -294,7 +295,7 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
                 ArrayList<PersonInConversation> person = new ArrayList<>();
                 person.add(new PersonInConversation("", email));
                 person.add(new PersonInConversation("", fUser.getEmail()));
-                refDb.child(CONVERSATION).push().setValue(new Conversation(person, new ArrayList<>(),null))
+                refDb.child(CONVERSATION).push().setValue(new Conversation(person, new ArrayList<>(), null))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 refDb.child(LIST_FRIEND_REQUEST)
@@ -306,27 +307,27 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
             denied.setOnClickListener(v -> {
                 long key = Calendar.getInstance().getTimeInMillis();
                 refDb.child(LIST_FRIEND_REQUEST)
-                    .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(email.hashCode() + "").removeValue();
-                Notification notification = new Notification(RESPONSE,fUser.getEmail(),"Từ chối lời mời kết bạn",null,Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                        ,Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.YEAR),key);
-                refDb.child(NOTIFICATION).child(email.hashCode()+"").child(key+"").setValue(notification);
+                        .child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").child(email.hashCode() + "").removeValue();
+                Notification notification = new Notification(RESPONSE, fUser.getEmail(), "Từ chối lời mời kết bạn", null, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                        , Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.YEAR), key);
+                refDb.child(NOTIFICATION).child(email.hashCode() + "").child(key + "").setValue(notification);
             });
             refDb.child(BACKGROUND).child(email.hashCode() + "").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
-                        if(image.checkExist(snapshot.getValue().toString())){
+                        if (image.checkExist(snapshot.getValue().toString())) {
                             byte[] bytes = image.getImage(snapshot.getValue().toString());
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             backgroundProfile.setImageBitmap(bitmap);
-                        }else {
+                        } else {
                             refStg.child("background/" + snapshot.getValue().toString() + ".png")
                                     .getBytes(Long.MAX_VALUE)
                                     .addOnCompleteListener(task -> {
-                                        if(task.isSuccessful()){
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
+                                        if (task.isSuccessful()) {
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                             backgroundProfile.setImageBitmap(bitmap);
-                                            image.Add(snapshot.getValue().toString(),task.getResult());
+                                            image.Add(snapshot.getValue().toString(), task.getResult());
                                         }
                                     });
                         }
@@ -342,21 +343,21 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
-                       if(image.checkExist(snapshot.getValue().toString())){
-                           byte[] bytes = image.getImage(snapshot.getValue().toString());
-                           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                           avatarProfile.setImageBitmap(bitmap);
-                       }else {
-                           refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
-                                   .getBytes(Long.MAX_VALUE)
-                                   .addOnCompleteListener(task -> {
-                                       if(task.isSuccessful()){
-                                           Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(),0,task.getResult().length);
-                                           avatarProfile.setImageBitmap(bitmap);
-                                           image.Add(snapshot.getValue().toString(),task.getResult());
-                                       }
-                                   });
-                       }
+                        if (image.checkExist(snapshot.getValue().toString())) {
+                            byte[] bytes = image.getImage(snapshot.getValue().toString());
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            avatarProfile.setImageBitmap(bitmap);
+                        } else {
+                            refStg.child("avatar/" + snapshot.getValue().toString() + ".png")
+                                    .getBytes(Long.MAX_VALUE)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                                            avatarProfile.setImageBitmap(bitmap);
+                                            image.Add(snapshot.getValue().toString(), task.getResult());
+                                        }
+                                    });
+                        }
                     }
                 }
 
@@ -434,7 +435,7 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
             }
         });
         btSearch.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewProfileActivity.this,ContentFindActivity.class);
+            Intent intent = new Intent(ViewProfileActivity.this, ContentFindActivity.class);
             startActivity(intent);
         });
         LinearLayoutManager manager = new LinearLayoutManager(ViewProfileActivity.this, RecyclerView.VERTICAL, false);
@@ -447,9 +448,9 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
 
     @Override
     public void OnClick(View view, String key) {
-        Intent intent = new Intent(ViewProfileActivity.this,ViewImageActivity.class);
-        intent.putExtra("bitmap",key);
-        intent.putExtra("method","post");
+        Intent intent = new Intent(ViewProfileActivity.this, ViewImageActivity.class);
+        intent.putExtra("bitmap", key);
+        intent.putExtra("method", "post");
         startActivity(intent);
     }
 
@@ -670,9 +671,10 @@ public class ViewProfileActivity extends AppCompatActivity implements OnClickSho
             ViewProfileActivity.super.onBackPressed();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode()+"").setValue("online");
+        refDb.child(STATUS).child(Objects.requireNonNull(fUser.getEmail()).hashCode() + "").setValue("online");
     }
 }

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +38,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static application.tool.activity.message.module.Firebase.AVATAR;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
+    ////// class nội dung tin nhắn hiển thị tin nhắn trong recyclerview
+    ////// dung class SQLite cập nhật và lấy mảng byte lưu trữ hình ảnh chuyển sang Bitmap tiết kiệm data dữ liệu mạng di động
     FirebaseUser fUser;
     DatabaseReference refDb;
     StorageReference refStg;
@@ -88,12 +91,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         if (viewType == MESSAGE_IMAGE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_image_left, parent, false);
         }
+
         if (viewType == MESSAGE_IMAGE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_image_right, parent, false);
         }
+
         if (viewType == MESSAGE_TEXT_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_text_left, parent, false);
         }
+
         if (viewType == MESSAGE_TEXT_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_text_right, parent, false);
         }
@@ -101,27 +107,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         if (viewType == MESSAGE_LIKE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_like_left, parent, false);
         }
+
         if (viewType == MESSAGE_LIKE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_like_right, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_IMAGE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_image_left, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_IMAGE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_image_right, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_LIKE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_like_left, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_LIKE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_like_right, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_TEXT_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_text_left, parent, false);
         }
+
         if (viewType == MESSAGE_REPLY_TEXT_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_reply_text_right, parent, false);
         }
+
         return new MessageHolder(view);
     }
 
@@ -130,31 +144,43 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public void onBindViewHolder(@NonNull MessageHolder holder, int position) {
         Message message = messages.get(position);
         ArrayList<String> denied = message.getDenied();
+
         if (message.getType() == TypeMessage.MESSAGE_DELETE) {
             holder.itemView.setVisibility(View.GONE);
+            CardView cardView = holder.itemView.findViewById(R.id.layout);
             ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+            cardView.setVisibility(View.GONE);
             iv_show_image.setVisibility(View.GONE);
-
         } else {
+
             if (message.getType() == TypeMessage.MESSAGE_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_TEXT_HIDE || message.getType() == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE || message.getType() == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
                 if (check(denied)) {
+
                     holder.itemView.setVisibility(View.GONE);
+
                     if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+                        CardView car  = holder.itemView.findViewById(R.id.layout);
+                        car.setVisibility(View.GONE);
                         civ.setVisibility(View.GONE);
                         iv_show_image.setVisibility(View.GONE);
                     }
+
                     if (getItemViewType(position) == MESSAGE_IMAGE_RIGHT) {
+                        CardView car = holder.itemView.findViewById(R.id.layout);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+                        car.setVisibility(View.GONE);
                         iv_show_image.setVisibility(View.GONE);
                     }
+
                     if (getItemViewType(position) == MESSAGE_TEXT_LEFT) {
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         civ.setVisibility(View.GONE);
                         tv_show_text.setVisibility(View.GONE);
                     }
+
                     if (getItemViewType(position) == MESSAGE_TEXT_RIGHT) {
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         tv_show_text.setVisibility(View.GONE);
@@ -170,38 +196,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         Button bt_like = holder.itemView.findViewById(R.id.bt_like_message);
                         bt_like.setVisibility(View.GONE);
                     }
-                    /***
-                     * reply text image like
-                     */
                     if (getItemViewType(position) == MESSAGE_REPLY_IMAGE_LEFT) {
+                        CardView car = holder.itemView.findViewById(R.id.cardView13);
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
                         TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
+                        car.setVisibility(View.GONE);
                         tv_show_message.setVisibility(View.GONE);
                         civ.setVisibility(View.GONE);
                         iv_show_image.setVisibility(View.GONE);
                     }
                     if (getItemViewType(position) == MESSAGE_REPLY_IMAGE_RIGHT) {
+                        CardView car = holder.itemView.findViewById(R.id.cardView14);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
                         TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
+                        car.setVisibility(View.GONE);
                         tv_show_message.setVisibility(View.GONE);
                         iv_show_image.setVisibility(View.GONE);
                     }
                     if (getItemViewType(position) == MESSAGE_REPLY_TEXT_LEFT) {
-
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
-
                         tv_show_message.setVisibility(View.GONE);
                         civ.setVisibility(View.GONE);
                         tv_show_text.setVisibility(View.GONE);
                     }
                     if (getItemViewType(position) == MESSAGE_REPLY_TEXT_RIGHT) {
-
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
-
                         tv_show_message.setVisibility(View.GONE);
                         tv_show_text.setVisibility(View.GONE);
                     }
@@ -226,6 +249,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                     if (getItemViewType(position) == MESSAGE_IMAGE_LEFT) {
                         CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
                         ImageView iv_show_image = holder.itemView.findViewById(R.id.iv_show_image_message);
+
                         refDb.child(AVATAR).child(message.getFrom().hashCode() + "").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -251,9 +275,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
                             }
                         });
+
                         if (!positionTo.checkPosition(position, fUser.getEmail(), messages)) {
                             civ.setVisibility(View.INVISIBLE);
                         }
+
                         if (sqLite.checkExist(message.getBody())) {
                             byte[] bytes = sqLite.getImage(message.getBody());
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -462,9 +488,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                             tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
                         }
                         tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
-                        /***
-                         * reply text
-                         */
                         TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                         tv_show_text.setText(message.getBody());
                         tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
@@ -584,9 +607,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         iv_show_image.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
                         iv_show_image.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                     }
-                    /***
-                     * reply image
-                     */
                     ////////// complete reply image
                     if (getItemViewType(position) == MESSAGE_REPLY_LIKE_LEFT) {
                         TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
@@ -805,7 +825,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                     civ.setImageBitmap(bitmap);
                                 } else {
-                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
+                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task ->
+                                    {
                                         if (task.isSuccessful()) {
                                             Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                             civ.setImageBitmap(bitmap);
@@ -846,16 +867,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
                     CircleImageView civ = holder.itemView.findViewById(R.id.civ_avatar);
@@ -872,7 +904,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                     civ.setImageBitmap(bitmap);
                                 } else {
-                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
+                                    refStg.child("avatar").child(snapshot.getValue().toString() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task ->
+                                    {
                                         if (task.isSuccessful()) {
                                             Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                             civ.setImageBitmap(bitmap);
@@ -906,21 +939,29 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
-                    /***
-                     * reply text
-                     */
                     TextView tv_show_text = holder.itemView.findViewById(R.id.tv_show_text);
                     tv_show_text.setText(message.getBody());
                     tv_show_text.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
@@ -937,16 +978,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
 
@@ -958,7 +1010,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         iv_show_image.setImageBitmap(bitmap);
                     } else {
-                        refStg.child("messages/" + message.getBody() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task -> {
+                        refStg.child("messages/" + message.getBody() + ".png").getBytes(Long.MAX_VALUE).addOnCompleteListener(task ->
+                        {
                             if (task.isSuccessful()) {
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                                 iv_show_image.setImageBitmap(bitmap);
@@ -981,16 +1034,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
 
@@ -1040,9 +1104,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                     iv_show_image.setOnClickListener(v -> itemOnClickListener.onClickItem(v, position));
                     iv_show_image.setOnLongClickListener(v -> onLongClickItemListener.OnLongClick(v, position));
                 }
-                /***
-                 * reply image
-                 */
                 ////////// complete reply image
                 if (getItemViewType(position) == MESSAGE_REPLY_LIKE_LEFT) {
                     TextView tv_show_message = holder.itemView.findViewById(R.id.tv_show_message_reply);
@@ -1055,16 +1116,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
 
@@ -1113,16 +1185,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                         tv_show_message.setText("Trả lời một ảnh");
                     }
                     if (type == TypeMessage.MESSAGE_IMAGE_HIDE || type == TypeMessage.MESSAGE_REPLY_IMAGE_HIDE) {
-                        tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một ảnh bị ẩn");
+                        } else {
+                            tv_show_message.setText("Trả lời một ảnh");
+                        }
                     }
                     if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText("like");
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT) {
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && messages.get(index).getBody().equals("---like")) {
+                        tv_show_message.setText("like");
+                    }
+                    if (type == TypeMessage.MESSAGE_TEXT || type == TypeMessage.MESSAGE_REPLY_TEXT && !messages.get(index).getBody().equals("---like")) {
                         tv_show_message.setText(messages.get(index).getBody());
                     }
-                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE) {
-                        tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                    if (type == TypeMessage.MESSAGE_TEXT_HIDE || type == TypeMessage.MESSAGE_REPLY_TEXT_HIDE && !messages.get(index).getBody().equals("---like")) {
+                        if (check(denied)) {
+                            tv_show_message.setText("Trả lời một tin nhắn bị ẩn");
+                        } else {
+                            tv_show_message.setText(messages.get(index).getBody());
+                        }
                     }
                     tv_show_message.setOnClickListener(v -> onClickScrollListener.onScrollToPosition(v, index));
 
