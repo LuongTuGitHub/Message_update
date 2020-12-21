@@ -195,10 +195,7 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                                         Intent callIntent = new Intent(Intent.ACTION_CALL);
                                         callIntent.setData(Uri.parse("tel:" + numberPhone));
 
-                                        if (ActivityCompat.checkSelfPermission(ConversationActivity.this,
-                                                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                            ActivityCompat.requestPermissions(ConversationActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
-                                        }
+
                                         startActivity(callIntent);
                                     }
                                 });

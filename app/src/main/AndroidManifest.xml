@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="application.tool.activity.message">
 
-<!--    <uses-permission android:name="android.permission.CALL_PHONE" />-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE"

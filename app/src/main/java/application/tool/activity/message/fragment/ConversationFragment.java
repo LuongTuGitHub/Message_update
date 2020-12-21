@@ -1,6 +1,8 @@
 package application.tool.activity.message.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +25,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import application.tool.activity.message.R;
 import application.tool.activity.message.activity.AddConversationActivity;
+import application.tool.activity.message.activity.ContentActivity;
 import application.tool.activity.message.activity.ContentFindActivity;
 import application.tool.activity.message.activity.ConversationActivity;
 import application.tool.activity.message.adapter.ConversationAdapter;
@@ -117,6 +122,7 @@ public class ConversationFragment extends Fragment implements ItemOnClickListene
         Intent intent = new Intent(getActivity(), ConversationActivity.class);
         intent.putExtra("status", false);
         intent.putExtra("key", conversations.get(position));
+
         startActivity(intent);
     }
 }
