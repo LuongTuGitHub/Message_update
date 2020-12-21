@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -191,14 +192,14 @@ public class ConversationActivity extends AppCompatActivity implements OnClickSc
                                 btCall.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-                                            /***
-                                             *
-                                             *
-                                             *
-                                             *
-                                             */
+                                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                        callIntent.setData(Uri.parse("tel:" + numberPhone));
+
+                                        if (ActivityCompat.checkSelfPermission(ConversationActivity.this,
+                                                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                            ActivityCompat.requestPermissions(ConversationActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
                                         }
+                                        startActivity(callIntent);
                                     }
                                 });
                             } else {
