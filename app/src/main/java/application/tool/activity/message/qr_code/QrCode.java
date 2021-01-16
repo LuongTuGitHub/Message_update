@@ -32,7 +32,7 @@ public class QrCode {
         return bitmap;
     }
 
-    public Bitmap getQrUser(String email) {
+    public static Bitmap getQrUser(String email) {
         String uri = "https://www.message.hus.com.vn/" + email;
         BitMatrix matrix = null;
         try {

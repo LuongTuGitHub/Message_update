@@ -34,9 +34,8 @@ public class CreateQRCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_q_r_code);
-        //TODO
         QrCode cccc = new QrCode();
-        Bitmap bitmap = QrCode.convertStringToQrCode(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        Bitmap bitmap = QrCode.getQrUser(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         btExit = findViewById(R.id.bt_return_qr_code);
         btCreateQRCode = findViewById(R.id.bt_create_qr_code);
