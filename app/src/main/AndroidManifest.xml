@@ -35,7 +35,7 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <activity android:name=".activity.PhoneCallActivity"></activity>
+        <activity android:name=".activity.PhoneCallActivity" />
         <activity
             android:name=".activity.MusicActivity"
             android:launchMode="singleTask"

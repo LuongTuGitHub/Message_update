@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.UUID;
 
 import application.tool.activity.message.R;
+import application.tool.activity.message.module.Firebase;
 import application.tool.activity.message.qr_code.QrCode;
 
 public class CreateQRCodeActivity extends AppCompatActivity {
@@ -31,8 +34,9 @@ public class CreateQRCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_q_r_code);
-
-        Bitmap bitmap = QrCode.convertStringToQrCode("Hello");
+        //TODO
+        QrCode cccc = new QrCode();
+        Bitmap bitmap = QrCode.convertStringToQrCode(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         btExit = findViewById(R.id.bt_return_qr_code);
         btCreateQRCode = findViewById(R.id.bt_create_qr_code);

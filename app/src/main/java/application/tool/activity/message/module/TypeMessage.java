@@ -10,5 +10,4 @@ public abstract class TypeMessage {
     public final static int MESSAGE_REPLY_IMAGE = 12;
     public final static int MESSAGE_REPLY_TEXT_HIDE = 15;
     public final static int MESSAGE_REPLY_IMAGE_HIDE = 20;
-    /// chưa các hằng số kiểu message
 }
